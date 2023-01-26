@@ -1,24 +1,16 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Container, Grid, Button, Card, CardMedia } from "@mui/material";
 
 /**
  * COMPONENT
  */
-const Home = (props) => {
-  const username = useSelector((state) => state.auth.me.username);
-
+const SplashPage = (props) => {
   return (
     <div>
       <Grid container>
         <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
           <h1>Home</h1>
         </Grid>
-        {username && (
-          <Grid xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <h2>Welcome, {username}</h2>
-          </Grid>
-        )}
         <Grid item xs={12} sm={8}>
           <Card>
             <CardMedia
@@ -128,4 +120,4 @@ const Home = (props) => {
   );
 };
 
-export default Home;
+export default SplashPage;

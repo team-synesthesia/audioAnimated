@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { authenticate } from "../../features";
 import { Container, Card, Input, Button, Grid } from "@mui/material";
+import { authenticate } from "../../features";
 
 /**
   The AuthForm component can be used for Login or Sign Up.
