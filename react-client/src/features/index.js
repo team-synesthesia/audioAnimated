@@ -4,3 +4,8 @@ export {
   authenticate,
   logout,
 } from "./auth/authSlice";
+
+export {
+  default as singleProjectReducer,
+  fetchSingleProjectAsync,
+} from "./projects/SingleProjectSlice";

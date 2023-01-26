@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
-import { AuthForm, SplashPage, NotFound, AllProjects } from "../";
+import {
+  AuthForm,
+  SplashPage,
+  NotFound,
+  SingleProject,
+  AllProjects,
+} from "../";
 import { me } from "../../features";
 
 /**
@@ -23,6 +29,7 @@ const AppRoutes = () => {
           <Route path="/" element={<SplashPage />} />
 
           <Route path="/projects" element={<AllProjects />} />
+          <Route path="/projects/:projectId" element={<SingleProject />} />
         </>
       ) : (
         <>
