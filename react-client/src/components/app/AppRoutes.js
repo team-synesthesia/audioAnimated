@@ -27,6 +27,7 @@ const AppRoutes = () => {
       {isLoggedIn ? (
         <>
           <Route path="/" element={<SplashPage />} />
+          <Route path="/login" element={<AllProjects />} />
 
           <Route path="/projects" element={<AllProjects />} />
           <Route path="/projects/:projectId" element={<SingleProject />} />

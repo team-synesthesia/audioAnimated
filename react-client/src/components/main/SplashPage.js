@@ -9,9 +9,9 @@ const SplashPage = (props) => {
     <div>
       <Grid container>
         <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-          <h1>Home</h1>
+          <h1>Audio Animated</h1>
         </Grid>
-        <Grid item xs={12} sm={8}>
+        <Grid item sm={12} md={6} lg={8}>
           <Card>
             <CardMedia
               component="img"
@@ -21,8 +21,9 @@ const SplashPage = (props) => {
         </Grid>
         <Grid
           item
-          xs={12}
-          sm={4}
+          sm={12}
+          md={6}
+          lg={4}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -56,7 +57,7 @@ const SplashPage = (props) => {
           xs={12}
           sm={6}
           sx={{
-            display: "flex",
+            display: { xs: "none", sm: "flex" },
             flexDirection: "column",
             justifyContent: "center",
           }}
@@ -82,6 +83,29 @@ const SplashPage = (props) => {
               sx={{ height: "100vh" }}
             />
           </Card>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          sx={{
+            display: { xs: "flex", sm: "none" },
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Container sx={{ textAlign: "center" }}>
+            <h3>Audio Recording Description</h3>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+              sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </Container>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Card>

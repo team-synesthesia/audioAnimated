@@ -4,8 +4,6 @@ const {
 } = require("../db");
 module.exports = router;
 
-// get all projects by userId
-// ensure query string is passed from front end
 router.get("/", async (req, res, next) => {
   try {
     const { userId } = req.query;
