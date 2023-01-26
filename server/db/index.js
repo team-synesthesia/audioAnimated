@@ -16,6 +16,9 @@ Section.belongsTo(Project);
 Section.hasMany(File);
 File.belongsTo(Section);
 
+User.hasMany(File);
+File.belongsTo(User);
+
 module.exports = {
   db,
   models: {

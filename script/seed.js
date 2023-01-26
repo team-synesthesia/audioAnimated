@@ -14,8 +14,9 @@ async function seed() {
   console.log("db synced!");
 
   const users = await Promise.all([
-    User.create({ username: "cody", password: "123" }),
-    User.create({ username: "murphy", password: "123" }),
+    User.create({ username: "robert", password: "123" }),
+    User.create({ username: "philip", password: "123" }),
+    User.create({ username: "chris", password: "123" }),
   ]);
 
   const projects = await Promise.all([
@@ -32,11 +33,41 @@ async function seed() {
   ]);
 
   const files = await Promise.all([
-    File.create({ name: "file1", sectionId: 1 }),
-    File.create({ name: "file2", sectionId: 1 }),
-    File.create({ name: "file3", sectionId: 2 }),
-    File.create({ name: "file4", sectionId: 3 }),
-    File.create({ name: "file5", sectionId: 4 }),
+    File.create({
+      name: "file1",
+      filePath: "Cigarettes-In-Hell.ogg",
+      type: "ogg",
+      sectionId: 1,
+      userId: 1,
+    }),
+    File.create({
+      name: "file2",
+      filePath: "Cigarettes-In-Hell.ogg",
+      type: "ogg",
+      sectionId: 1,
+      userId: 1,
+    }),
+    File.create({
+      name: "file3",
+      filePath: "Cigarettes-In-Hell.ogg",
+      type: "ogg",
+      sectionId: 2,
+      userId: 1,
+    }),
+    File.create({
+      name: "file4",
+      filePath: "Cigarettes-In-Hell.ogg",
+      type: "ogg",
+      sectionId: 3,
+      userId: 1,
+    }),
+    File.create({
+      name: "file5",
+      filePath: "Cigarettes-In-Hell.ogg",
+      type: "ogg",
+      sectionId: 4,
+      userId: 1,
+    }),
   ]);
 
   console.log(

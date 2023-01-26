@@ -1,23 +1,30 @@
 const router = require("express").Router();
 const {
-  models: { Project, user_projects },
+  models: { Project, User },
 } = require("../db");
 module.exports = router;
 
-// fix this so that it only gets project by userId!!!
-// router.get("/:id", async (req, res, next) => {
-//   try {
-//     const userId = req.params.id;
-//     const projects = await user_projects.findAll({
-//       where: { userId: userId },
-//     });
-//     res.send(projects);
-//   } catch (err) {
-//     console.error("error in All Projects GET route");
-//     next(err);
-//   }
-// });
+// get all projects by userId
+// ensure query string is passed from front end
+router.get("/", async (req, res, next) => {
+  try {
+    const { userId } = req.query;
+    if (userId) {
+      const user = await User.findByPk(userId, {
+        include: Project,
+        attributes: ["id", "username"],
+      });
+      res.send(user.projects);
+    } else {
+      res.status(404).send("Not Found");
+    }
+  } catch (err) {
+    console.error("error in All Projects GET route");
+    next(err);
+  }
+});
 
+// get project by projectId
 router.get("/:id", async (req, res, next) => {
   try {
     const projectId = req.params.id;
