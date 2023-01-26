@@ -23,8 +23,4 @@ export const singleProjectSlice = createSlice({
   },
 });
 
-export const selectSingleProject = (state) => {
-  return state.singleProject;
-};
-
 export default singleProjectSlice.reducer;

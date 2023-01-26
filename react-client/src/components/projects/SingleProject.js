@@ -2,10 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import {
-  selectSingleProject,
-  fetchSingleProjectAsync,
-} from "../../features/projects/SingleProjectSlice";
+import { fetchSingleProjectAsync } from "../../features/";
 
 const SingleProject = () => {
   const { projectId } = useParams();
@@ -18,7 +15,7 @@ const SingleProject = () => {
     fetchData();
   }, [dispatch, projectId]);
 
-  const project = useSelector(selectSingleProject);
+  const project = useSelector((state) => state.singleProject);
   return <h1>Single Project</h1>;
 };
 

@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import logger from "redux-logger";
-import { authReducer } from "./";
-import singleProjectReducer from "./projects/SingleProjectSlice";
+import { authReducer, singleProjectReducer } from "./";
 
 const store = configureStore({
   reducer: { auth: authReducer, singleProject: singleProjectReducer },
