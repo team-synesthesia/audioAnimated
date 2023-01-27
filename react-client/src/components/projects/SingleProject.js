@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Container } from "@mui/material";
@@ -9,6 +9,7 @@ import AudioContextPlus from "../../audio";
 
 const SingleProject = () => {
   const { projectId } = useParams();
+  const userId = useSelector((state) => state.auth.me.id);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -31,17 +32,25 @@ const SingleProject = () => {
     fetchData();
   }, [dispatch, availableFiles]);
 
+  const acPlusRef = useRef(new AudioContextPlus());
   useEffect(() => {
-    const acPlus = new AudioContextPlus();
     audioRawFiles.forEach((raw, i) => {
-      acPlus.convertRawToSomething(raw, i + 1);
+      // const fileId = availableFiles[i].id;
+      const fileId = Number(availableFiles[i].id);
+      const audioId = `user_${userId}_project_${projectId}_file_${fileId}`;
+      let audio = document.getElementById(audioId);
+      if (!audio) {
+        audio = document.createElement("audio");
+        audio.setAttribute("id", audioId);
+      }
+      acPlusRef.current.createAudioBuffers(raw, audio, fileId);
     });
-  }, [availableFiles, audioRawFiles]);
+  }, [projectId, userId, availableFiles, audioRawFiles]);
 
   return (
     <Container>
       {project.type === "looper" ? (
-        <LooperProject project={project} />
+        <LooperProject project={project} acPlusRef={acPlusRef} />
       ) : (
         <h1>Single Project</h1>
       )}

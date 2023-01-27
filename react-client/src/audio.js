@@ -1,4 +1,8 @@
 // const AC = new (window.AudioContext || window.webkitAudioContext)();
+let currentPlayPosition = 0;
+const fudge = 0.3;
+let play = 0;
+let started = false;
 
 //audio is the html audio component that
 //has been loaded
@@ -16,6 +20,7 @@ class AudioContextPlus {
   AudioSource = null;
   canVisualize = false;
   play = false;
+  audioBuffers = {};
   sources = [];
 
   constructor() {
@@ -28,8 +33,6 @@ class AudioContextPlus {
     this.AA.fftSize = 2048;
 
     if (this.AC) this.initialized = true;
-
-    console.log("initialization:", this.initialized);
   }
 
   changeAudio(audioHTML) {
@@ -85,7 +88,7 @@ class AudioContextPlus {
     this.canVisualize = input;
   }
 
-  async convertRawToSomething(data, audioId) {
+  async createAudioBuffers(data, audio, fileId) {
     //atob is base64 string to binary
     //formData PUT with an audio file runs btoa at some point
     const raw = window.atob(data);
@@ -103,7 +106,7 @@ class AudioContextPlus {
     //are sending the binary array buffers straight to audio context
     //this is just for playing around
     const audioURL = window.URL.createObjectURL(blob);
-    document.getElementById("audio" + audioId).src = audioURL;
+    audio.src = audioURL;
 
     //here is the AudioContext way of doing things with sound...
     const source = this.AC.createBufferSource();
@@ -115,7 +118,50 @@ class AudioContextPlus {
     source.connect(this.AC.destination);
 
     // save them so we can use them later on button click
-    this.sources.push(source);
+    this.audioBuffers[fileId] = source;
+  }
+
+  playSound(source, time, fudge) {
+    //connect to gainNodes to control relative volume
+    source.connect(this.AC.destination);
+    source.start(time, Math.max(currentPlayPosition + fudge, 0));
+  }
+
+  async play2(fileId1, fileId2) {
+    if (play === 1) {
+      play = 0;
+      await this.AC.suspend();
+      return;
+    }
+
+    // controls all specified songs at once
+    this.AC.resume();
+
+    play = 1;
+
+    if (!started) {
+      const startTime = this.AC.currentTime + 0.5;
+
+      this.sources.length = 0; //reset the array
+      const src1 = this.AC.createBufferSource();
+      console.log("fileId1 typeof: ", typeof fileId1);
+      console.log("fileId2 typeof: ", typeof fileId2);
+
+      console.log("fileId1 : ", fileId1);
+      console.log("fileId2 : ", fileId2);
+      console.log(this.audioBuffers);
+      console.log(this.audioBuffers[fileId1]);
+      console.log(this.audioBuffers[fileId2]);
+      src1.buffer = this.audioBuffers[fileId1];
+      const src2 = this.AC.createBufferSource();
+      src2.buffer = this.audioBuffers[fileId2];
+      this.sources.push(src1, src2);
+
+      this.playSound(src1, startTime, 0);
+      this.playSound(src2, startTime, fudge);
+
+      started = true;
+    }
   }
 }
 

@@ -11,7 +11,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 
 import ProgressSlider from "./ProgressSlider";
 
-export default function Player({ title, duration, setPlayback }) {
+export default function Player({ title, duration, playOnClick, setPlayback }) {
   const theme = useTheme();
 
   return (
@@ -43,7 +43,7 @@ export default function Player({ title, duration, setPlayback }) {
                 <SkipPreviousIcon />
               )}
             </IconButton>
-            <IconButton aria-label="play/pause">
+            <IconButton aria-label="play/pause" onClick={playOnClick}>
               <PlayArrowIcon sx={{ height: 38, width: 38 }} />
             </IconButton>
             <IconButton aria-label="next">

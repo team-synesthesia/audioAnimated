@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import SectionColumn from "./SectionColumn";
 
 export default function Sections({
+  acPlusRef,
   sections,
   sectionDuration,
   projectFileCount,
@@ -16,6 +17,7 @@ export default function Sections({
           ? sections.map((section) => (
               <Grid key={section.id} item xs={1} md={3}>
                 <SectionColumn
+                  acPlusRef={acPlusRef}
                   files={section.files}
                   sectionDuration={sectionDuration}
                   projectFileCount={projectFileCount}
