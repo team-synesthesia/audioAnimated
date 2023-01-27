@@ -24,7 +24,6 @@ const AllProjects = () => {
     >
       <h1>All Projects</h1>
       {!projects.length && <div>You dont have any projects!</div>}
-      {/* add Cards!!! */}
       <Grid container>
         <Grid
           item
