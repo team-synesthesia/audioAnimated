@@ -1,12 +1,11 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { Divider } from "@mui/material";
 
 import FileCard from "./FileCard";
 import Player from "./Player";
 
-export default function FileColumn({
+export default function SectionColumn({
   files,
   totalFiles,
   sectionNumber,
