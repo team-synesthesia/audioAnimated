@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Container, Card, Input, Button, Grid } from "@mui/material";
 import { authenticate } from "../../features";
 
@@ -13,7 +12,6 @@ import { authenticate } from "../../features";
 const AuthForm = ({ name, displayName }) => {
   const { error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
@@ -21,7 +19,6 @@ const AuthForm = ({ name, displayName }) => {
     const username = evt.target.username.value;
     const password = evt.target.password.value;
     await dispatch(authenticate({ username, password, method: formName }));
-    navigate("/projects");
   };
 
   return (
@@ -42,17 +39,9 @@ const AuthForm = ({ name, displayName }) => {
         }}
       >
         <h2>{displayName}</h2>
+        {error && <div> {error} </div>}
         <form onSubmit={handleSubmit} name={name}>
           <Grid container sx={{ margin: "10px" }}>
-            {error && (
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", justifyContent: "center" }}
-              >
-                <div> {error} </div>
-              </Grid>
-            )}
             <Grid item xs={4}>
               <label htmlFor="username">Username: </label>
             </Grid>

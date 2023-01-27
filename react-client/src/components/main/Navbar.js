@@ -21,6 +21,7 @@ const Navbar = () => {
         {isLoggedIn ? (
           <div>
             {/* The navbar will show these links after you log in */}
+            <Link to="/projects">View All Projects</Link>
             <button type="button" onClick={logoutAndRedirectHome}>
               Logout
             </button>
