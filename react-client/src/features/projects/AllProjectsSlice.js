@@ -17,8 +17,8 @@ export const fetchAllProjectsByUserIdAsync = createAsyncThunk(
 );
 
 export const allProjectsSlice = createSlice({
-  name: "singleProject",
-  initialState: {},
+  name: "allProjects",
+  initialState: [],
   extraReducers: (builder) => [
     builder.addCase(
       fetchAllProjectsByUserIdAsync.fulfilled,
