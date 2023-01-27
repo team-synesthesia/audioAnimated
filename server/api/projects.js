@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const {
-  models: { Project, User },
+  models: { Project, Section, File, User },
 } = require("../db");
 module.exports = router;
 
@@ -28,7 +28,15 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const projectId = req.params.id;
-    const project = await Project.findByPk(projectId);
+    const project = await Project.findByPk(projectId, {
+      include: [
+        {
+          model: Section,
+          order: "createdAt",
+          include: { model: File, order: "id" },
+        },
+      ],
+    });
     res.send(project);
   } catch (err) {
     console.error("error in Single Projects GET route");

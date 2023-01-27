@@ -41,17 +41,24 @@ async function seed() {
       userId: 1,
     }),
     File.create({
-      name: "file2",
-      filePath: "Cigarettes-In-Hell.ogg",
-      type: "ogg",
-      sectionId: 1,
-      userId: 1,
-    }),
-    File.create({
-      name: "file3",
+      name: "file1",
       filePath: "Cigarettes-In-Hell.ogg",
       type: "ogg",
       sectionId: 2,
+      userId: 1,
+    }),
+    File.create({
+      name: "file2",
+      filePath: "Cigarettes-In-Hell.ogg",
+      type: "ogg",
+      sectionId: 2,
+      userId: 1,
+    }),
+    File.create({
+      name: "file1",
+      filePath: "Cigarettes-In-Hell.ogg",
+      type: "ogg",
+      sectionId: 3,
       userId: 1,
     }),
     File.create({
@@ -59,13 +66,6 @@ async function seed() {
       filePath: "Cigarettes-In-Hell.ogg",
       type: "ogg",
       sectionId: 3,
-      userId: 1,
-    }),
-    File.create({
-      name: "file5",
-      filePath: "Cigarettes-In-Hell.ogg",
-      type: "ogg",
-      sectionId: 4,
       userId: 1,
     }),
   ]);
