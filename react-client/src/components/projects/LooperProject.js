@@ -4,13 +4,16 @@ import React, { useEffect } from "react";
 import Sections from "./Sections";
 
 const LooperProject = ({ project }) => {
-  console.log("project", project);
   const { availableFiles, sections } = project;
   const projectFileCount = availableFiles.length;
-  console.log("totalFiles: ", projectFileCount);
+  const sectionDuration = 30;
   return (
     <Container>
-      <Sections sections={sections} projectFileCount={projectFileCount} />
+      <Sections
+        sections={sections}
+        sectionDuration={sectionDuration}
+        projectFileCount={projectFileCount}
+      />
     </Container>
   );
 };
