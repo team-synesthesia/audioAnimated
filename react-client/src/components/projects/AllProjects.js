@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Card, CardContent } from "@mui/material";
 
 import { fetchAllProjectsByUserIdAsync } from "../../features";
 
@@ -29,20 +29,22 @@ const AllProjects = () => {
         <Grid
           item
           xs={12}
-          sm={6}
           md={4}
-          lg={3}
-          sx={{
-            backgroundColor: "lightpink",
-            display: "flex",
-            justifyContent: "center",
-            height: "250px",
-            width: "250px",
-            alignItems: "center",
-            margin: "1rem",
-          }}
+          sx={{ display: "flex", justifyContent: "center" }}
         >
-          Add a Project
+          <Card
+            sx={{
+              backgroundColor: "lightpink",
+              display: "flex",
+              justifyContent: "center",
+              height: "250px",
+              width: "250px",
+              alignItems: "center",
+              margin: "1rem",
+            }}
+          >
+            <CardContent>Add a Project</CardContent>
+          </Card>
         </Grid>
         {projects.length &&
           projects.map((project) => (
@@ -50,20 +52,24 @@ const AllProjects = () => {
               key={project.id}
               item
               xs={12}
-              sm={6}
               md={4}
-              lg={3}
-              sx={{
-                backgroundColor: "lightpink",
-                display: "flex",
-                justifyContent: "center",
-                height: "250px",
-                width: "250px",
-                alignItems: "center",
-                margin: "1rem",
-              }}
+              sx={{ display: "flex", justifyContent: "center" }}
             >
-              <Link to={`/projects/${project.id}`}>{project.name}</Link>
+              <Card
+                sx={{
+                  backgroundColor: "lightpink",
+                  display: "flex",
+                  justifyContent: "center",
+                  height: "250px",
+                  width: "250px",
+                  alignItems: "center",
+                  margin: "1rem",
+                }}
+              >
+                <CardContent>
+                  <Link to={`/projects/${project.id}`}>{project.name}</Link>
+                </CardContent>
+              </Card>
             </Grid>
           ))}
       </Grid>
