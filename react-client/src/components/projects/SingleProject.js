@@ -32,25 +32,34 @@ const SingleProject = () => {
     fetchData();
   }, [dispatch, availableFiles]);
 
+  const [disabled, setDisabled] = React.useState(true);
   const acPlusRef = useRef(new AudioContextPlus());
   useEffect(() => {
-    audioRawFiles.forEach((raw, i) => {
-      // const fileId = availableFiles[i].id;
-      const fileId = Number(availableFiles[i].id);
-      const audioId = `user_${userId}_project_${projectId}_file_${fileId}`;
-      let audio = document.getElementById(audioId);
-      if (!audio) {
-        audio = document.createElement("audio");
-        audio.setAttribute("id", audioId);
+    const createBuffers = async () => {
+      for (let i = 0; i < audioRawFiles.length; i++) {
+        const raw = audioRawFiles[i];
+        const fileId = availableFiles[i].id;
+        const audioId = `user_${userId}_project_${projectId}_file_${fileId}`;
+        let audio = document.getElementById(audioId);
+        if (!audio) {
+          audio = document.createElement("audio");
+          audio.setAttribute("id", audioId);
+        }
+        await acPlusRef.current.createAudioBuffers(raw, audio, fileId);
+        setDisabled(false);
       }
-      acPlusRef.current.createAudioBuffers(raw, audio, fileId);
-    });
+    };
+    createBuffers();
   }, [projectId, userId, availableFiles, audioRawFiles]);
 
   return (
     <Container>
       {project.type === "looper" ? (
-        <LooperProject project={project} acPlusRef={acPlusRef} />
+        <LooperProject
+          project={project}
+          acPlusRef={acPlusRef}
+          disabled={disabled}
+        />
       ) : (
         <h1>Single Project</h1>
       )}

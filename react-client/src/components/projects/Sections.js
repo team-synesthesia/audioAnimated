@@ -6,6 +6,7 @@ import SectionColumn from "./SectionColumn";
 
 export default function Sections({
   acPlusRef,
+  disabled,
   sections,
   sectionDuration,
   projectFileCount,
@@ -18,6 +19,7 @@ export default function Sections({
               <Grid key={section.id} item xs={1} md={3}>
                 <SectionColumn
                   acPlusRef={acPlusRef}
+                  disabled={disabled}
                   files={section.files}
                   sectionDuration={sectionDuration}
                   projectFileCount={projectFileCount}

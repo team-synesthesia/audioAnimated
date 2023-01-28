@@ -7,35 +7,22 @@ import Player from "./Player";
 
 export default function SectionColumn({
   acPlusRef,
+  disabled,
   files,
-  totalFiles,
   sectionNumber,
   sectionDuration,
 }) {
-  const playSection = () => {
-    // not built for section 1 yet
-    // console.log(Object.keys(acPlusRef.current.audioBuffers));
-    if (Object.keys(acPlusRef.current.audioBuffers).length) {
-      if (Number(sectionNumber) !== 1) {
-        const fileId1 = files[0].id;
-        const fileId2 = files[1].id;
-        console.log(fileId1);
-        console.log(fileId2);
-        acPlusRef.current.play2(fileId1, fileId2);
-      }
-    }
+  const setPlayback = (value) => {
+    // Need to adjust AC current position in this fn
+    // need to figure that out
+    // acPlusRef.current.currentTime = value;
   };
 
-  // const playSection = () => {
-  //   console.log(Object.keys(acPlusRef.current.audioBuffers));
-  //   acPlusRef.current.playSound(
-  //     acPlusRef.current.audioBuffers["1"],
-  //     0,
-  //     5,
-  //     0,
-  //     3
-  //   );
-  // };
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const playSection = async () => {
+    await acPlusRef.current.playNSongs(files.map((x) => x.id));
+    setIsPlaying(acPlusRef.current.isPlaying);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -43,8 +30,10 @@ export default function SectionColumn({
         <Grid item xs={6} md={8}>
           <Player
             title={`Section ${sectionNumber}`}
-            sectionNumber={sectionNumber}
+            isPlaying={isPlaying}
             playOnClick={playSection}
+            setPlayback={setPlayback}
+            disabled={disabled}
             duration={sectionDuration}
           />
         </Grid>

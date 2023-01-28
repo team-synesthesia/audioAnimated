@@ -1,11 +1,6 @@
-// const AC = new (window.AudioContext || window.webkitAudioContext)();
-let currentPlayPosition = 0;
-const fudge = 0.3;
-let play = 0;
-let started = false;
-
 //audio is the html audio component that
 //has been loaded
+
 class AudioContextPlus {
   //we really only want to
   //instantiate this thing once
@@ -19,7 +14,9 @@ class AudioContextPlus {
   initialized = false;
   AudioSource = null;
   canVisualize = false;
-  play = false;
+  isPlaying = false;
+  started = false;
+  currentPlayPosition = 0;
   audioBuffers = {};
   sources = [];
 
@@ -109,58 +106,42 @@ class AudioContextPlus {
     audio.src = audioURL;
 
     //here is the AudioContext way of doing things with sound...
-    const source = this.AC.createBufferSource();
 
     //wait for both with Promises.all at some point
     const xxx = await this.AC.decodeAudioData(ab);
 
-    source.buffer = xxx;
-    source.connect(this.AC.destination);
-
     // save them so we can use them later on button click
-    this.audioBuffers[fileId] = source;
+    this.audioBuffers[fileId] = xxx;
   }
 
   playSound(source, time, fudge) {
     //connect to gainNodes to control relative volume
     source.connect(this.AC.destination);
-    source.start(time, Math.max(currentPlayPosition + fudge, 0));
+    source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
   }
 
-  async play2(fileId1, fileId2) {
-    if (play === 1) {
-      play = 0;
+  async playNSongs(fileIds) {
+    if (this.isPlaying) {
+      this.isPlaying = false;
       await this.AC.suspend();
       return;
     }
-
     // controls all specified songs at once
     this.AC.resume();
-
-    play = 1;
-
-    if (!started) {
+    this.isPlaying = true;
+    if (!this.started) {
       const startTime = this.AC.currentTime + 0.5;
-
       this.sources.length = 0; //reset the array
-      const src1 = this.AC.createBufferSource();
-      console.log("fileId1 typeof: ", typeof fileId1);
-      console.log("fileId2 typeof: ", typeof fileId2);
+      fileIds.forEach((fileId) => {
+        const src = this.AC.createBufferSource();
+        src.buffer = this.audioBuffers[fileId];
+        this.sources.push(src);
+      });
 
-      console.log("fileId1 : ", fileId1);
-      console.log("fileId2 : ", fileId2);
-      console.log(this.audioBuffers);
-      console.log(this.audioBuffers[fileId1]);
-      console.log(this.audioBuffers[fileId2]);
-      src1.buffer = this.audioBuffers[fileId1];
-      const src2 = this.AC.createBufferSource();
-      src2.buffer = this.audioBuffers[fileId2];
-      this.sources.push(src1, src2);
-
-      this.playSound(src1, startTime, 0);
-      this.playSound(src2, startTime, fudge);
-
-      started = true;
+      this.sources.forEach((source) => {
+        this.playSound(source, startTime, 0);
+      });
+      this.started = true;
     }
   }
 }
