@@ -38,14 +38,14 @@ const SingleProject = () => {
     const createBuffers = async () => {
       for (let i = 0; i < audioRawFiles.length; i++) {
         const raw = audioRawFiles[i];
-        const fileId = availableFiles[i].id;
-        const audioId = `user_${userId}_project_${projectId}_file_${fileId}`;
+        const fileName = availableFiles[i].name;
+        const audioId = `user_${userId}_project_${projectId}_file_${fileName}`;
         let audio = document.getElementById(audioId);
         if (!audio) {
           audio = document.createElement("audio");
           audio.setAttribute("id", audioId);
         }
-        await acPlusRef.current.createAudioBuffers(raw, audio, fileId);
+        await acPlusRef.current.createAudioBuffers(raw, audio, fileName);
         setDisabled(false);
       }
     };

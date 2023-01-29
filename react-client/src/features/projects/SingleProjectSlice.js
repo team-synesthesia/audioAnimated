@@ -56,29 +56,9 @@ export const singleProjectSlice = createSlice({
     builder.addCase(fetchSingleProjectAsync.fulfilled, (state, action) => {
       const { id, name, type, sections } = action.payload;
 
-      // NOTE :::::
-      // I would like to dedup the files so we are not storing
-      // repeats of the same file
-
-      // I can't do that yet because sections store the primary
-      // key reference to a record in the files table
-      // it doesnt know which are the same
-
-      // This is the code to dedup, maybe we can figure out
-      // how to use it later
-
-      // const availableFiles = sections.reduce((a, section) => {
-      //   section.files.forEach((file) => {
-      //     if (!a.map((x) => x.name).includes(file.name)) {
-      //       a.push(file);
-      //     }
-      //   });
-      //   return a;
-      // }, []);
-
       const availableFiles = sections.reduce((a, section) => {
         section.files.forEach((file) => {
-          if (!a.map((x) => x.id).includes(file.id)) {
+          if (!a.map((x) => x.name).includes(file.name)) {
             a.push(file);
           }
         });

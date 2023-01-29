@@ -20,7 +20,7 @@ export default function SectionColumn({
 
   const [isPlaying, setIsPlaying] = React.useState(false);
   const playSection = async () => {
-    await acPlusRef.current.playNSongs(files.map((x) => x.id));
+    await acPlusRef.current.playNSongs(files.map((x) => x.name));
     setIsPlaying(acPlusRef.current.isPlaying);
   };
 
