@@ -23,9 +23,11 @@ export const getFilesAsync = createAsyncThunk(
 
 export const getFileAsync = createAsyncThunk(
   "getFile",
-  async ({ filename }) => {
+  async ({ projectId, filePath }) => {
     try {
-      const { data } = await axios.get(`/api/audiofiles/${filename}`);
+      const { data } = await axios.get("/api/audiofiles/", {
+        params: { projectId, filePath },
+      });
       return data;
     } catch (error) {
       console.log(error);
