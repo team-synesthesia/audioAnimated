@@ -40,5 +40,4 @@ export const allProjectsSlice = createSlice({
     ),
   ],
 });
-export const { addProject } = allProjectsSlice.actions;
 export default allProjectsSlice.reducer;
