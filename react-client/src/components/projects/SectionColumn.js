@@ -1,12 +1,12 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import { Box, Grid, Button } from "@mui/material";
 
 import AudioContextPlus from "../../audio";
 import { useSelector } from "react-redux";
 
 import FileCard from "./FileCard";
 import Player from "./Player";
+import { FileUploadForm } from "../";
 
 export default function SectionColumn({
   userId,
@@ -60,6 +60,8 @@ export default function SectionColumn({
     setIsPlaying(acPlusRef.current.isPlaying);
   };
 
+  const [uploadFormActive, setUploadFormActive] = React.useState(null);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -80,6 +82,14 @@ export default function SectionColumn({
               </Grid>
             ))
           : null}
+        <Grid item xs={6} md={8}>
+          <Button onClick={() => setUploadFormActive(sectionNumber)}>
+            Add a file
+          </Button>
+          <FileUploadForm
+            sx={uploadFormActive === sectionNumber ? null : {display: "none"}}
+          />
+        </Grid>
       </Grid>
     </Box>
   );
