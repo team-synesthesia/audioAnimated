@@ -16,6 +16,18 @@ export const fetchAllProjectsByUserIdAsync = createAsyncThunk(
   }
 );
 
+export const createProjectAsync = createAsyncThunk(
+  "createProject",
+  async (payload) => {
+    try {
+      const { data } = await axios.post("/api/projects/", payload);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 export const allProjectsSlice = createSlice({
   name: "allProjects",
   initialState: [],
@@ -28,5 +40,4 @@ export const allProjectsSlice = createSlice({
     ),
   ],
 });
-
 export default allProjectsSlice.reducer;
