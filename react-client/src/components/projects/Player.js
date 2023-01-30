@@ -16,6 +16,7 @@ export default function Player({
   title,
   duration,
   playOnClick,
+  restart,
   isPlaying,
   disabled,
   setPlayback,
@@ -43,7 +44,7 @@ export default function Player({
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-            <IconButton aria-label="previous">
+            <IconButton aria-label="previous" onClick={restart}>
               {theme.direction === "rtl" ? (
                 <SkipNextIcon />
               ) : (

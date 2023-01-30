@@ -16,7 +16,6 @@ class AudioContextPlus {
   canVisualize = false;
   isPlaying = false;
   started = false;
-  currentPlayPosition = 0;
   audioBuffers = {};
   sources = [];
 
@@ -113,14 +112,36 @@ class AudioContextPlus {
     // save them so we can use them later on button click
     this.audioBuffers[filename] = await this.AC.decodeAudioData(ab);
   }
+  setPlayPosition(value) {
+    this.currentPlayPosition = value;
+  }
+  playSound(source, time, startPosition, fudge) {
+    if (!startPosition) startPosition = 0;
 
-  playSound(source, time, fudge) {
     //connect to gainNodes to control relative volume
     source.connect(this.AC.destination);
-    source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
+    source.start(time, Math.max(startPosition + fudge, 0));
+  }
+  async pause() {
+    await this.AC.suspend();
+    this.isPlaying = false;
+  }
+  async _initNSongs(fileNames, startPosition) {
+    const startTime = this.AC.currentTime + 0.5;
+    this.sources.length = 0; //reset the array
+    fileNames.forEach((fileName) => {
+      const src = this.AC.createBufferSource();
+      src.buffer = this.audioBuffers[fileName];
+      this.sources.push(src);
+    });
+
+    this.sources.forEach((source) => {
+      this.playSound(source, startTime, startPosition, 0);
+    });
+    this.started = true;
   }
 
-  async playNSongs(fileNames) {
+  async playPauseNSongs(fileNames, startPosition) {
     if (this.isPlaying) {
       this.isPlaying = false;
       await this.AC.suspend();
@@ -130,18 +151,7 @@ class AudioContextPlus {
     this.AC.resume();
     this.isPlaying = true;
     if (!this.started) {
-      const startTime = this.AC.currentTime + 0.5;
-      this.sources.length = 0; //reset the array
-      fileNames.forEach((fileName) => {
-        const src = this.AC.createBufferSource();
-        src.buffer = this.audioBuffers[fileName];
-        this.sources.push(src);
-      });
-
-      this.sources.forEach((source) => {
-        this.playSound(source, startTime, 0);
-      });
-      this.started = true;
+      this._initNSongs(fileNames, startPosition);
     }
   }
 }

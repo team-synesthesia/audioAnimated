@@ -15,15 +15,11 @@ export default function SectionColumn({
   sectionDuration,
   sectionNumber,
 }) {
+  const fileNames = files.map((x) => x.name);
+
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
   );
-
-  const setPlayback = (value) => {
-    // Need to adjust AC current position in this fn
-    // need to figure that out
-    // acPlusRef.current.currentTime = value;
-  };
 
   const [disabled, setDisabled] = React.useState(true);
   const acPlusRef = React.useRef();
@@ -31,9 +27,36 @@ export default function SectionColumn({
     if (!acPlusRef.current) acPlusRef.current = new AudioContextPlus();
   }, []);
 
+  const playPauseSection = async () => {
+    await acPlusRef.current.playPauseNSongs(fileNames);
+    setIsPlaying(acPlusRef.current.isPlaying);
+  };
+
+  const restart = async () => {
+    if (!acPlusRef.current.started) return;
+    acPlusRef.current.started = false;
+    // acPlusRef.current.AC.close();
+    // acPlusRef.current.audioBuffers = [];
+    playPauseSection();
+  };
+
+  const setPlayback = (value) => {
+    acPlusRef.current.pause();
+    acPlusRef.current.initNSongs(fileNames, value);
+
+    // let wasPlaying;
+    // if (acPlusRef.current.isPlaying) {
+    //   playPauseSection();
+    //   wasPlaying = true;
+    // }
+    // console.log("set play positon to: ", value);
+    // acPlusRef.current.setPlayPosition(value);
+    // if (wasPlaying) playPauseSection();
+  };
+
   React.useEffect(() => {
     const createBuffers = async () => {
-      // wait for raw audio to load before executing
+      // wait for raw audio to load before excuting
       if (!Object.keys(audioRawFiles).length) return;
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -55,10 +78,10 @@ export default function SectionColumn({
   }, [userId, projectId, sectionNumber, files, audioRawFiles]);
 
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const playSection = async () => {
-    await acPlusRef.current.playNSongs(files.map((x) => x.name));
-    setIsPlaying(acPlusRef.current.isPlaying);
-  };
+  // const playSection = async () => {
+  // await playPause();
+  // setIsPlaying(acPlusRef.current.isPlaying);
+  // };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -67,7 +90,8 @@ export default function SectionColumn({
           <Player
             title={`Section ${sectionNumber}`}
             isPlaying={isPlaying}
-            playOnClick={playSection}
+            restart={restart}
+            playOnClick={playPauseSection}
             setPlayback={setPlayback}
             disabled={disabled}
             duration={sectionDuration}
