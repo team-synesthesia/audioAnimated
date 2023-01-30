@@ -11,6 +11,9 @@ const Project = db.define("project", {
     allowNull: false,
     defaultValue: 0,
   },
+  sectionDuration: {
+    type: Sequelize.INTEGER,
+  },
   finalAudioFilePath: {
     type: Sequelize.TEXT,
   },

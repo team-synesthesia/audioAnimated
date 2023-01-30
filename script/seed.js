@@ -19,60 +19,61 @@ async function seed() {
     User.create({ username: "chris", password: "123" }),
   ]);
 
-  const projects = await Promise.all([
-    Project.create({ name: "project1" }),
-    Project.create({ name: "project2" }),
-  ]);
+  await Project.create({ name: "project1", sectionDuration: 37 });
+  await Project.create({ name: "project2" });
 
-  const sections = await Promise.all([
-    Section.create({ projectId: 1, sectionNumber: 1 }),
-    Section.create({ projectId: 1, sectionNumber: 2 }),
-    Section.create({ projectId: 1, sectionNumber: 3 }),
-    Section.create({ projectId: 2, sectionNumber: 1 }),
-    Section.create({ projectId: 2, sectionNumber: 2 }),
-  ]);
+  await Section.create({ projectId: 1, sectionNumber: 1 });
+  await Section.create({ projectId: 1, sectionNumber: 2 });
+  await Section.create({ projectId: 1, sectionNumber: 3 });
+  await Section.create({ projectId: 2, sectionNumber: 1 });
+  await Section.create({ projectId: 2, sectionNumber: 2 });
 
   const files = await Promise.all([
     File.create({
-      name: "file1",
-      filePath: "Cigarettes-In-Hell.ogg",
-      type: "ogg",
+      name: "rhythm1",
+      filePath: "seed_rhythm_AMaj_1_4_mystery_60bpm_8bars.mp3",
+      type: "mp3",
       sectionId: 1,
       userId: 1,
     }),
     File.create({
-      name: "file1",
-      filePath: "Cigarettes-In-Hell.ogg",
-      type: "ogg",
+      name: "rhythm1",
+      filePath: "seed_rhythm_AMaj_1_4_mystery_60bpm_8bars.mp3",
+      type: "mp3",
       sectionId: 2,
       userId: 1,
     }),
     File.create({
-      name: "file2",
-      filePath: "Cigarettes-In-Hell.ogg",
-      type: "ogg",
+      name: "bass1",
+      filePath: "seed_bass_AMaj_1_4_mystery_60bpm_8bars.mp3",
+      type: "mp3",
       sectionId: 2,
       userId: 1,
     }),
     File.create({
-      name: "file1",
-      filePath: "Cigarettes-In-Hell.ogg",
-      type: "ogg",
+      name: "rhythm1",
+      filePath: "seed_rhythm_AMaj_1_4_mystery_60bpm_8bars.mp3",
+      type: "mp3",
       sectionId: 3,
       userId: 1,
     }),
     File.create({
-      name: "file4",
-      filePath: "Cigarettes-In-Hell.ogg",
-      type: "ogg",
+      name: "bass1",
+      filePath: "seed_bass_AMaj_1_4_mystery_60bpm_8bars.mp3",
+      type: "mp3",
+      sectionId: 3,
+      userId: 1,
+    }),
+    File.create({
+      name: "lead1",
+      filePath: "seed_lead1_AMaj_1_4_mystery_60bpm_8bars.mp3",
+      type: "mp3",
       sectionId: 3,
       userId: 1,
     }),
   ]);
 
-  console.log(
-    `seeded ${users.length} users, ${projects.length} projects, ${sections.length} sections, and ${files.length} files`
-  );
+  console.log("seeded database");
 
   console.log(`seeded successfully`);
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Container } from "@mui/material";
@@ -24,7 +24,7 @@ const SingleProject = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (Object.keys(availableFiles).length) {
-        await dispatch(getFilesAsync({ availableFiles }));
+        await dispatch(getFilesAsync({ projectId, availableFiles }));
       }
     };
     fetchData();

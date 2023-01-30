@@ -1,11 +1,10 @@
 import { Container } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 
 import Sections from "./Sections";
 
 const LooperProject = ({ project, userId, projectId }) => {
-  const { sections } = project;
-  const sectionDuration = 30;
+  const { sections, sectionDuration } = project;
   return (
     <Container>
       <Sections
