@@ -120,7 +120,7 @@ class AudioContextPlus {
     source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
   }
 
-  async playNSongs(fileIds) {
+  async playNSongs(fileNames) {
     if (this.isPlaying) {
       this.isPlaying = false;
       await this.AC.suspend();
@@ -132,9 +132,9 @@ class AudioContextPlus {
     if (!this.started) {
       const startTime = this.AC.currentTime + 0.5;
       this.sources.length = 0; //reset the array
-      fileIds.forEach((fileId) => {
+      fileNames.forEach((fileName) => {
         const src = this.AC.createBufferSource();
-        src.buffer = this.audioBuffers[fileId];
+        src.buffer = this.audioBuffers[fileName];
         this.sources.push(src);
       });
 
