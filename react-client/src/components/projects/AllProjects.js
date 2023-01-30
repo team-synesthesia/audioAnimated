@@ -1,22 +1,16 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import {
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  CardActionArea,
-} from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { Container, Grid, Card, CardContent } from "@mui/material";
 
 import {
   fetchAllProjectsByUserIdAsync,
   createProjectAsync,
-  addProject,
 } from "../../features";
 
 const AllProjects = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userId = useSelector((state) => state.auth.me.id);
 
   useEffect(() => {
@@ -28,13 +22,14 @@ const AllProjects = () => {
 
   const projects = useSelector((state) => state.allProjects);
 
-  const addNewProject = () => {
+  const addNewProject = async () => {
     // This will be updated to use a form in the future where
     // the user will choose a project name
     const name = `Project ${projects.length + 1}`;
     ///
     ///
-    dispatch(createProjectAsync({ userId, name }));
+    const { payload } = await dispatch(createProjectAsync({ userId, name }));
+    navigate(`${payload.id}`);
   };
 
   return (
@@ -61,9 +56,9 @@ const AllProjects = () => {
               margin: "1rem",
             }}
           >
-            <CardActionArea onClick={addNewProject}>
-              <CardContent>Add a project</CardContent>
-            </CardActionArea>
+            <CardContent>
+              <div onClick={addNewProject}>Add a Project</div>
+            </CardContent>
           </Card>
         </Grid>
         {projects.length &&
