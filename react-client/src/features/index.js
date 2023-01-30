@@ -7,6 +7,7 @@ export {
 
 export {
   default as singleProjectReducer,
+  getFilesAsync,
   fetchSingleProjectAsync,
 } from "./projects/SingleProjectSlice";
 

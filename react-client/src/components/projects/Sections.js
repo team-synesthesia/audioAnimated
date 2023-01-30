@@ -7,7 +7,8 @@ import SectionColumn from "./SectionColumn";
 export default function Sections({
   sections,
   sectionDuration,
-  projectFileCount,
+  userId,
+  projectId,
 }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -16,9 +17,10 @@ export default function Sections({
           ? sections.map((section) => (
               <Grid key={section.id} item xs={1} md={3}>
                 <SectionColumn
+                  userId={userId}
+                  projectId={projectId}
                   files={section.files}
                   sectionDuration={sectionDuration}
-                  projectFileCount={projectFileCount}
                   sectionNumber={section.sectionNumber}
                 />
               </Grid>

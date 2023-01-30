@@ -7,13 +7,20 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 
 import ProgressSlider from "./ProgressSlider";
 
-export default function Player({ title, duration, setPlayback }) {
+export default function Player({
+  title,
+  duration,
+  playOnClick,
+  isPlaying,
+  disabled,
+  setPlayback,
+}) {
   const theme = useTheme();
-
   return (
     <Card sx={{ minWidth: 210, paddingLeft: "20px", paddingRight: "20px" }}>
       <Box
@@ -43,8 +50,16 @@ export default function Player({ title, duration, setPlayback }) {
                 <SkipPreviousIcon />
               )}
             </IconButton>
-            <IconButton aria-label="play/pause">
-              <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+            <IconButton
+              aria-label="play/pause"
+              onClick={playOnClick}
+              disabled={disabled}
+            >
+              {isPlaying ? (
+                <PauseIcon sx={{ height: 38, width: 38 }} />
+              ) : (
+                <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+              )}
             </IconButton>
             <IconButton aria-label="next">
               {theme.direction === "rtl" ? (
