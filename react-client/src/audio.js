@@ -85,7 +85,7 @@ class AudioContextPlus {
     this.canVisualize = input;
   }
 
-  async createAudioBuffers(data, audio, fileId) {
+  async createAudioBuffers(data, audio, filename) {
     //atob is base64 string to binary
     //formData PUT with an audio file runs btoa at some point
     const raw = window.atob(data);
@@ -97,21 +97,21 @@ class AudioContextPlus {
     for (let i = 0; i < raw.length; i++) {
       binaryData[i] = raw.charCodeAt(i);
     }
-    const blob = new Blob([binaryData], { type: "audio/mpeg" });
+
+    // const blob = new Blob([binaryData], { type: "audio/mpeg" });
 
     //we do not need the blob and regular audio elements if we
     //are sending the binary array buffers straight to audio context
     //this is just for playing around
-    const audioURL = window.URL.createObjectURL(blob);
-    audio.src = audioURL;
+    // const audioURL = window.URL.createObjectURL(blob);
+    // audio.src = audioURL;
 
     //here is the AudioContext way of doing things with sound...
 
     //wait for both with Promises.all at some point
-    const xxx = await this.AC.decodeAudioData(ab);
 
     // save them so we can use them later on button click
-    this.audioBuffers[fileId] = xxx;
+    this.audioBuffers[filename] = await this.AC.decodeAudioData(ab);
   }
 
   playSound(source, time, fudge) {

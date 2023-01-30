@@ -26,7 +26,10 @@ export default function SectionColumn({
   };
 
   const [disabled, setDisabled] = React.useState(true);
-  const acPlusRef = React.useRef(new AudioContextPlus());
+  const acPlusRef = React.useRef();
+  React.useEffect(() => {
+    if (!acPlusRef.current) acPlusRef.current = new AudioContextPlus();
+  }, []);
 
   React.useEffect(() => {
     const createBuffers = async () => {
@@ -36,12 +39,14 @@ export default function SectionColumn({
         const file = files[i];
         const fileName = file.name;
         const raw = audioRawFiles[file.name];
-        const audioId = `user_${userId}_project_${projectId}_section_${sectionNumber}_file_${fileName}`;
-        let audio = document.getElementById(audioId);
-        if (!audio) {
-          audio = document.createElement("audio");
-          audio.setAttribute("id", audioId);
-        }
+
+        // const audioId = `user_${userId}_project_${projectId}_section_${sectionNumber}_file_${fileName}`;
+        // let audio = document.getElementById(audioId);
+        // if (!audio) {
+        //   audio = document.createElement("audio");
+        //   audio.setAttribute("id", audioId);
+        // }
+        const audio = undefined;
         await acPlusRef.current.createAudioBuffers(raw, audio, fileName);
         setDisabled(false);
       }
