@@ -3,15 +3,16 @@ import axios from "axios";
 
 export const getFilesAsync = createAsyncThunk(
   "getFiles",
-  async ({ filenames }) => {
+  async ({ availableFiles }) => {
     try {
-      const dataArray = [];
-      for (let i = 0; i < filenames.length; i++) {
-        const filename = filenames[i];
-        const { data } = await axios.get(`/api/audiofiles/${filename}`);
-        dataArray.push(data);
+      const rawData = {};
+      for (const name in availableFiles) {
+        const file = availableFiles[name];
+        const filePath = file.filePath;
+        const { data } = await axios.get(`/api/audiofiles/${filePath}`);
+        rawData[name] = data;
       }
-      return dataArray;
+      return rawData;
     } catch (error) {
       console.log(error);
     }
@@ -49,21 +50,21 @@ export const singleProjectSlice = createSlice({
     name: null,
     type: null,
     sections: [],
-    availableFiles: [],
-    audioRawFiles: [],
+    availableFiles: {}, // de-duped, key is file.name
+    audioRawFiles: {}, // de-duped, key is file.name
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSingleProjectAsync.fulfilled, (state, action) => {
       const { id, name, type, sections } = action.payload;
 
-      const availableFiles = sections.reduce((a, section) => {
+      const availableFiles = {};
+      sections.forEach((section) => {
         section.files.forEach((file) => {
-          if (!a.map((x) => x.name).includes(file.name)) {
-            a.push(file);
+          if (!Object.keys(availableFiles).includes(file.name)) {
+            availableFiles[file.name] = file;
           }
         });
-        return a;
-      }, []);
+      });
 
       state.id = id;
       state.name = name;

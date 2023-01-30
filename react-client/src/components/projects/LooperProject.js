@@ -3,18 +3,16 @@ import React, { useEffect } from "react";
 
 import Sections from "./Sections";
 
-const LooperProject = ({ project, acPlusRef, disabled }) => {
-  const { availableFiles, sections } = project;
-  const projectFileCount = availableFiles.length;
+const LooperProject = ({ project, userId, projectId }) => {
+  const { sections } = project;
   const sectionDuration = 30;
   return (
     <Container>
       <Sections
         sections={sections}
-        acPlusRef={acPlusRef}
-        disabled={disabled}
         sectionDuration={sectionDuration}
-        projectFileCount={projectFileCount}
+        userId={userId}
+        projectId={projectId}
       />
     </Container>
   );
