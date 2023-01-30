@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
 import SectionColumn from "./SectionColumn";
+import AddNewSection from "./AddNewSection";
 
 export default function Sections({
   sections,
@@ -26,6 +27,7 @@ export default function Sections({
               </Grid>
             ))
           : null}
+        <AddNewSection projectId={projectId} />
       </Grid>
     </Box>
   );

@@ -57,7 +57,7 @@ const AllProjects = () => {
             }}
           >
             <CardContent>
-              <div onClick={addNewProject}>Add a Project</div>
+              <Link onClick={addNewProject}>Add a Project</Link>
             </CardContent>
           </Card>
         </Grid>

@@ -47,6 +47,18 @@ export const fetchSingleProjectAsync = createAsyncThunk(
   }
 );
 
+export const createSectionAsync = createAsyncThunk(
+  "createSection",
+  async (payload) => {
+    try {
+      const { data } = await axios.post("/api/sections/", payload);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 export const singleProjectSlice = createSlice({
   name: "singleProject",
   initialState: {
@@ -74,12 +86,17 @@ export const singleProjectSlice = createSlice({
       state.id = id;
       state.name = name;
       state.type = type;
-      state.sections = sections;
+      state.sections = sections.sort(
+        (a, b) => a.sectionNumber - b.sectionNumber
+      );
       state.sectionDuration = sectionDuration;
       state.availableFiles = availableFiles;
     });
     builder.addCase(getFilesAsync.fulfilled, (state, action) => {
       state.audioRawFiles = action.payload;
+    });
+    builder.addCase(createSectionAsync.fulfilled, (state, action) => {
+      state.sections.push(action.payload);
     });
   },
 });
