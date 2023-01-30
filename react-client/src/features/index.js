@@ -13,5 +13,6 @@ export {
 
 export {
   default as allProjectsReducer,
+  createProjectAsync,
   fetchAllProjectsByUserIdAsync,
 } from "./projects/AllProjectsSlice";

@@ -1,9 +1,19 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Container, Grid, Card, CardContent } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  CardActionArea,
+} from "@mui/material";
 
-import { fetchAllProjectsByUserIdAsync } from "../../features";
+import {
+  fetchAllProjectsByUserIdAsync,
+  createProjectAsync,
+  addProject,
+} from "../../features";
 
 const AllProjects = () => {
   const dispatch = useDispatch();
@@ -17,6 +27,15 @@ const AllProjects = () => {
   }, [dispatch, userId]);
 
   const projects = useSelector((state) => state.allProjects);
+
+  const addNewProject = () => {
+    // This will be updated to use a form in the future where
+    // the user will choose a project name
+    const name = `Project ${projects.length + 1}`;
+    ///
+    ///
+    dispatch(createProjectAsync({ userId, name }));
+  };
 
   return (
     <Container
@@ -42,7 +61,9 @@ const AllProjects = () => {
               margin: "1rem",
             }}
           >
-            <CardContent>Add a Project</CardContent>
+            <CardActionArea onClick={addNewProject}>
+              <CardContent>Add a project</CardContent>
+            </CardActionArea>
           </Card>
         </Grid>
         {projects.length &&
