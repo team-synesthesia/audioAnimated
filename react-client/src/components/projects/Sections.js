@@ -12,23 +12,24 @@ export default function Sections({
   projectId,
 }) {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={0} rows={12}>
-        {sections && sections.length
-          ? sections.map((section) => (
-              <Grid key={section.id} item xs={1} md={3}>
-                <SectionColumn
-                  userId={userId}
-                  projectId={projectId}
-                  files={section.files}
-                  sectionDuration={sectionDuration}
-                  sectionNumber={section.sectionNumber}
-                />
-              </Grid>
-            ))
-          : null}
-        <AddNewSection projectId={projectId} />
-      </Grid>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      {sections && sections.length
+        ? sections.map((section) => (
+            <SectionColumn
+              userId={userId}
+              projectId={projectId}
+              files={section.files}
+              sectionDuration={sectionDuration}
+              sectionNumber={section.sectionNumber}
+            />
+          ))
+        : null}
+      <AddNewSection projectId={projectId} />
     </Box>
   );
 }
