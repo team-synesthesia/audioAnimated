@@ -11,7 +11,8 @@ export {
   getFilesAsync,
   fetchSingleProjectAsync,
   addFileAsync,
-  deleteFileAsync
+  deleteFileAsync,
+  writeFileAsync,
 } from "./projects/SingleProjectSlice";
 
 export {

@@ -3,7 +3,11 @@ import { useDispatch } from "react-redux";
 
 import { Button } from "@mui/material";
 
-import { addFileAsync, fetchSingleProjectAsync } from "../../features";
+import {
+  addFileAsync,
+  fetchSingleProjectAsync,
+  writeFileAsync,
+} from "../../features";
 
 const FileUploadForm = (props) => {
   const { projectId, sectionId, userId, setUploadFormActive } = props;
@@ -29,6 +33,7 @@ const FileUploadForm = (props) => {
     };
 
     await dispatch(addFileAsync(formData));
+    await dispatch(writeFileAsync({ projectId, fileName: file.name, file }));
 
     const fileInput = document.querySelector("#fileInput");
     fileInput.value = "";

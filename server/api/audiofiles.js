@@ -1,10 +1,11 @@
 const fs = require("fs");
 const router = require("express").Router();
-const {
-  models: { File },
-} = require("../db");
+
 module.exports = router;
 require("dotenv").config();
+
+const multer = require("multer");
+const upload = multer();
 
 router.get("/", (req, res, next) => {
   const { projectId, filePath } = req.query;
@@ -12,7 +13,7 @@ router.get("/", (req, res, next) => {
     process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + filePath;
   fs.readFile(fullFilepath, { encoding: "base64" }, (err, data) => {
     if (err) {
-      console.log(err);
+      next(err);
       res.status(500).send("problem");
     } else {
       console.log("read file in");
@@ -21,20 +22,25 @@ router.get("/", (req, res, next) => {
   });
 });
 
-router.post("/", async (req, res, next) => {
-  try {
-    const newFile = await File.create(req.body);
-    res.status(201).send(newFile);
-  } catch (err) {
-    next(err);
-  }
-});
+router.post("/", upload.single("audiofile"), (req, res, next) => {
+  const { projectId, fileName } = req.query;
+  const file = req.file;
 
-router.delete("/:id", async (req, res, next) => {
+  const fullFilepath =
+    process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + fileName;
+
+  const folder = process.env.AUDIO_DATA_DIR + "/" + projectId;
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder);
+  }
   try {
-    const fileToDelete = await File.findByPk(req.params.id);
-    const deletedFile = await fileToDelete.destroy();
-    res.status(202).send(deletedFile);
+    fs.open(fullFilepath, "w+", (err, fd) => {
+      fs.writeFile(fd, file.buffer, (err) => {
+        fs.close(fd, (err) => {
+          res.status(201).send(`${fileName}`);
+        });
+      });
+    });
   } catch (err) {
     next(err);
   }
