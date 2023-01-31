@@ -82,13 +82,37 @@ export default function SectionColumn({
               </Grid>
             ))
           : null}
-        <Grid item xs={6} md={8}>
-          <Button onClick={() => setUploadFormActive(sectionNumber)}>
+        <Grid item xs={6} md={8} sx={{ display: "flex" }}>
+          <Button
+            type="button"
+            onClick={() => setUploadFormActive(sectionNumber)}
+          >
             Add a file
           </Button>
-          <FileUploadForm
-            sx={uploadFormActive === sectionNumber ? null : {display: "none"}}
-          />
+          {/* then connect it to post route via redux */}
+          <Button
+            size="small"
+            color="error"
+            onClick={() => setUploadFormActive(null)}
+            sx={
+              sectionNumber !== uploadFormActive
+                ? { display: "none" }
+                : { display: "block" }
+            }
+          >
+            X
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={6}
+          sx={
+            sectionNumber !== uploadFormActive
+              ? { display: "none" }
+              : { display: "block" }
+          }
+        >
+          <FileUploadForm projectId={projectId} />
         </Grid>
       </Grid>
     </Box>
