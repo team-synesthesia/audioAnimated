@@ -9,16 +9,30 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
-import ProgressSlider from "./ProgressSlider";
+import { styled } from "@mui/material/styles";
+const TinyText = styled(Typography)({
+  fontSize: "1.0rem",
+  opacity: 0.38,
+  fontWeight: 500,
+  letterSpacing: 0.2,
+});
+
+function formatDuration(value) {
+  const minute = Math.floor(value / 60);
+  const secondLeft = value - minute * 60;
+  return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`;
+}
 
 export default function Player({
   title,
+  currentTime,
   duration,
   playOnClick,
+  restartOnClick,
   isPlaying,
   disabled,
-  setPlayback,
 }) {
   const theme = useTheme();
   return (
@@ -34,7 +48,6 @@ export default function Player({
             {title}
           </Typography>
         </CardContent>
-        <ProgressSlider setPlayback={setPlayback} duration={duration} />
         <Box
           sx={{
             display: "flex",
@@ -42,14 +55,15 @@ export default function Player({
             alignItems: "center",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-            <IconButton aria-label="previous">
-              {theme.direction === "rtl" ? (
-                <SkipNextIcon />
-              ) : (
-                <SkipPreviousIcon />
-              )}
-            </IconButton>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              borderRadius: "25px",
+              border: "1px solid grey",
+              paddingRight: "15px",
+            }}
+          >
             <IconButton
               aria-label="play/pause"
               onClick={playOnClick}
@@ -60,6 +74,13 @@ export default function Player({
               ) : (
                 <PlayArrowIcon sx={{ height: 38, width: 38 }} />
               )}
+            </IconButton>
+            <TinyText>{formatDuration(Math.round(currentTime))}</TinyText>
+            <TinyText>{"/" + formatDuration(Math.round(duration))}</TinyText>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
+            <IconButton aria-label="restart" onClick={restartOnClick}>
+              <RestartAltIcon />
             </IconButton>
             <IconButton aria-label="next">
               {theme.direction === "rtl" ? (
