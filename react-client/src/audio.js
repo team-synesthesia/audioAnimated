@@ -154,8 +154,6 @@ class AudioContextPlus {
       } else {
         this.sources[0].onended = onEndCallback;
       }
-      // return max duration
-      return durations[idx];
     }
   }
 }

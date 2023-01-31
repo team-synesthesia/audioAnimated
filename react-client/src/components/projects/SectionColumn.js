@@ -20,6 +20,14 @@ export default function SectionColumn({
   );
 
   const [disabled, setDisabled] = React.useState(true);
+  const [currentTime, setCurrentTime] = React.useState(0);
+  const [timeSnapshot, setTimeSnapshot] = React.useState(0);
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [intervalId, setIntervalId] = React.useState(0);
+  const [ended, setEnded] = React.useState(0);
+  const [restart, setRestart] = React.useState(false);
+  const [duration, setDuration] = React.useState(sectionDuration);
+
   const acPlusRef = React.useRef();
   React.useEffect(() => {
     if (!acPlusRef.current) acPlusRef.current = new AudioContextPlus();
@@ -42,31 +50,34 @@ export default function SectionColumn({
         // }
         const audio = undefined;
         await acPlusRef.current.createAudioBuffers(raw, audio, fileName);
-        setDisabled(false);
       }
+      setDisabled(false);
     };
     createBuffers();
   }, [userId, projectId, sectionNumber, files, audioRawFiles]);
 
-  const [currentTime, setCurrentTime] = React.useState(0);
-  const [timeSnapshot, setTimeSnapshot] = React.useState(0);
-  const [isPlaying, setIsPlaying] = React.useState(false);
-  const [intervalId, setIntervalId] = React.useState(0);
-  const [ended, setEnded] = React.useState(0);
-  const [restart, setRestart] = React.useState(false);
-  const [duration, setDuration] = React.useState(sectionDuration);
+  React.useEffect(() => {
+    const getDuration = () => {
+      if (!disabled) {
+        const buffers = Object.values(acPlusRef.current.audioBuffers);
+        const durations = buffers.map((x) => x.duration);
+        const max = Math.max(...durations);
+        console.log(max);
+        setDuration(max);
+      }
+    };
+    getDuration();
+  }, [disabled]);
 
   const playSection = React.useCallback(async () => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
     }
-    const maxDuration = await acPlusRef.current.playNSongs(
+    await acPlusRef.current.playNSongs(
       files.map((x) => x.name),
       onEndCallback
     );
-    if (maxDuration) setDuration(maxDuration);
-
     setIsPlaying(acPlusRef.current.isPlaying);
   }, [ended, files]);
 
