@@ -30,17 +30,20 @@ const FileUploadForm = (props) => {
 
     await dispatch(addFileAsync(formData));
 
+    const fileInput = document.querySelector("#fileInput");
+    fileInput.value = "";
     setName("");
     setFile({});
     setUploadFormActive(null);
     // if we want no refresh, use this instead
     dispatch(fetchSingleProjectAsync({ projectId }));
+    // also need to dispatch the file get request
   };
 
   return (
     <div>
       <form onSubmit={handleFormSubmit}>
-        <label htmlFor="name">File Name: </label>
+        <label htmlFor="name">File Label: </label>
         <input
           name="name"
           value={name}
@@ -49,6 +52,7 @@ const FileUploadForm = (props) => {
         />
         <label htmlFor="filePath">File: </label>
         <input
+          id="fileInput"
           type="file"
           accept=".ogg, .mp3"
           name="file"
