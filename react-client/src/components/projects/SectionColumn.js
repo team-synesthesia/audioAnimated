@@ -1,12 +1,12 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import { Box, Grid, Button } from "@mui/material";
 
 import AudioContextPlus from "../../audio";
 import { useSelector } from "react-redux";
 
 import FileCard from "./FileCard";
 import Player from "./Player";
+import { FileUploadForm } from "../";
 
 export default function SectionColumn({
   userId,
@@ -14,6 +14,7 @@ export default function SectionColumn({
   files,
   sectionDuration,
   sectionNumber,
+  sectionId,
 }) {
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
@@ -138,6 +139,8 @@ export default function SectionColumn({
     setLoop(!loop);
   };
 
+  const [uploadFormActive, setUploadFormActive] = React.useState(null);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -157,10 +160,47 @@ export default function SectionColumn({
         {files && files.length
           ? files.map((file) => (
               <Grid key={file.id} item xs={6} md={8}>
-                <FileCard file={file} />
+                <FileCard file={file} projectId={projectId} />
               </Grid>
             ))
           : null}
+        <Grid item xs={6} md={8} sx={{ display: "flex" }}>
+          <Button
+            type="button"
+            onClick={() => setUploadFormActive(sectionNumber)}
+          >
+            Add a file
+          </Button>
+          {/* then connect it to post route via redux */}
+          <Button
+            size="small"
+            color="error"
+            onClick={() => setUploadFormActive(null)}
+            sx={
+              sectionNumber !== uploadFormActive
+                ? { display: "none" }
+                : { display: "block" }
+            }
+          >
+            X
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={6}
+          sx={
+            sectionNumber !== uploadFormActive
+              ? { display: "none" }
+              : { display: "block" }
+          }
+        >
+          <FileUploadForm
+            projectId={projectId}
+            userId={userId}
+            sectionId={sectionId}
+            setUploadFormActive={setUploadFormActive}
+          />
+        </Grid>
       </Grid>
     </Box>
   );

@@ -28,7 +28,7 @@ const SingleProject = () => {
       }
     };
     fetchData();
-  }, [dispatch, availableFiles]);
+  }, [dispatch, projectId, availableFiles]);
 
   return (
     <Container>

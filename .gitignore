@@ -8,3 +8,4 @@ package-lock.json
 *.mp3
 *.ogg
 .env
+audioFiles

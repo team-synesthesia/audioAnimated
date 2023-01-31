@@ -35,6 +35,42 @@ export const getFileAsync = createAsyncThunk(
   }
 );
 
+export const writeFileAsync = createAsyncThunk(
+  "writeFile",
+  async ({ projectId, fileName, file }) => {
+    try {
+      const formData = new FormData();
+      formData.append("audiofile", file);
+      const { data } = await axios.post("/api/audiofiles/", formData, {
+        params: { projectId, fileName },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
+  try {
+    const { data } = await axios.post("/api/files/", formData);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+export const deleteFileAsync = createAsyncThunk("deleteFile", async (id) => {
+  try {
+    await axios.delete(`/api/files/${id}`);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
   async ({ projectId }) => {
