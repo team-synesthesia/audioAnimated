@@ -95,16 +95,9 @@ export const singleProjectSlice = createSlice({
       state.sectionDuration = sectionDuration;
       state.availableFiles = availableFiles;
     });
-    builder
-      .addCase(getFilesAsync.fulfilled, (state, action) => {
-        state.audioRawFiles = action.payload;
-      })
-      .addCase(addFileAsync.fulfilled, (state, action) => {
-        return action.payload;
-      })
-      .addCase(deleteFileAsync.fulfilled, (state, action) => {
-        return action.payload;
-      });
+    builder.addCase(getFilesAsync.fulfilled, (state, action) => {
+      state.audioRawFiles = action.payload;
+    });
   },
 });
 
