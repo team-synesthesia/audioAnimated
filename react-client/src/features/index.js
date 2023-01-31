@@ -7,6 +7,7 @@ export {
 
 export {
   default as singleProjectReducer,
+  createSectionAsync,
   getFilesAsync,
   fetchSingleProjectAsync,
   addFileAsync,
@@ -15,5 +16,6 @@ export {
 
 export {
   default as allProjectsReducer,
+  createProjectAsync,
   fetchAllProjectsByUserIdAsync,
 } from "./projects/AllProjectsSlice";

@@ -3,6 +3,7 @@ module.exports = router;
 
 router.use("/users", require("./users"));
 router.use("/projects", require("./projects"));
+router.use("/sections", require("./sections"));
 router.use("/audiofiles", require("./audiofiles"));
 
 router.use((req, res, next) => {

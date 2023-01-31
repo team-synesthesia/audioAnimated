@@ -20,13 +20,16 @@ export default function SectionColumn({
     (state) => state.singleProject.audioRawFiles
   );
 
-  const setPlayback = (value) => {
-    // Need to adjust AC current position in this fn
-    // need to figure that out
-    // acPlusRef.current.currentTime = value;
-  };
-
   const [disabled, setDisabled] = React.useState(true);
+  const [currentTime, setCurrentTime] = React.useState(0);
+  const [timeSnapshot, setTimeSnapshot] = React.useState(0);
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [intervalId, setIntervalId] = React.useState(0);
+  const [ended, setEnded] = React.useState(0);
+  const [restart, setRestart] = React.useState(false);
+  const [duration, setDuration] = React.useState(sectionDuration);
+  const [loop, setLoop] = React.useState(false);
+
   const acPlusRef = React.useRef();
   React.useEffect(() => {
     if (!acPlusRef.current) acPlusRef.current = new AudioContextPlus();
@@ -49,16 +52,91 @@ export default function SectionColumn({
         // }
         const audio = undefined;
         await acPlusRef.current.createAudioBuffers(raw, audio, fileName);
-        setDisabled(false);
       }
+      setDisabled(false);
     };
     createBuffers();
   }, [userId, projectId, sectionNumber, files, audioRawFiles]);
 
-  const [isPlaying, setIsPlaying] = React.useState(false);
-  const playSection = async () => {
-    await acPlusRef.current.playNSongs(files.map((x) => x.name));
+  React.useEffect(() => {
+    const getDuration = () => {
+      if (!disabled) {
+        const buffers = Object.values(acPlusRef.current.audioBuffers);
+        const durations = buffers.map((x) => x.duration);
+        const max = Math.max(...durations);
+        setDuration(max);
+      }
+    };
+    getDuration();
+  }, [disabled]);
+
+  const playSection = React.useCallback(async () => {
+    if (ended) {
+      setTimeSnapshot(acPlusRef.current.AC.currentTime);
+      setEnded(false);
+    }
+    await acPlusRef.current.playNSongs(
+      files.map((x) => x.name),
+      onEndCallback
+    );
     setIsPlaying(acPlusRef.current.isPlaying);
+  }, [ended, files]);
+
+  const onEndCallback = () => {
+    setEnded(true);
+  };
+
+  React.useEffect(() => {
+    if (ended) {
+      setTimeSnapshot(acPlusRef.current.AC.currentTime);
+      setCurrentTime(0);
+      clearInterval(intervalId);
+      setIntervalId(0);
+      setIsPlaying(false);
+
+      acPlusRef.current.started = false;
+      acPlusRef.current.isPlaying = false;
+
+      if (restart | loop) {
+        playSection();
+        setRestart(false);
+      }
+    }
+  }, [intervalId, ended, playSection, restart, loop]);
+
+  // Set the current time to display time passed on playback
+  React.useEffect(() => {
+    const playbackStarted = isPlaying;
+    if (!playbackStarted) {
+      clearInterval(intervalId);
+      setIntervalId(0);
+    }
+    if (playbackStarted & (intervalId === 0)) {
+      const id = setInterval(function () {
+        if (acPlusRef.current) {
+          const time = acPlusRef.current.AC.currentTime;
+          const position = time - timeSnapshot;
+          setCurrentTime(position);
+        }
+      }, 1000);
+      setIntervalId(id);
+    }
+  }, [isPlaying, intervalId, timeSnapshot, sectionDuration]);
+
+  const restartOnClick = () => {
+    if (!isPlaying) {
+      playSection();
+      return;
+    }
+    acPlusRef.current.sources.forEach((source) => {
+      source.stop();
+      source.disconnect();
+    });
+    setRestart(true);
+  };
+
+  const toggleLoop = () => {
+    setLoop(!loop);
   };
 
   const [uploadFormActive, setUploadFormActive] = React.useState(null);
@@ -70,10 +148,13 @@ export default function SectionColumn({
           <Player
             title={`Section ${sectionNumber}`}
             isPlaying={isPlaying}
+            currentTime={currentTime}
             playOnClick={playSection}
-            setPlayback={setPlayback}
+            restartOnClick={restartOnClick}
             disabled={disabled}
-            duration={sectionDuration}
+            duration={duration}
+            loop={loop}
+            toggleLoop={toggleLoop}
           />
         </Grid>
         {files && files.length
