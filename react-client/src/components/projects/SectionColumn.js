@@ -27,6 +27,7 @@ export default function SectionColumn({
   const [ended, setEnded] = React.useState(0);
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(sectionDuration);
+  const [loop, setLoop] = React.useState(false);
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
@@ -95,12 +96,12 @@ export default function SectionColumn({
       acPlusRef.current.started = false;
       acPlusRef.current.isPlaying = false;
 
-      if (restart) {
+      if (restart | loop) {
         playSection();
         setRestart(false);
       }
     }
-  }, [intervalId, ended, playSection, restart]);
+  }, [intervalId, ended, playSection, restart, loop]);
 
   // Set the current time to display time passed on playback
   React.useEffect(() => {
@@ -133,7 +134,6 @@ export default function SectionColumn({
     setRestart(true);
   };
 
-  const [loop, setLoop] = React.useState(false);
   const toggleLoop = () => {
     setLoop(!loop);
   };
