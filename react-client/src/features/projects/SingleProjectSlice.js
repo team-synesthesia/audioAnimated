@@ -44,6 +44,14 @@ export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
   }
 });
 
+export const deleteFileAsync = createAsyncThunk("deleteFile", async (id) => {
+  try {
+    await axios.delete(`/api/audiofiles/${id}`);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
   async ({ projectId }) => {
@@ -92,8 +100,10 @@ export const singleProjectSlice = createSlice({
         state.audioRawFiles = action.payload;
       })
       .addCase(addFileAsync.fulfilled, (state, action) => {
-        // update state to add file to proper section
-        console.log(state.sections);
+        return action.payload;
+      })
+      .addCase(deleteFileAsync.fulfilled, (state, action) => {
+        return action.payload;
       });
   },
 });

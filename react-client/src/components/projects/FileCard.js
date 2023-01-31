@@ -5,7 +5,16 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-export default function FileCard({ file }) {
+import { useDispatch } from "react-redux";
+import { deleteFileAsync, fetchSingleProjectAsync } from "../../features";
+
+export default function FileCard({ file, projectId }) {
+  const dispatch = useDispatch();
+  const handleDelete = async (id) => {
+    await dispatch(deleteFileAsync(id));
+    dispatch(fetchSingleProjectAsync({ projectId }));
+  };
+
   return (
     <Card sx={{ minWidth: 250 }}>
       <CardContent>
@@ -22,6 +31,15 @@ export default function FileCard({ file }) {
       </CardContent>
       <CardActions>
         <Button size="small">Learn More</Button>
+      </CardActions>
+      <CardActions>
+        <Button
+          type="button"
+          size="small"
+          onClick={() => handleDelete(file.id)}
+        >
+          Delete
+        </Button>
       </CardActions>
     </Card>
   );

@@ -3,17 +3,18 @@ import { useDispatch } from "react-redux";
 
 import { Button } from "@mui/material";
 
-import { addFileAsync } from "../../features";
+import { addFileAsync, fetchSingleProjectAsync } from "../../features";
 
 const FileUploadForm = (props) => {
-  const { projectId, sectionId } = props;
+  const { projectId, sectionId, userId, setUploadFormActive } = props;
 
   const [name, setName] = useState("");
   const [file, setFile] = useState({});
 
   const dispatch = useDispatch();
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
+    // if we want refresh, remove this line
     e.preventDefault();
 
     // access to file via file variable
@@ -21,16 +22,19 @@ const FileUploadForm = (props) => {
 
     const formData = {
       name,
-      fileName: file.name,
+      filePath: file.name,
       type: file.name.slice(-3),
-      projectId,
       sectionId,
+      userId,
     };
 
-    dispatch(addFileAsync(formData));
+    await dispatch(addFileAsync(formData));
 
     setName("");
-    setFile("");
+    setFile({});
+    setUploadFormActive(null);
+    // if we want no refresh, use this instead
+    dispatch(fetchSingleProjectAsync({ projectId }));
   };
 
   return (

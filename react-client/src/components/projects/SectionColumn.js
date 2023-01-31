@@ -79,7 +79,7 @@ export default function SectionColumn({
         {files && files.length
           ? files.map((file) => (
               <Grid key={file.id} item xs={6} md={8}>
-                <FileCard file={file} />
+                <FileCard file={file} projectId={projectId} />
               </Grid>
             ))
           : null}
@@ -113,7 +113,12 @@ export default function SectionColumn({
               : { display: "block" }
           }
         >
-          <FileUploadForm projectId={projectId} sectionId={sectionId} />
+          <FileUploadForm
+            projectId={projectId}
+            userId={userId}
+            sectionId={sectionId}
+            setUploadFormActive={setUploadFormActive}
+          />
         </Grid>
       </Grid>
     </Box>

@@ -24,8 +24,18 @@ router.get("/", (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const newFile = await File.create(req.body);
-    res.status(201).send(newProduct);
+    res.status(201).send(newFile);
   } catch (err) {
-    console.error(err);
+    next(err);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const fileToDelete = await File.findByPk(req.params.id);
+    const deletedFile = await fileToDelete.destroy();
+    res.status(202).send(deletedFile);
+  } catch (err) {
+    next(err);
   }
 });

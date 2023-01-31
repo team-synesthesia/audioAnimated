@@ -10,6 +10,7 @@ export {
   getFilesAsync,
   fetchSingleProjectAsync,
   addFileAsync,
+  deleteFileAsync
 } from "./projects/SingleProjectSlice";
 
 export {
