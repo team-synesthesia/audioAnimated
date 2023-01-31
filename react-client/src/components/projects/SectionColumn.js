@@ -62,7 +62,6 @@ export default function SectionColumn({
         const buffers = Object.values(acPlusRef.current.audioBuffers);
         const durations = buffers.map((x) => x.duration);
         const max = Math.max(...durations);
-        console.log(max);
         setDuration(max);
       }
     };
@@ -123,6 +122,10 @@ export default function SectionColumn({
   }, [isPlaying, intervalId, timeSnapshot, sectionDuration]);
 
   const restartOnClick = () => {
+    if (!isPlaying) {
+      playSection();
+      return;
+    }
     acPlusRef.current.sources.forEach((source) => {
       source.stop();
       source.disconnect();

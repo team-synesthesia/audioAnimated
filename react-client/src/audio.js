@@ -149,7 +149,6 @@ class AudioContextPlus {
       const durations = this.sources.map((x) => x.buffer.duration);
       const idx = durations.indexOf(Math.max(...durations));
       if (idx !== -1) {
-        console.log(idx, "idx");
         this.sources[idx].onended = onEndCallback;
       } else {
         this.sources[0].onended = onEndCallback;
