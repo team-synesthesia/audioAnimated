@@ -21,7 +21,12 @@ export default function AddNewSection({ projectId }) {
       <Grid container spacing={2}>
         <Grid item xs={6} md={8}>
           <Card
-            sx={{ minWidth: 210, paddingLeft: "20px", paddingRight: "20px" }}
+            sx={{
+              minWidth: 210,
+              minHeight: 180,
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
           >
             <CardActionArea onClick={addNewSection}>
               <CardContent sx={{ flex: "1 0 auto" }}>
@@ -31,7 +36,7 @@ export default function AddNewSection({ projectId }) {
                 <Box display="flex" alignItems="center" justifyContent="center">
                   <AddRoundedIcon
                     sx={{
-                      fontSize: "75px",
+                      fontSize: "6.0em",
                       marginTop: "10px",
                       marginBottom: "10px",
                     }}
