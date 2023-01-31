@@ -14,6 +14,7 @@ export default function SectionColumn({
   files,
   sectionDuration,
   sectionNumber,
+  sectionId,
 }) {
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
@@ -112,7 +113,7 @@ export default function SectionColumn({
               : { display: "block" }
           }
         >
-          <FileUploadForm projectId={projectId} />
+          <FileUploadForm projectId={projectId} sectionId={sectionId} />
         </Grid>
       </Grid>
     </Box>

@@ -35,6 +35,15 @@ export const getFileAsync = createAsyncThunk(
   }
 );
 
+export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
+  try {
+    const { data } = await axios.post("/api/audiofiles/", formData);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
   async ({ projectId }) => {
@@ -78,9 +87,14 @@ export const singleProjectSlice = createSlice({
       state.sectionDuration = sectionDuration;
       state.availableFiles = availableFiles;
     });
-    builder.addCase(getFilesAsync.fulfilled, (state, action) => {
-      state.audioRawFiles = action.payload;
-    });
+    builder
+      .addCase(getFilesAsync.fulfilled, (state, action) => {
+        state.audioRawFiles = action.payload;
+      })
+      .addCase(addFileAsync.fulfilled, (state, action) => {
+        // update state to add file to proper section
+        console.log(state.sections);
+      });
   },
 });
 

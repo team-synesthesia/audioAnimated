@@ -1,27 +1,36 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { Button } from "@mui/material";
 
+import { addFileAsync } from "../../features";
+
 const FileUploadForm = (props) => {
-  const { projectId } = props;
+  const { projectId, sectionId } = props;
 
   const [name, setName] = useState("");
-  const [filePath, setFilePath] = useState("");
-  const [type, setType] = useState("");
+  const [file, setFile] = useState({});
+
+  const dispatch = useDispatch();
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    // send this to redux
-    // const formData = {name, filePath, type, projectId, sectionId}
-    console.log(name, filePath, type, projectId);
-    // where to get sectionId?
-    // filePath must be cleaned up
-    // should I make a new redux state for files??? state gets super complicated in singleProjectSlice
+    // access to file via file variable
+    // console.log(file);
+
+    const formData = {
+      name,
+      fileName: file.name,
+      type: file.name.slice(-3),
+      projectId,
+      sectionId,
+    };
+
+    dispatch(addFileAsync(formData));
 
     setName("");
-    setFilePath("");
-    setType("");
+    setFile("");
   };
 
   return (
@@ -32,20 +41,15 @@ const FileUploadForm = (props) => {
           name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
         <label htmlFor="filePath">File: </label>
         <input
           type="file"
           accept=".ogg, .mp3"
-          name="filePath"
-          value={filePath}
-          onChange={(e) => setFilePath(e.target.value)}
-        />
-        <label htmlFor="type">File Type: </label>
-        <input
-          name="type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
+          name="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          required
         />
         <Button type="submit">Submit</Button>
       </form>

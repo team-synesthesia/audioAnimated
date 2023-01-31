@@ -9,6 +9,7 @@ export {
   default as singleProjectReducer,
   getFilesAsync,
   fetchSingleProjectAsync,
+  addFileAsync,
 } from "./projects/SingleProjectSlice";
 
 export {

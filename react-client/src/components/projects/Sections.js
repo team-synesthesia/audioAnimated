@@ -22,6 +22,7 @@ export default function Sections({
                   files={section.files}
                   sectionDuration={sectionDuration}
                   sectionNumber={section.sectionNumber}
+                  sectionId={section.id}
                 />
               </Grid>
             ))
