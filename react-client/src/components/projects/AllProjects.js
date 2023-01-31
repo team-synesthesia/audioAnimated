@@ -57,7 +57,12 @@ const AllProjects = () => {
             }}
           >
             <CardContent>
-              <Link onClick={addNewProject}>Add a Project</Link>
+              <Container
+                sx={{ "div:hover": { cursor: "pointer" } }}
+                onClick={addNewProject}
+              >
+                <div>Add a Project</div>
+              </Container>
             </CardContent>
           </Card>
         </Grid>
