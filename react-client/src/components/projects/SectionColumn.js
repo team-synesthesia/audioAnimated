@@ -52,11 +52,45 @@ export default function SectionColumn({
   const [timeSnapshot, setTimeSnapshot] = React.useState(0);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [intervalId, setIntervalId] = React.useState(0);
+  const [ended, setEnded] = React.useState(0);
+  const [restart, setRestart] = React.useState(false);
+  const [duration, setDuration] = React.useState(sectionDuration);
 
-  const playSection = async () => {
-    await acPlusRef.current.playNSongs(files.map((x) => x.name));
+  const playSection = React.useCallback(async () => {
+    if (ended) {
+      setTimeSnapshot(acPlusRef.current.AC.currentTime);
+      setEnded(false);
+    }
+    const maxDuration = await acPlusRef.current.playNSongs(
+      files.map((x) => x.name),
+      onEndCallback
+    );
+    if (maxDuration) setDuration(maxDuration);
+
     setIsPlaying(acPlusRef.current.isPlaying);
+  }, [ended, files]);
+
+  const onEndCallback = () => {
+    setEnded(true);
   };
+
+  React.useEffect(() => {
+    if (ended) {
+      setTimeSnapshot(acPlusRef.current.AC.currentTime);
+      setCurrentTime(0);
+      clearInterval(intervalId);
+      setIntervalId(0);
+      setIsPlaying(false);
+
+      acPlusRef.current.started = false;
+      acPlusRef.current.isPlaying = false;
+
+      if (restart) {
+        playSection();
+        setRestart(false);
+      }
+    }
+  }, [intervalId, ended, playSection, restart]);
 
   // Set the current time to display time passed on playback
   React.useEffect(() => {
@@ -65,7 +99,6 @@ export default function SectionColumn({
       clearInterval(intervalId);
       setIntervalId(0);
     }
-
     if (playbackStarted & (intervalId === 0)) {
       const id = setInterval(function () {
         if (acPlusRef.current) {
@@ -76,20 +109,19 @@ export default function SectionColumn({
       }, 1000);
       setIntervalId(id);
     }
-  }, [isPlaying, intervalId, timeSnapshot]);
+  }, [isPlaying, intervalId, timeSnapshot, sectionDuration]);
 
   const restartOnClick = () => {
-    setTimeSnapshot(acPlusRef.current.AC.currentTime);
     acPlusRef.current.sources.forEach((source) => {
       source.stop();
       source.disconnect();
     });
-    acPlusRef.current.started = false;
-    acPlusRef.current.isPlaying = false;
-    setIsPlaying(false);
-    playSection();
-    setCurrentTime(0);
-    clearInterval(intervalId);
+    setRestart(true);
+  };
+
+  const [loop, setLoop] = React.useState(false);
+  const toggleLoop = () => {
+    setLoop(!loop);
   };
 
   return (
@@ -103,7 +135,9 @@ export default function SectionColumn({
             playOnClick={playSection}
             restartOnClick={restartOnClick}
             disabled={disabled}
-            duration={sectionDuration}
+            duration={duration}
+            loop={loop}
+            toggleLoop={toggleLoop}
           />
         </Grid>
         {files && files.length

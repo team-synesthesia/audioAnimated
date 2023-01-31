@@ -20,6 +20,7 @@ export default function Sections({
       {sections && sections.length
         ? sections.map((section) => (
             <SectionColumn
+              key={section.id}
               userId={userId}
               projectId={projectId}
               files={section.files}

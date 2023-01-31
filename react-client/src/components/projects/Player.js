@@ -10,6 +10,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import LoopIcon from "@mui/icons-material/Loop";
 
 import { styled } from "@mui/material/styles";
 const TinyText = styled(Typography)({
@@ -33,6 +34,8 @@ export default function Player({
   restartOnClick,
   isPlaying,
   disabled,
+  toggleLoop,
+  loop,
 }) {
   const theme = useTheme();
   return (
@@ -62,6 +65,7 @@ export default function Player({
               borderRadius: "25px",
               border: "1px solid grey",
               paddingRight: "15px",
+              margin: "5px",
             }}
           >
             <IconButton
@@ -82,12 +86,8 @@ export default function Player({
             <IconButton aria-label="restart" onClick={restartOnClick}>
               <RestartAltIcon />
             </IconButton>
-            <IconButton aria-label="next">
-              {theme.direction === "rtl" ? (
-                <SkipPreviousIcon />
-              ) : (
-                <SkipNextIcon />
-              )}
+            <IconButton aria-label="loop" onClick={toggleLoop}>
+              {loop ? <LoopIcon sx={{ color: "lightgreen" }} /> : <LoopIcon />}
             </IconButton>
           </Box>
         </Box>

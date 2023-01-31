@@ -120,7 +120,7 @@ class AudioContextPlus {
     source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
   }
 
-  async playNSongs(fileNames) {
+  async playNSongs(fileNames, onEndCallback) {
     if (this.isPlaying) {
       this.isPlaying = false;
       await this.AC.suspend();
@@ -142,6 +142,20 @@ class AudioContextPlus {
         this.playSound(source, startTime, 0);
       });
       this.started = true;
+
+      // if tracks have duration info then put on end callback
+      // on the track with the longest duration, otherwise just
+      // use the first track
+      const durations = this.sources.map((x) => x.buffer.duration);
+      const idx = durations.indexOf(Math.max(...durations));
+      if (idx !== -1) {
+        console.log(idx, "idx");
+        this.sources[idx].onended = onEndCallback;
+      } else {
+        this.sources[0].onended = onEndCallback;
+      }
+      // return max duration
+      return durations[idx];
     }
   }
 }
