@@ -57,7 +57,7 @@ router.get("/:id", async (req, res, next) => {
       include: [
         {
           model: Section,
-          order: "createdAt",
+          order: "id",
           include: { model: File, order: "id" },
         },
       ],
