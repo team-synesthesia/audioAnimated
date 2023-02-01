@@ -1,10 +1,8 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -12,52 +10,13 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Container from "@mui/material/Container";
+import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 
 const drawerWidth = 240;
 
 export default function PermanentDrawerLeft() {
   return (
     <Box sx={{ display: "flex" }}>
-      {/* <CssBaseline />
-      <Toolbar>
-        <Box
-          sx={{
-            bgcolor: "background.paper",
-            pt: 8,
-            pb: 6,
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              Your Projects
-            </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="text.secondary"
-              paragraph
-            >
-              Some inspiring writing here about what they can create...
-            </Typography>
-            <Stack
-              sx={{ pt: 4 }}
-              direction="row"
-              spacing={2}
-              justifyContent="center"
-            ></Stack>
-          </Container>
-        </Box>
-      </Toolbar> */}
       <Drawer
         sx={{
           width: drawerWidth,
@@ -73,6 +32,15 @@ export default function PermanentDrawerLeft() {
         <Toolbar />
         <Divider />
         <List>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <BubbleChartIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Graphics Fn"} />
+            </ListItemButton>
+          </ListItem>
+
           {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton>
