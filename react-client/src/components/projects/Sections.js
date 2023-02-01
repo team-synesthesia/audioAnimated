@@ -13,6 +13,7 @@ export default function Sections({
   return (
     <Box
       sx={{
+        marginLeft: "270px",
         display: "flex",
         flexDirection: "row",
       }}

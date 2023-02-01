@@ -10,7 +10,6 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +34,7 @@ export default function AllProjects() {
   };
 
   return (
-    <Container>
+    <Container sx={{ marginTop: "30px" }}>
       <CssBaseline />
       {/* Hero unit */}
       <Box

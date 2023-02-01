@@ -42,7 +42,7 @@ function ResponsiveAppBar({
   };
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="fixed" sx={{ zIndex: 2000 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AudiotrackIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
