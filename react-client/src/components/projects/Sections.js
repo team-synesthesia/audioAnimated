@@ -12,7 +12,6 @@ export default function Sections({
 }) {
   return (
     <Box
-      id="asdf"
       sx={{
         display: "flex",
         flexDirection: "row",
