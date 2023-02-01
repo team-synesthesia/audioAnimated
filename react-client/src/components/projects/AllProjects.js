@@ -1,24 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Card, CardContent } from "@mui/material";
 
-import {
-  fetchAllProjectsByUserIdAsync,
-  createProjectAsync,
-} from "../../features";
+import { createProjectAsync } from "../../features";
 
 const AllProjects = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth.me.id);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchAllProjectsByUserIdAsync(userId));
-    };
-    fetchData();
-  }, [dispatch, userId]);
 
   const projects = useSelector((state) => state.allProjects);
 

@@ -10,6 +10,8 @@ import {
 } from "../";
 import { me } from "../../features";
 
+import { fetchAllProjectsByUserIdAsync } from "../../features";
+
 /**
  * COMPONENT
  */
@@ -17,10 +19,20 @@ import { me } from "../../features";
 const AppRoutes = () => {
   const isLoggedIn = useSelector((state) => !!state.auth.me.id);
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth.me.id);
 
   useEffect(() => {
     dispatch(me());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (userId) {
+      const fetchData = async () => {
+        await dispatch(fetchAllProjectsByUserIdAsync(userId));
+      };
+      fetchData();
+    }
+  }, [dispatch, userId]);
 
   return (
     <Routes>
