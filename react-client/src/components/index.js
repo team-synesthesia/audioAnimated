@@ -5,6 +5,7 @@ export { default as AuthForm } from "./auth/AuthForm";
 
 export { default as SplashPage } from "./main/SplashPage";
 export { default as Profile } from "./main/Profile";
+export { default as StickyFooter } from "./main/StickyFooter";
 export { default as Navbar } from "./main/Navbar";
 export { default as NotFound } from "./main/NotFound";
 

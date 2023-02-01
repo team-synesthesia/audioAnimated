@@ -1,11 +1,12 @@
 import React from "react";
-import { Navbar, AppRoutes } from "../";
+import { Navbar, AppRoutes, StickyFooter } from "../";
 
 const App = () => {
   return (
     <div>
       <Navbar />
       <AppRoutes />
+      <StickyFooter />
     </div>
   );
 };
