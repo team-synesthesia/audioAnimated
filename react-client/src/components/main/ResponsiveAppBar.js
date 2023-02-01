@@ -42,7 +42,7 @@ function ResponsiveAppBar({
   };
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "primary.light" }}>
+    <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AudiotrackIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -54,7 +54,6 @@ function ResponsiveAppBar({
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -114,7 +113,6 @@ function ResponsiveAppBar({
               mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -190,7 +188,13 @@ function ResponsiveAppBar({
               <Typography textAlign="center" variant="p" fontSize="1.5rem">
                 {"/"}
               </Typography>
-              <Button variant="outlined" color="inherit">
+              <Button
+                variant="contained"
+                sx={{
+                  color: "primary.contrastText",
+                  backgroundColor: "secondary.dark",
+                }}
+              >
                 <Link color="inherit" underline="hover" href={"/signup"}>
                   {"Sign Up"}
                 </Link>
