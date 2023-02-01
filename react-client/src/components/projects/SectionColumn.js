@@ -140,11 +140,61 @@ export default function SectionColumn({
   };
 
   const [uploadFormActive, setUploadFormActive] = React.useState(null);
+  const [singleSectionView, setSingleSectionView] = React.useState(null);
+  const [togglePreviewButton, setTogglePreviewButton] = React.useState(true);
+  React.useEffect(() => {
+    const sectionColumns = document.querySelectorAll(".sectionColumn");
+    const addNewSection = document.querySelector(".addNewSection");
+    const sectionAnimations = document.querySelectorAll(".sectionAnimation");
+    if (singleSectionView !== null) {
+      for (let sectionColumn of sectionColumns) {
+        if (Number(sectionColumn.id) !== singleSectionView)
+          sectionColumn.classList.add("hidden");
+      }
+      for (let sectionAnimation of sectionAnimations) {
+        if (Number(sectionAnimation.id) === singleSectionView)
+          sectionAnimation.classList.remove("hidden");
+      }
+      addNewSection.classList.add("hidden");
+    } else {
+      for (let sectionColumn of sectionColumns) {
+        sectionColumn.classList.remove("hidden");
+      }
+      for (let sectionAnimation of sectionAnimations) {
+        sectionAnimation.classList.add("hidden");
+      }
+      addNewSection.classList.remove("hidden");
+    }
+  }, [singleSectionView]);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box className="sectionColumn" id={sectionNumber}>
       <Grid container spacing={2}>
         <Grid item xs={6} md={8}>
+          <Button
+            type="button"
+            onClick={() => {
+              setSingleSectionView(sectionNumber);
+              setTogglePreviewButton(false);
+            }}
+            sx={
+              togglePreviewButton ? { display: "block" } : { display: "none" }
+            }
+          >
+            Preview
+          </Button>
+          <Button
+            type="button"
+            onClick={() => {
+              setSingleSectionView(null);
+              setTogglePreviewButton(true);
+            }}
+            sx={
+              !togglePreviewButton ? { display: "block" } : { display: "none" }
+            }
+          >
+            Exit Preview
+          </Button>
           <Player
             title={`Section ${sectionNumber}`}
             isPlaying={isPlaying}
@@ -171,7 +221,6 @@ export default function SectionColumn({
           >
             Add a file
           </Button>
-          {/* then connect it to post route via redux */}
           <Button
             size="small"
             color="error"
