@@ -145,23 +145,20 @@ export default function SectionColumn({
   React.useEffect(() => {
     const sectionColumns = document.querySelectorAll(".sectionColumn");
     const addNewSection = document.querySelector(".addNewSection");
-    const sectionAnimations = document.querySelectorAll(".sectionAnimation");
+    //const sectionAnimations = document.querySelectorAll(".sectionAnimation");
+    const sectionAnimation = document.getElementById("sectionAnimation")
     if (singleSectionView !== null) {
+      sectionAnimation.classList.remove("hidden")
       for (let sectionColumn of sectionColumns) {
         if (Number(sectionColumn.id) !== singleSectionView)
           sectionColumn.classList.add("hidden");
       }
-      for (let sectionAnimation of sectionAnimations) {
-        if (Number(sectionAnimation.id) === singleSectionView)
-          sectionAnimation.classList.remove("hidden");
-      }
+
       addNewSection.classList.add("hidden");
     } else {
+      sectionAnimation.classList.add("hidden")
       for (let sectionColumn of sectionColumns) {
         sectionColumn.classList.remove("hidden");
-      }
-      for (let sectionAnimation of sectionAnimations) {
-        sectionAnimation.classList.add("hidden");
       }
       addNewSection.classList.remove("hidden");
     }
