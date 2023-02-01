@@ -10,7 +10,6 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -78,47 +77,48 @@ export default function AllProjects() {
       <Container sx={{ py: 8 }} maxWidth="md">
         {/* End hero unit */}
         <Grid container spacing={4}>
-          {projects.length &&
-            projects.map((project) => (
-              <Grid item key={project.id} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <CardMedia
-                    component="img"
+          {projects && projects.length
+            ? projects.map((project) => (
+                <Grid item key={project.id} xs={12} sm={6} md={4}>
+                  <Card
                     sx={{
-                      16: 9,
-                      // pt: "56.25%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
-                    image="https://source.unsplash.com/random"
-                    alt="random"
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {project.name}
-                    </Typography>
-                    <Typography>No. of contrbutors: 1 </Typography>
-                    <Typography>{`No. of Sample Files: ${5}`}</Typography>
-                    <Typography>Project Duration: 3 mins</Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">View Final</Button>
-                    <Button
-                      size="small"
-                      onClick={() => {
-                        navigate(`/projects/${project.id}`);
+                  >
+                    <CardMedia
+                      component="img"
+                      sx={{
+                        16: 9,
+                        // pt: "56.25%",
                       }}
-                    >
-                      Edit
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+                      image="https://source.unsplash.com/random"
+                      alt="random"
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        {project.name}
+                      </Typography>
+                      <Typography>No. of contrbutors: 1 </Typography>
+                      <Typography>{`No. of Sample Files: ${5}`}</Typography>
+                      <Typography>Project Duration: 3 mins</Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button size="small">View Final</Button>
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          navigate(`/projects/${project.id}`);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))
+            : null}
         </Grid>
       </Container>
     </Container>
