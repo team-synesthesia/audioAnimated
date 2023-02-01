@@ -1,41 +1,43 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { logout } from "../../features";
+import ResponsiveAppBar from "./ResponsiveAppBar";
 
 const Navbar = () => {
   const isLoggedIn = useSelector((state) => !!state.auth.me.id);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const logoutAndRedirectHome = () => {
     dispatch(logout());
     navigate("/login");
   };
 
+  const numProjects = useSelector((state) => state.allProjects.length);
+
+  let pages;
+  let pageLabels;
+  if (isLoggedIn) {
+    pages = ["projects"];
+    pageLabels = [`Active Projects (${numProjects})`];
+  } else {
+    pages = [];
+    pageLabels = [];
+  }
+
+  const homeTitle = "Audio Animated";
+  const settings = ["Profile", "Logout"];
+
   return (
-    <div>
-      <h1>
-        <Link to="/">Audio Animated</Link>
-      </h1>
-      <nav>
-        {isLoggedIn ? (
-          <div>
-            {/* The navbar will show these links after you log in */}
-            <Link to="/projects">View All Projects</Link>
-            <button type="button" onClick={logoutAndRedirectHome}>
-              Logout
-            </button>
-          </div>
-        ) : (
-          <div>
-            {/* The navbar will show these links before you log in */}
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Sign Up</Link>
-          </div>
-        )}
-      </nav>
-      <hr />
-    </div>
+    <ResponsiveAppBar
+      isLoggedIn={isLoggedIn}
+      pages={pages}
+      pageLabels={pageLabels}
+      homeTitle={homeTitle}
+      settings={settings}
+      logoutAndRedirectHome={logoutAndRedirectHome}
+    />
   );
 };
 
