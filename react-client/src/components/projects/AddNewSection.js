@@ -17,7 +17,7 @@ export default function AddNewSection({ projectId }) {
     dispatch(createSectionAsync({ projectId }));
   };
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} className="addNewSection">
       <Grid container spacing={2}>
         <Grid item xs={6} md={8}>
           <Card
