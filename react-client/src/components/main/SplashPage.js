@@ -1,12 +1,13 @@
 import React from "react";
 import { Container, Grid, Button, Card, CardMedia } from "@mui/material";
+import Box from "@mui/material/Box";
 
 /**
  * COMPONENT
  */
 const SplashPage = (props) => {
   return (
-    <div>
+    <Box sx={{ marginTop: "75px" }}>
       <Grid container>
         <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
           <h1>Audio Animated</h1>
@@ -140,7 +141,7 @@ const SplashPage = (props) => {
           </Container>
         </Grid>
       </Grid>
-    </div>
+    </Box>
   );
 };
 

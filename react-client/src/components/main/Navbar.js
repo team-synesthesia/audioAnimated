@@ -30,14 +30,20 @@ const Navbar = () => {
   const settings = ["Profile", "Logout"];
 
   return (
-    <ResponsiveAppBar
-      isLoggedIn={isLoggedIn}
-      pages={pages}
-      pageLabels={pageLabels}
-      homeTitle={homeTitle}
-      settings={settings}
-      logoutAndRedirectHome={logoutAndRedirectHome}
-    />
+    <div>
+      <ResponsiveAppBar
+        sx={{ zIndex: "-1" }}
+        isLoggedIn={isLoggedIn}
+        pages={pages}
+        pageLabels={pageLabels}
+        homeTitle={homeTitle}
+        settings={settings}
+        logoutAndRedirectHome={logoutAndRedirectHome}
+      />
+      {/* <br /> */}
+      {/* <br /> */}
+      {/* <br /> */}
+    </div>
   );
 };
 
