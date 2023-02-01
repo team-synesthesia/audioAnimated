@@ -13,11 +13,9 @@ async function seed() {
   await db.sync({ force: true }); // clears db and matches models to tables
   console.log("db synced!");
 
-  const users = await Promise.all([
-    User.create({ username: "robert", password: "123" }),
-    User.create({ username: "philip", password: "123" }),
-    User.create({ username: "chris", password: "123" }),
-  ]);
+  await User.create({ username: "robert", password: "123" });
+  await User.create({ username: "philip", password: "123" });
+  await User.create({ username: "chris", password: "123" });
 
   await Project.create({ name: "project1", sectionDuration: 37 });
   await Project.create({ name: "project2" });

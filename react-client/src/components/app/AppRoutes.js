@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import {
+  Profile,
   AuthForm,
   SplashPage,
   NotFound,
@@ -39,9 +40,9 @@ const AppRoutes = () => {
       {isLoggedIn ? (
         <>
           <Route path="/" element={<SplashPage />} />
-          <Route path="/login" element={<AllProjects />} />
-          <Route path="/signup" element={<AllProjects />} />
-
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Navigate to="/projects" />} />
+          <Route path="/signup" element={<Navigate to="/projects" />} />
           <Route path="/projects" element={<AllProjects />} />
           <Route path="/projects/:projectId" element={<SingleProject />} />
         </>
