@@ -95,6 +95,17 @@ export const createSectionAsync = createAsyncThunk(
   }
 );
 
+export const deleteSectionAsync = createAsyncThunk(
+  "deleteSection",
+  async (id) => {
+    try {
+      await axios.delete(`/api/sections/${id}`);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
 export const singleProjectSlice = createSlice({
   name: "singleProject",
   initialState: {

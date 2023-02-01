@@ -17,3 +17,13 @@ router.post("/", async (req, res, next) => {
     next(err);
   }
 });
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const sectionToDelete = await Section.findByPk(req.params.id);
+    const deletedSection = await sectionToDelete.destroy();
+    res.status(202).send(deletedSection);
+  } catch (err) {
+    next(err);
+  }
+});
