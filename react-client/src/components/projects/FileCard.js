@@ -16,8 +16,8 @@ import { deleteFileAsync } from "../../features";
 
 export default function FileCard({ file, changeVolume }) {
   const dispatch = useDispatch();
-  const handleDelete = (id, fileName) => {
-    dispatch(deleteFileAsync({ id, fileName }));
+  const handleDelete = (name) => {
+    dispatch(deleteFileAsync({ name }));
   };
 
   const [onOff, setOnOff] = React.useState(true);
@@ -60,7 +60,7 @@ export default function FileCard({ file, changeVolume }) {
           <Button
             type="button"
             size="small"
-            onClick={() => handleDelete(file.id, file.name)}
+            onClick={() => handleDelete(file.name)}
           >
             Delete
           </Button>

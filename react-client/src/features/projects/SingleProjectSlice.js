@@ -65,10 +65,10 @@ export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
 
 export const deleteFileAsync = createAsyncThunk(
   "deleteFile",
-  async ({ id, fileName }) => {
+  async ({ name }) => {
     try {
-      await axios.delete(`/api/files/${id}`);
-      return fileName;
+      await axios.delete(`/api/files/${name}`);
+      return name;
     } catch (error) {
       console.error(error);
     }
