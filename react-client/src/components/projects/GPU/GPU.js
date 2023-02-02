@@ -5,9 +5,10 @@ import {createVertexModel,animateVertexModel,
 import { graphicsOptions } from "./graphicsOptions"
 
 //gpuDivRef was passed in as:  gpuDivRef.current in order to satisfy the dependencies array
-export function GPU( {gpuDivRef, canvasInitialized, setCanvasInitialized,
-    isPlaying, acPlusRef, sectionNumber, graphicsFn} ) {
+export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized,ACref} ) {
     
+    const { isPlaying,acPlusRef,sectionNumber,graphicsFn} = GPUconfig
+
     const [GL, setGL] = React.useState({})
 
     const frameIdRef = React.useRef()
@@ -17,15 +18,24 @@ export function GPU( {gpuDivRef, canvasInitialized, setCanvasInitialized,
     const fps = 30
     const fpsInterval = 1000/fps
 
+
     React.useEffect(()=>{
 
-        if (gpuDivRef && !canvasInitialized) {
+        let canvas, canvasDim, hidden
+        if ( gpuDivRef) {
+            canvas = gpuDivRef
+            canvasDim = canvas.getBoundingClientRect()
+            hidden = (canvas.classList.value.includes('hidden') )
+        }
+
+        if (gpuDivRef && !canvasInitialized && !hidden) {
 
             setCanvasInitialized(true)
-            const canvas = gpuDivRef
-            const canvasDim = canvas.getBoundingClientRect()
+
             const [width,height] = [canvasDim.width, canvasDim.height]
             //set canvas property so that we get WebGL2 ???
+
+            console.log('zzzzzzzzzzzzz acref',ACref)
 
             const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
             renderer.setSize(width, height);  //get dimensions of gpuDivRef
@@ -54,23 +64,27 @@ export function GPU( {gpuDivRef, canvasInitialized, setCanvasInitialized,
                 console.log('graphics Function num out of bounds', graphicsFn)
             }
         
+            console.log('got to post catch  block')
             if (useShader) {
                 const {camera,material} = createShaderModel(scene,uniforms,gfn)
-                setGL({renderer,scene,camera,width,height,useShader,material})
+                setGL({renderer,scene,camera,width,height,useShader,ACref,material})
                 renderer.render(scene,camera)
+                console.log('shader model')
             }
             else {
                 const {camera,light2,cube} = createVertexModel(scene,aspect)
-                setGL({renderer,scene,camera,width,height,useShader,cube,light2}) 
+                setGL({renderer,scene,camera,width,height,useShader,ACref,cube,light2}) 
                 renderer.render(scene,camera)
+                console.log('vertex model')
             }
 
         }
         
         else if ( canvasInitialized ) {
 
-            const {renderer,scene,camera,useShader} = GL
+            const {renderer,scene,camera,useShader,ACref} = GL
 
+            console.log('acref after',ACref)
             isPlayingRef.current = isPlaying
             let prevRenderTime = Date.now()
 
@@ -98,7 +112,7 @@ export function GPU( {gpuDivRef, canvasInitialized, setCanvasInitialized,
                 prevRenderTime = currentRenderTime - (elapsed%fpsInterval)
                 time *= .001  //convert from milliseconds to seconds
 
-                const AC = acPlusRef.current         
+                const AC =  acPlusRef     
                 const md = AC.musicData()
 
                 if ( useShader ) {
@@ -115,6 +129,6 @@ export function GPU( {gpuDivRef, canvasInitialized, setCanvasInitialized,
 
     },[gpuDivRef,canvasInitialized,GL,fpsInterval,
         setCanvasInitialized,isPlaying,acPlusRef,
-        sectionNumber,graphicsFn])
+        sectionNumber,graphicsFn,ACref])
    
 }

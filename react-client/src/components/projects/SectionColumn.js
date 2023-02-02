@@ -15,6 +15,8 @@ export default function SectionColumn({
   sectionDuration,
   sectionNumber,
   sectionId,
+  setGPUconfig,
+  setCanvasInitialized
 }) {
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
@@ -142,27 +144,54 @@ export default function SectionColumn({
   const [uploadFormActive, setUploadFormActive] = React.useState(null);
   const [singleSectionView, setSingleSectionView] = React.useState(null);
   const [togglePreviewButton, setTogglePreviewButton] = React.useState(true);
+
+ 
+  const [attachGPU,setAttachGPU] = React.useState(false)
+  const [detachGPU,setDetachGPU] = React.useState(false)
+
   React.useEffect(() => {
     const sectionColumns = document.querySelectorAll(".sectionColumn");
     const addNewSection = document.querySelector(".addNewSection");
-    //const sectionAnimations = document.querySelectorAll(".sectionAnimation");
     const sectionAnimation = document.getElementById("sectionAnimation")
     if (singleSectionView !== null) {
       sectionAnimation.classList.remove("hidden")
+      if (!attachGPU) {
+        setAttachGPU(true)
+        setDetachGPU(false)
+      }
       for (let sectionColumn of sectionColumns) {
         if (Number(sectionColumn.id) !== singleSectionView)
           sectionColumn.classList.add("hidden");
       }
-
       addNewSection.classList.add("hidden");
+      
     } else {
       sectionAnimation.classList.add("hidden")
+      if (attachGPU)  { 
+        setDetachGPU(true)
+        setAttachGPU(false) 
+      }
+
       for (let sectionColumn of sectionColumns) {
         sectionColumn.classList.remove("hidden");
       }
       addNewSection.classList.remove("hidden");
     }
-  }, [singleSectionView]);
+  }, [singleSectionView,attachGPU,detachGPU]);
+
+  React.useEffect(()=>{
+    if (attachGPU) {
+      console.log('should be initializing canvas and attaching')
+      setGPUconfig( { isPlaying,acPlusRef:acPlusRef.current,sectionNumber,graphicsFn:(sectionNumber-1)} ) 
+    }
+  },[attachGPU,isPlaying,sectionNumber,setGPUconfig])  
+
+/*   React.useEffect(()=>{
+    if (detachGPU) {
+      console.log('should be dettaching')
+      setGPUconfig( { isPlaying,acPlusRef:acPlusRef.current,sectionNumber,graphicsFn:(sectionNumber-1)} )
+    }
+  },[detachGPU,setCanvasInitialized,isPlaying,sectionNumber,setGPUconfig]) */
 
   return (
     <Box className="sectionColumn" id={sectionNumber}>
