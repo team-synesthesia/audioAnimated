@@ -147,7 +147,6 @@ export default function SectionColumn({
 
  
   const [attachGPU,setAttachGPU] = React.useState(false)
-  const [detachGPU,setDetachGPU] = React.useState(false)
 
   React.useEffect(() => {
     const sectionColumns = document.querySelectorAll(".sectionColumn");
@@ -157,7 +156,6 @@ export default function SectionColumn({
       sectionAnimation.classList.remove("hidden")
       if (!attachGPU) {
         setAttachGPU(true)
-        setDetachGPU(false)
       }
       for (let sectionColumn of sectionColumns) {
         if (Number(sectionColumn.id) !== singleSectionView)
@@ -167,17 +165,13 @@ export default function SectionColumn({
       
     } else {
       sectionAnimation.classList.add("hidden")
-      if (attachGPU)  { 
-        setDetachGPU(true)
-        setAttachGPU(false) 
-      }
 
       for (let sectionColumn of sectionColumns) {
         sectionColumn.classList.remove("hidden");
       }
       addNewSection.classList.remove("hidden");
     }
-  }, [singleSectionView,attachGPU,detachGPU]);
+  }, [singleSectionView,attachGPU]);
 
   React.useEffect(()=>{
     if (attachGPU) {
@@ -185,13 +179,6 @@ export default function SectionColumn({
       setGPUconfig( { isPlaying,acPlusRef:acPlusRef.current,sectionNumber,graphicsFn:(sectionNumber-1)} ) 
     }
   },[attachGPU,isPlaying,sectionNumber,setGPUconfig])  
-
-/*   React.useEffect(()=>{
-    if (detachGPU) {
-      console.log('should be dettaching')
-      setGPUconfig( { isPlaying,acPlusRef:acPlusRef.current,sectionNumber,graphicsFn:(sectionNumber-1)} )
-    }
-  },[detachGPU,setCanvasInitialized,isPlaying,sectionNumber,setGPUconfig]) */
 
   return (
     <Box className="sectionColumn" id={sectionNumber}>

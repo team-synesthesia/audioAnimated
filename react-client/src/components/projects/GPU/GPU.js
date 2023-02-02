@@ -35,8 +35,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             const [width,height] = [canvasDim.width, canvasDim.height]
             //set canvas property so that we get WebGL2 ???
 
-            console.log('zzzzzzzzzzzzz acref',ACref)
-
             const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
             renderer.setSize(width, height);  //get dimensions of gpuDivRef
             renderer.setClearColor("rgb(255,255,255)", 0);
@@ -53,7 +51,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             uniforms.iResolution.value = new THREE.Vector3(width, height, 1.0)
             const scene = new THREE.Scene();
 
-            console.log(graphicsOptions)
             let useShader = false
             let gfn=0
             try {
@@ -64,32 +61,27 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                 console.log('graphics Function num out of bounds', graphicsFn)
             }
         
-            console.log('got to post catch  block')
             if (useShader) {
                 const {camera,material} = createShaderModel(scene,uniforms,gfn)
                 setGL({renderer,scene,camera,width,height,useShader,ACref,material})
                 renderer.render(scene,camera)
-                console.log('shader model')
             }
             else {
                 const {camera,light2,cube} = createVertexModel(scene,aspect)
                 setGL({renderer,scene,camera,width,height,useShader,ACref,cube,light2}) 
                 renderer.render(scene,camera)
-                console.log('vertex model')
             }
 
         }
         
         else if ( canvasInitialized ) {
 
-            const {renderer,scene,camera,useShader,ACref} = GL
+            const {renderer,scene,camera,useShader} = GL
 
-            console.log('acref after',ACref)
             isPlayingRef.current = isPlaying
             let prevRenderTime = Date.now()
 
             if ( isPlaying && !isRendering.current ) {
-                console.log('request animation frame')
                 requestAnimationFrame(render)
                 isRendering.current = true
             }
