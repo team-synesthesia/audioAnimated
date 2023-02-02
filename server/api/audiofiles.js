@@ -23,11 +23,11 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/", upload.single("audiofile"), (req, res, next) => {
-  const { projectId, fileName } = req.query;
+  const { projectId, filePath } = req.query;
   const file = req.file;
 
   const fullFilepath =
-    process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + fileName;
+    process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + filePath;
 
   const folder = process.env.AUDIO_DATA_DIR + "/" + projectId;
   if (!fs.existsSync(folder)) {
@@ -37,7 +37,7 @@ router.post("/", upload.single("audiofile"), (req, res, next) => {
     fs.open(fullFilepath, "w+", (err, fd) => {
       fs.writeFile(fd, file.buffer, (err) => {
         fs.close(fd, (err) => {
-          res.status(201).send(`${fileName}`);
+          res.status(201).send(`${filePath}`);
         });
       });
     });

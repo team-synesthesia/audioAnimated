@@ -8,6 +8,7 @@ export {
 export {
   default as singleProjectReducer,
   createSectionAsync,
+  deleteSectionAsync,
   getFilesAsync,
   fetchSingleProjectAsync,
   addFileAsync,

@@ -1,7 +1,4 @@
 import * as React from "react";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Slider from "@mui/material/Slider";
@@ -15,13 +12,12 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 
 import { useDispatch } from "react-redux";
-import { deleteFileAsync, fetchSingleProjectAsync } from "../../features";
+import { deleteFileAsync } from "../../features";
 
-export default function FileCard({ file, projectId, changeVolume }) {
+export default function FileCard({ file, changeVolume }) {
   const dispatch = useDispatch();
-  const handleDelete = async (id) => {
-    await dispatch(deleteFileAsync(id));
-    dispatch(fetchSingleProjectAsync({ projectId }));
+  const handleDelete = (name) => {
+    dispatch(deleteFileAsync({ name }));
   };
 
   const [onOff, setOnOff] = React.useState(true);
@@ -64,7 +60,7 @@ export default function FileCard({ file, projectId, changeVolume }) {
           <Button
             type="button"
             size="small"
-            onClick={() => handleDelete(file.id)}
+            onClick={() => handleDelete(file.name)}
           >
             Delete
           </Button>

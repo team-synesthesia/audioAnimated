@@ -37,12 +37,12 @@ export const getFileAsync = createAsyncThunk(
 
 export const writeFileAsync = createAsyncThunk(
   "writeFile",
-  async ({ projectId, fileName, file }) => {
+  async ({ projectId, filePath, file }) => {
     try {
       const formData = new FormData();
       formData.append("audiofile", file);
       const { data } = await axios.post("/api/audiofiles/", formData, {
-        params: { projectId, fileName },
+        params: { projectId, filePath },
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -63,13 +63,17 @@ export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
   }
 });
 
-export const deleteFileAsync = createAsyncThunk("deleteFile", async (id) => {
-  try {
-    await axios.delete(`/api/files/${id}`);
-  } catch (error) {
-    console.error(error);
+export const deleteFileAsync = createAsyncThunk(
+  "deleteFile",
+  async ({ name }) => {
+    try {
+      await axios.delete(`/api/files/${name}`);
+      return name;
+    } catch (error) {
+      console.error(error);
+    }
   }
-});
+);
 
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
@@ -91,6 +95,18 @@ export const createSectionAsync = createAsyncThunk(
       return data;
     } catch (error) {
       console.log(error);
+    }
+  }
+);
+
+export const deleteSectionAsync = createAsyncThunk(
+  "deleteSection",
+  async (id) => {
+    try {
+      await axios.delete(`/api/sections/${id}`);
+      return id;
+    } catch (error) {
+      console.error(error);
     }
   }
 );
@@ -133,6 +149,37 @@ export const singleProjectSlice = createSlice({
     });
     builder.addCase(createSectionAsync.fulfilled, (state, action) => {
       state.sections.push(action.payload);
+    });
+    builder.addCase(addFileAsync.fulfilled, (state, action) => {
+      const newFile = action.payload;
+      state.availableFiles[newFile.name] = newFile;
+      for (let section of state.sections) {
+        if (section.id === newFile.sectionId) {
+          section.files.push(newFile);
+          break;
+        }
+      }
+    });
+    builder.addCase(deleteFileAsync.fulfilled, (state, action) => {
+      const fileName = action.payload;
+      delete state.availableFiles[fileName];
+      delete state.audioRawFiles[fileName];
+      for (let section of state.sections) {
+        for (let [i, file] of section.files.entries()) {
+          if (file.name === fileName) {
+            section.files.splice(i, 1);
+          }
+        }
+      }
+    });
+    builder.addCase(deleteSectionAsync.fulfilled, (state, action) => {
+      const sectionId = action.payload;
+      for (let [i, section] of state.sections.entries()) {
+        if (section.id === sectionId) {
+          state.sections.splice(i, 1);
+          break;
+        }
+      }
     });
   },
 });

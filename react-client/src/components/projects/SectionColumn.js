@@ -2,11 +2,12 @@ import * as React from "react";
 import { Box, Grid, Button } from "@mui/material";
 
 import AudioContextPlus from "../../audio";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import FileCard from "./FileCard";
 import Player from "./Player";
 import { FileUploadForm } from "../";
+import { deleteSectionAsync } from "../../features";
 
 export default function SectionColumn({
   userId,
@@ -191,8 +192,17 @@ export default function SectionColumn({
     }
   }, [attachGPU, isPlaying, sectionNumber, setGPUconfig]);
 
+  // this needs redux logic to update state
+  const dispatch = useDispatch();
+  const handleDeleteSection = () => {
+    dispatch(deleteSectionAsync(sectionId));
+  };
+
   return (
     <Box className="sectionColumn" id={sectionNumber}>
+      <Button type="button" onClick={() => handleDeleteSection()}>
+        Delete Section
+      </Button>
       <Grid container spacing={2}>
         <Grid item xs={6} md={8}>
           <Button

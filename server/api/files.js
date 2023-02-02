@@ -13,11 +13,15 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:name", async (req, res, next) => {
   try {
-    const fileToDelete = await File.findByPk(req.params.id);
-    const deletedFile = await fileToDelete.destroy();
-    res.status(202).send(deletedFile);
+    const filesToDelete = await File.findAll({
+      where: { name: req.params.name },
+    });
+    for (let file of filesToDelete) {
+      await file.destroy();
+    }
+    res.status(202).send("sent");
   } catch (err) {
     next(err);
   }
