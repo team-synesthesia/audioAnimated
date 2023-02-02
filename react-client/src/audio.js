@@ -118,7 +118,7 @@ class AudioContextPlus {
   setGain(value, index) {
     this.gainNodes[index].gain.value = value;
   }
-  AddGainNode() {
+  addGainNode() {
     const gainNode = this.AC.createGain();
     gainNode.connect(this.AC.destination);
     this.gainNodes.push(gainNode);
@@ -135,7 +135,7 @@ class AudioContextPlus {
       const src = this.AC.createBufferSource();
       src.buffer = this.audioBuffers[fileName];
       this.sources.push(src);
-      this.AddGainNode();
+      this.addGainNode();
     });
   }
   async playNSongs(fileNames, onEndCallback) {
