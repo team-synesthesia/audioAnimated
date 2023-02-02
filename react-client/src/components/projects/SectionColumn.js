@@ -16,7 +16,7 @@ export default function SectionColumn({
   sectionNumber,
   sectionId,
   setGPUconfig,
-  setCanvasInitialized
+  setCanvasInitialized,
 }) {
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
@@ -145,39 +145,50 @@ export default function SectionColumn({
   const [singleSectionView, setSingleSectionView] = React.useState(null);
   const [togglePreviewButton, setTogglePreviewButton] = React.useState(true);
 
- 
-  const [attachGPU,setAttachGPU] = React.useState(false)
+  const [attachGPU, setAttachGPU] = React.useState(false);
 
   React.useEffect(() => {
     const sectionColumns = document.querySelectorAll(".sectionColumn");
     const addNewSection = document.querySelector(".addNewSection");
-    const sectionAnimation = document.getElementById("sectionAnimation")
+    const sectionAnimation = document.getElementById("sectionAnimation");
     if (singleSectionView !== null) {
-      sectionAnimation.classList.remove("hidden")
+      sectionAnimation.classList.remove("hidden");
       if (!attachGPU) {
-        setAttachGPU(true)
+        setAttachGPU(true);
       }
       for (let sectionColumn of sectionColumns) {
         if (Number(sectionColumn.id) !== singleSectionView)
           sectionColumn.classList.add("hidden");
       }
       addNewSection.classList.add("hidden");
-      
     } else {
-      sectionAnimation.classList.add("hidden")
+      sectionAnimation.classList.add("hidden");
 
       for (let sectionColumn of sectionColumns) {
         sectionColumn.classList.remove("hidden");
       }
       addNewSection.classList.remove("hidden");
     }
-  }, [singleSectionView,attachGPU]);
+  }, [singleSectionView, attachGPU]);
 
-  React.useEffect(()=>{
-    if (attachGPU) {
-      setGPUconfig( { isPlaying,acPlusRef:acPlusRef.current,sectionNumber,graphicsFn:(sectionNumber-1)} ) 
+  const changeVolume = (value, fileName) => {
+    if (!acPlusRef.current.started) {
+      acPlusRef.current.loadSources(files.map((x) => x.name));
     }
-  },[attachGPU,isPlaying,sectionNumber,setGPUconfig])  
+    const fileIndex = files.map((x) => x.name === fileName).indexOf(true);
+    acPlusRef.current.setGain(value, fileIndex);
+  };
+
+  React.useEffect(() => {
+    if (attachGPU) {
+      setGPUconfig({
+        isPlaying,
+        acPlusRef: acPlusRef.current,
+        sectionNumber,
+        graphicsFn: sectionNumber - 1,
+      });
+    }
+  }, [attachGPU, isPlaying, sectionNumber, setGPUconfig]);
 
   return (
     <Box className="sectionColumn" id={sectionNumber}>
@@ -222,7 +233,11 @@ export default function SectionColumn({
         {files && files.length
           ? files.map((file) => (
               <Grid key={file.id} item xs={6} md={8}>
-                <FileCard file={file} projectId={projectId} />
+                <FileCard
+                  file={file}
+                  projectId={projectId}
+                  changeVolume={changeVolume}
+                />
               </Grid>
             ))
           : null}

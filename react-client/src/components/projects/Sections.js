@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import SectionColumn from "./SectionColumn";
 import AddNewSection from "./AddNewSection";
 
-import {GPU} from "./GPU/GPU"
+import { GPU } from "./GPU/GPU";
 
 export default function Sections({
   sections,
@@ -12,18 +12,22 @@ export default function Sections({
   userId,
   projectId,
 }) {
+  const sectionAnimationRef = React.useRef();
+  const [GPUconfig, setGPUconfig] = React.useState({});
+  const [canvasInitialized, setCanvasInitialized] = React.useState(false);
+  GPU({
+    GPUconfig,
+    gpuDivRef: sectionAnimationRef.current,
+    canvasInitialized,
+    setCanvasInitialized,
+  });
 
-  const sectionAnimationRef = React.useRef()
-  const [GPUconfig,setGPUconfig] = React.useState({})
-  const [canvasInitialized,setCanvasInitialized] = React.useState(false)
-  GPU( {GPUconfig,gpuDivRef:sectionAnimationRef.current,canvasInitialized,setCanvasInitialized} )
-  
   return (
     <Box
       sx={{
         marginLeft: "270px",
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
       }}
     >
       {sections && sections.length
@@ -40,13 +44,21 @@ export default function Sections({
                 setGPUconfig={setGPUconfig}
                 setCanvasInitialized={setCanvasInitialized}
               />
-
             </div>
-          )
-        )
+          ))
         : null}
-      <div id="sectionAnimation" className="hidden" ref={sectionAnimationRef}
-        style={{marginTop:"36px",marginRight:"4vw",flexShrink:"0",width:640,height:480}}></div>
+      <div
+        id="sectionAnimation"
+        className="hidden"
+        ref={sectionAnimationRef}
+        style={{
+          marginTop: "36px",
+          marginRight: "4vw",
+          flexShrink: "0",
+          width: 640,
+          height: 480,
+        }}
+      ></div>
       <AddNewSection projectId={projectId} />
     </Box>
   );
