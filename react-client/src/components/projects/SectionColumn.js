@@ -175,7 +175,6 @@ export default function SectionColumn({
 
   React.useEffect(()=>{
     if (attachGPU) {
-      console.log('should be initializing canvas and attaching')
       setGPUconfig( { isPlaying,acPlusRef:acPlusRef.current,sectionNumber,graphicsFn:(sectionNumber-1)} ) 
     }
   },[attachGPU,isPlaying,sectionNumber,setGPUconfig])  
