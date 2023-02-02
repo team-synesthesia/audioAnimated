@@ -18,7 +18,7 @@ import TransitionsModal from "./TransitionsModal";
 
 const drawerWidth = 240;
 
-export default function PermanentDrawerLeft() {
+export default function PermanentDrawerLeft({ projectId, userId }) {
   const [open, setOpen] = React.useState(false);
   const [modalType, setModalType] = React.useState("");
 
@@ -46,6 +46,8 @@ export default function PermanentDrawerLeft() {
         <Toolbar />
         <Divider />
         <TransitionsModal
+          projectId={projectId}
+          userId={userId}
           open={open}
           handleClose={handleClose}
           type={modalType}

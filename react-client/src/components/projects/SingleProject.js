@@ -32,7 +32,7 @@ const SingleProject = () => {
 
   return (
     <div>
-      <PermanentDrawerLeft />
+      <PermanentDrawerLeft projectId={project.id} userId={userId} />
       {project.type === "looper" ? (
         <LooperProject
           project={project}

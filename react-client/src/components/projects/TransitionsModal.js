@@ -17,7 +17,13 @@ const style = {
   p: 4,
 };
 
-export default function TransitionsModal({ open, handleClose, type }) {
+export default function TransitionsModal({
+  projectId,
+  userId,
+  open,
+  handleClose,
+  type,
+}) {
   return (
     <div>
       <Modal
@@ -34,7 +40,11 @@ export default function TransitionsModal({ open, handleClose, type }) {
         <Fade in={open}>
           <Box sx={style}>
             {type === "uploadFile" ? (
-              <FileUploadForm />
+              <FileUploadForm
+                projectId={projectId}
+                userId={userId}
+                handleClose={handleClose}
+              />
             ) : type === "changeGraphicsFn" ? (
               <div>'Phil's graphics form component will go here</div>
             ) : null}
