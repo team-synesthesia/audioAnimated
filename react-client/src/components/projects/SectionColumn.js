@@ -12,7 +12,6 @@ export default function SectionColumn({
   userId,
   projectId,
   files,
-  sectionDuration,
   sectionNumber,
   sectionId,
   setGPUconfig,
@@ -29,7 +28,7 @@ export default function SectionColumn({
   const [intervalId, setIntervalId] = React.useState(0);
   const [ended, setEnded] = React.useState(0);
   const [restart, setRestart] = React.useState(false);
-  const [duration, setDuration] = React.useState(sectionDuration);
+  const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
 
   const acPlusRef = React.useRef();
@@ -65,8 +64,10 @@ export default function SectionColumn({
       if (!disabled) {
         const buffers = Object.values(acPlusRef.current.audioBuffers);
         const durations = buffers.map((x) => x.duration);
-        const max = Math.max(...durations);
-        setDuration(max);
+        if (durations.length) {
+          const max = Math.max(...durations);
+          setDuration(max);
+        }
       }
     };
     getDuration();
@@ -123,7 +124,7 @@ export default function SectionColumn({
       }, 1000);
       setIntervalId(id);
     }
-  }, [isPlaying, intervalId, timeSnapshot, sectionDuration]);
+  }, [isPlaying, intervalId, timeSnapshot]);
 
   const restartOnClick = () => {
     if (!isPlaying) {

@@ -6,12 +6,7 @@ import AddNewSection from "./AddNewSection";
 
 import { GPU } from "./GPU/GPU";
 
-export default function Sections({
-  sections,
-  sectionDuration,
-  userId,
-  projectId,
-}) {
+export default function Sections({ sections, userId, projectId }) {
   const sectionAnimationRef = React.useRef();
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
@@ -37,7 +32,6 @@ export default function Sections({
                 userId={userId}
                 projectId={projectId}
                 files={section.files}
-                sectionDuration={sectionDuration}
                 sectionNumber={section.sectionNumber}
                 sectionId={section.id}
                 sectionAnimationRef={sectionAnimationRef.current}
