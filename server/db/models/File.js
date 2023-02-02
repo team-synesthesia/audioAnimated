@@ -4,6 +4,7 @@ const db = require("../db");
 const File = db.define("file", {
   name: {
     type: Sequelize.STRING,
+    allowNull: false,
   },
   filePath: {
     type: Sequelize.TEXT,

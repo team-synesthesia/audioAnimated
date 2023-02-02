@@ -9,8 +9,8 @@ import { deleteFileAsync } from "../../features";
 
 export default function FileCard({ file }) {
   const dispatch = useDispatch();
-  const handleDelete = (id, fileName, sectionId) => {
-    dispatch(deleteFileAsync({ id, fileName, sectionId }));
+  const handleDelete = (id, fileName) => {
+    dispatch(deleteFileAsync({ id, fileName }));
   };
 
   return (
@@ -34,7 +34,7 @@ export default function FileCard({ file }) {
         <Button
           type="button"
           size="small"
-          onClick={() => handleDelete(file.id, file.name, file.sectionId)}
+          onClick={() => handleDelete(file.id, file.name)}
         >
           Delete
         </Button>

@@ -37,12 +37,12 @@ export const getFileAsync = createAsyncThunk(
 
 export const writeFileAsync = createAsyncThunk(
   "writeFile",
-  async ({ projectId, fileName, file }) => {
+  async ({ projectId, filePath, file }) => {
     try {
       const formData = new FormData();
       formData.append("audiofile", file);
       const { data } = await axios.post("/api/audiofiles/", formData, {
-        params: { projectId, fileName },
+        params: { projectId, filePath },
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -65,10 +65,10 @@ export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
 
 export const deleteFileAsync = createAsyncThunk(
   "deleteFile",
-  async ({ id, fileName, sectionId }) => {
+  async ({ id, fileName }) => {
     try {
       await axios.delete(`/api/files/${id}`);
-      return { id, fileName, sectionId };
+      return fileName;
     } catch (error) {
       console.error(error);
     }
@@ -160,19 +160,15 @@ export const singleProjectSlice = createSlice({
         }
       }
     });
-    builder.addCase(writeFileAsync.fulfilled, (state, action) => {});
     builder.addCase(deleteFileAsync.fulfilled, (state, action) => {
-      const { id, fileName, sectionId } = action.payload;
+      const fileName = action.payload;
       delete state.availableFiles[fileName];
+      delete state.audioRawFiles[fileName];
       for (let section of state.sections) {
-        if (section.id === sectionId) {
-          for (let [i, file] of section.files.entries()) {
-            if (file.id === id) {
-              section.files.splice(i, 1);
-              break;
-            }
+        for (let [i, file] of section.files.entries()) {
+          if (file.name === fileName) {
+            section.files.splice(i, 1);
           }
-          break;
         }
       }
     });

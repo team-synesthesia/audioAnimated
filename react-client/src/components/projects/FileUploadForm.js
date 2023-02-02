@@ -3,10 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { Button } from "@mui/material";
 
-import {
-  addFileAsync,
-  writeFileAsync,
-} from "../../features";
+import { addFileAsync, writeFileAsync } from "../../features";
 
 const FileUploadForm = (props) => {
   const { projectId, sectionId, userId, setUploadFormActive } = props;
@@ -17,11 +14,7 @@ const FileUploadForm = (props) => {
   const dispatch = useDispatch();
 
   const handleFormSubmit = async (e) => {
-    // if we want refresh, remove this line
     e.preventDefault();
-
-    // access to file via file variable
-    // console.log(file);
 
     const formData = {
       name,
@@ -32,7 +25,7 @@ const FileUploadForm = (props) => {
     };
 
     dispatch(addFileAsync(formData));
-    dispatch(writeFileAsync({ projectId, fileName: file.name, file }));
+    dispatch(writeFileAsync({ projectId, filePath: file.name, file }));
 
     const fileInput = document.querySelector("#fileInput");
     fileInput.value = "";
