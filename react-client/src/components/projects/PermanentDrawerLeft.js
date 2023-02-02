@@ -14,9 +14,21 @@ import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 
+import TransitionsModal from "./TransitionsModal";
+
 const drawerWidth = 240;
 
 export default function PermanentDrawerLeft() {
+  const [open, setOpen] = React.useState(false);
+  const [modalType, setModalType] = React.useState("");
+
+  const handleOpen = (type) => {
+    setModalType(type);
+    setOpen(true);
+  };
+
+  const handleClose = () => setOpen(false);
+
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer
@@ -33,13 +45,21 @@ export default function PermanentDrawerLeft() {
       >
         <Toolbar />
         <Divider />
+        <TransitionsModal
+          open={open}
+          handleClose={handleClose}
+          type={modalType}
+        />
         <List>
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <BubbleChartIcon />
               </ListItemIcon>
-              <ListItemText primary={"Graphics Fn"} />
+              <ListItemText
+                primary={"Graphics Fn"}
+                onClick={() => handleOpen("changeGraphicsFn")}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -47,7 +67,10 @@ export default function PermanentDrawerLeft() {
               <ListItemIcon>
                 <FileUploadIcon />
               </ListItemIcon>
-              <ListItemText primary={"Upload File"} />
+              <ListItemText
+                primary={"Upload File"}
+                onClick={() => handleOpen("uploadFile")}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
