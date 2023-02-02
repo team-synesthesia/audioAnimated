@@ -11,6 +11,8 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 
 const drawerWidth = 240;
 
@@ -38,6 +40,22 @@ export default function PermanentDrawerLeft() {
                 <BubbleChartIcon />
               </ListItemIcon>
               <ListItemText primary={"Graphics Fn"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <FileUploadIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Upload File"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <LibraryMusicIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Music Library"} />
             </ListItemButton>
           </ListItem>
 
