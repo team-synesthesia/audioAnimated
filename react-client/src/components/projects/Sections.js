@@ -4,15 +4,23 @@ import { Box } from "@mui/material";
 import SectionColumn from "./SectionColumn";
 import AddNewSection from "./AddNewSection";
 
-export default function Sections({
-  sections,
-  sectionDuration,
-  userId,
-  projectId,
-}) {
+import { GPU } from "./GPU/GPU";
+
+export default function Sections({ sections, userId, projectId }) {
+  const sectionAnimationRef = React.useRef();
+  const [GPUconfig, setGPUconfig] = React.useState({});
+  const [canvasInitialized, setCanvasInitialized] = React.useState(false);
+  GPU({
+    GPUconfig,
+    gpuDivRef: sectionAnimationRef.current,
+    canvasInitialized,
+    setCanvasInitialized,
+  });
+
   return (
     <Box
       sx={{
+        marginLeft: "270px",
         display: "flex",
         flexDirection: "row",
       }}
@@ -24,25 +32,27 @@ export default function Sections({
                 userId={userId}
                 projectId={projectId}
                 files={section.files}
-                sectionDuration={sectionDuration}
                 sectionNumber={section.sectionNumber}
                 sectionId={section.id}
+                sectionAnimationRef={sectionAnimationRef.current}
+                setGPUconfig={setGPUconfig}
+                setCanvasInitialized={setCanvasInitialized}
               />
-              <div
-                id={section.sectionNumber}
-                className="hidden sectionAnimation"
-              >
-                {/* replace this with sectionAnimation, probably best in its own React component */}
-                <img
-                  height={400}
-                  width={600}
-                  src="https://th-thumbnailer.cdn-si-edu.com/V408Xd8N2y92XNQ05rRH4nu1LR0=/fit-in/1600x0/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/df/a9/dfa966b8-9bb4-426e-ade1-98c2a982b59f/6754298445_3918332c9e_o.jpg"
-                  alt="kangaroos"
-                />
-              </div>
             </div>
           ))
         : null}
+      <div
+        id="sectionAnimation"
+        className="hidden"
+        ref={sectionAnimationRef}
+        style={{
+          marginTop: "36px",
+          marginRight: "4vw",
+          flexShrink: "0",
+          width: 640,
+          height: 480,
+        }}
+      ></div>
       <AddNewSection projectId={projectId} />
     </Box>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Container } from "@mui/material";
+import PermanentDrawerLeft from "./PermanentDrawerLeft";
 
 import { fetchSingleProjectAsync, getFilesAsync } from "../../features/";
 import LooperProject from "./LooperProject";
@@ -31,7 +31,8 @@ const SingleProject = () => {
   }, [dispatch, projectId, availableFiles]);
 
   return (
-    <Container>
+    <div>
+      <PermanentDrawerLeft />
       {project.type === "looper" ? (
         <LooperProject
           project={project}
@@ -41,7 +42,7 @@ const SingleProject = () => {
       ) : (
         <h1>Single Project</h1>
       )}
-    </Container>
+    </div>
   );
 };
 
