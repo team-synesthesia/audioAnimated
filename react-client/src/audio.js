@@ -19,6 +19,7 @@ class AudioContextPlus {
   currentPlayPosition = 0;
   audioBuffers = {};
   sources = [];
+  gainNodes = [];
 
   constructor() {
     this.init();
@@ -28,7 +29,7 @@ class AudioContextPlus {
     this.AC = new AudioContext();
     this.AA = this.AC.createAnalyser();
     this.AA.fftSize = 2048;
-    this.AA.connect(this.AC.destination)
+    this.AA.connect(this.AC.destination);
 
     if (this.AC) this.initialized = true;
   }
@@ -114,13 +115,29 @@ class AudioContextPlus {
     // save them so we can use them later on button click
     this.audioBuffers[filename] = await this.AC.decodeAudioData(ab);
   }
-
-  playSound(source, time, fudge) {
-    //connect to gainNodes to control relative volume
-    source.connect(this.AA);
+  setGain(value, index) {
+    this.gainNodes[index].gain.value = value;
+  }
+  addGainNode() {
+    const gainNode = this.AC.createGain();
+    gainNode.connect(this.AC.destination);
+    this.gainNodes.push(gainNode);
+  }
+  playSound(source, gainNode, time, fudge) {
+    // connect to gainNodes to control relative volume
+    gainNode.connect(this.AC.destination);
+    source.connect(gainNode);
     source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
   }
-
+  loadSources(fileNames) {
+    this.sources.length = 0; //reset the array
+    fileNames.forEach((fileName) => {
+      const src = this.AC.createBufferSource();
+      src.buffer = this.audioBuffers[fileName];
+      this.sources.push(src);
+      this.addGainNode();
+    });
+  }
   async playNSongs(fileNames, onEndCallback) {
     if (this.isPlaying) {
       this.isPlaying = false;
@@ -132,15 +149,11 @@ class AudioContextPlus {
     this.isPlaying = true;
     if (!this.started) {
       const startTime = this.AC.currentTime + 0.5;
-      this.sources.length = 0; //reset the array
-      fileNames.forEach((fileName) => {
-        const src = this.AC.createBufferSource();
-        src.buffer = this.audioBuffers[fileName];
-        this.sources.push(src);
-      });
+      this.loadSources(fileNames);
 
-      this.sources.forEach((source) => {
-        this.playSound(source, startTime, 0);
+      this.sources.forEach((source, i) => {
+        const gainNode = this.gainNodes[i];
+        this.playSound(source, gainNode, startTime, 0);
       });
       this.started = true;
 
@@ -158,36 +171,37 @@ class AudioContextPlus {
   }
 
   musicData() {
-  
-    const freqBins = this.getFrequencyData()
-    const waveForm = this.getTimeDomainData()
+    const freqBins = this.getFrequencyData();
+    const waveForm = this.getTimeDomainData();
 
-    let sum=0, sumLow=0, sumMid=0, sumHigh=0
-    let wsum1=0, wsum2=0
-    for (let i=0; i<200; i++) {
-        sum += freqBins[i]
-        if (i<50) {
-            sumLow += freqBins[i]
-            wsum1 += waveForm[i]
-        }
-        else if (i<100) {
-            sumMid += freqBins[i]
-            wsum2 += waveForm[i]
-        }
-        else {
-            sumHigh += freqBins[i]
-        }
+    let sum = 0,
+      sumLow = 0,
+      sumMid = 0,
+      sumHigh = 0;
+    let wsum1 = 0,
+      wsum2 = 0;
+    for (let i = 0; i < 200; i++) {
+      sum += freqBins[i];
+      if (i < 50) {
+        sumLow += freqBins[i];
+        wsum1 += waveForm[i];
+      } else if (i < 100) {
+        sumMid += freqBins[i];
+        wsum2 += waveForm[i];
+      } else {
+        sumHigh += freqBins[i];
+      }
     }
-    sum /=10000; 
+    sum /= 10000;
 
-    wsum1 /= 30000
-    wsum2 /= 30000
-    sumLow /= 2000
-    sumMid /= 3000
-    sumHigh /= 5000
-    sum *= 1.3
+    wsum1 /= 30000;
+    wsum2 /= 30000;
+    sumLow /= 2000;
+    sumMid /= 3000;
+    sumHigh /= 5000;
+    sum *= 1.3;
 
-    return {sum,sumLow,sumMid,sumHigh,wsum1,wsum2}
+    return { sum, sumLow, sumMid, sumHigh, wsum1, wsum2 };
   }
 }
 

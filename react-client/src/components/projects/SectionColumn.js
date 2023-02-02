@@ -12,11 +12,10 @@ export default function SectionColumn({
   userId,
   projectId,
   files,
-  sectionDuration,
   sectionNumber,
   sectionId,
   setGPUconfig,
-  setCanvasInitialized
+  setCanvasInitialized,
 }) {
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
@@ -29,7 +28,7 @@ export default function SectionColumn({
   const [intervalId, setIntervalId] = React.useState(0);
   const [ended, setEnded] = React.useState(0);
   const [restart, setRestart] = React.useState(false);
-  const [duration, setDuration] = React.useState(sectionDuration);
+  const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
 
   const acPlusRef = React.useRef();
@@ -65,8 +64,10 @@ export default function SectionColumn({
       if (!disabled) {
         const buffers = Object.values(acPlusRef.current.audioBuffers);
         const durations = buffers.map((x) => x.duration);
-        const max = Math.max(...durations);
-        setDuration(max);
+        if (durations.length) {
+          const max = Math.max(...durations);
+          setDuration(max);
+        }
       }
     };
     getDuration();
@@ -123,7 +124,7 @@ export default function SectionColumn({
       }, 1000);
       setIntervalId(id);
     }
-  }, [isPlaying, intervalId, timeSnapshot, sectionDuration]);
+  }, [isPlaying, intervalId, timeSnapshot]);
 
   const restartOnClick = () => {
     if (!isPlaying) {
@@ -145,39 +146,50 @@ export default function SectionColumn({
   const [singleSectionView, setSingleSectionView] = React.useState(null);
   const [togglePreviewButton, setTogglePreviewButton] = React.useState(true);
 
- 
-  const [attachGPU,setAttachGPU] = React.useState(false)
+  const [attachGPU, setAttachGPU] = React.useState(false);
 
   React.useEffect(() => {
     const sectionColumns = document.querySelectorAll(".sectionColumn");
     const addNewSection = document.querySelector(".addNewSection");
-    const sectionAnimation = document.getElementById("sectionAnimation")
+    const sectionAnimation = document.getElementById("sectionAnimation");
     if (singleSectionView !== null) {
-      sectionAnimation.classList.remove("hidden")
+      sectionAnimation.classList.remove("hidden");
       if (!attachGPU) {
-        setAttachGPU(true)
+        setAttachGPU(true);
       }
       for (let sectionColumn of sectionColumns) {
         if (Number(sectionColumn.id) !== singleSectionView)
           sectionColumn.classList.add("hidden");
       }
       addNewSection.classList.add("hidden");
-      
     } else {
-      sectionAnimation.classList.add("hidden")
+      sectionAnimation.classList.add("hidden");
 
       for (let sectionColumn of sectionColumns) {
         sectionColumn.classList.remove("hidden");
       }
       addNewSection.classList.remove("hidden");
     }
-  }, [singleSectionView,attachGPU]);
+  }, [singleSectionView, attachGPU]);
 
-  React.useEffect(()=>{
-    if (attachGPU) {
-      setGPUconfig( { isPlaying,acPlusRef:acPlusRef.current,sectionNumber,graphicsFn:(sectionNumber-1)} ) 
+  const changeVolume = (value, fileName) => {
+    if (!acPlusRef.current.started) {
+      acPlusRef.current.loadSources(files.map((x) => x.name));
     }
-  },[attachGPU,isPlaying,sectionNumber,setGPUconfig])  
+    const fileIndex = files.map((x) => x.name === fileName).indexOf(true);
+    acPlusRef.current.setGain(value, fileIndex);
+  };
+
+  React.useEffect(() => {
+    if (attachGPU) {
+      setGPUconfig({
+        isPlaying,
+        acPlusRef: acPlusRef.current,
+        sectionNumber,
+        graphicsFn: sectionNumber - 1,
+      });
+    }
+  }, [attachGPU, isPlaying, sectionNumber, setGPUconfig]);
 
   return (
     <Box className="sectionColumn" id={sectionNumber}>
@@ -222,7 +234,11 @@ export default function SectionColumn({
         {files && files.length
           ? files.map((file) => (
               <Grid key={file.id} item xs={6} md={8}>
-                <FileCard file={file} projectId={projectId} />
+                <FileCard
+                  file={file}
+                  projectId={projectId}
+                  changeVolume={changeVolume}
+                />
               </Grid>
             ))
           : null}
