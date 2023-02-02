@@ -10,12 +10,15 @@ export default function Sections({
   userId,
   projectId,
 }) {
+
+  const sectionAnimationRef = React.useRef()
+
   return (
     <Box
       sx={{
         marginLeft: "270px",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "row"
       }}
     >
       {sections && sections.length
@@ -28,14 +31,15 @@ export default function Sections({
                 sectionDuration={sectionDuration}
                 sectionNumber={section.sectionNumber}
                 sectionId={section.id}
+                sectionAnimationRef={sectionAnimationRef}
               />
 
             </div>
           )
         )
         : null}
-      <div id="sectionAnimation" className="hidden" 
-        style={{marginTop:"36px",flexShrink:"0",width:640,height:480,backgroundColor:"blue"}}></div>
+      <div id="sectionAnimation" className="hidden" ref={sectionAnimationRef}
+        style={{marginTop:"36px",marginRight:"4vw",flexShrink:"0",width:640,height:480,backgroundColor:"blue"}}></div>
       <AddNewSection projectId={projectId} />
     </Box>
   );
