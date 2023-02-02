@@ -5,7 +5,6 @@ import { Button } from "@mui/material";
 
 import {
   addFileAsync,
-  fetchSingleProjectAsync,
   writeFileAsync,
 } from "../../features";
 
@@ -32,17 +31,14 @@ const FileUploadForm = (props) => {
       userId,
     };
 
-    await dispatch(addFileAsync(formData));
-    await dispatch(writeFileAsync({ projectId, fileName: file.name, file }));
+    dispatch(addFileAsync(formData));
+    dispatch(writeFileAsync({ projectId, fileName: file.name, file }));
 
     const fileInput = document.querySelector("#fileInput");
     fileInput.value = "";
     setName("");
     setFile({});
     setUploadFormActive(null);
-    // if we want no refresh, use this instead
-    dispatch(fetchSingleProjectAsync({ projectId }));
-    // also need to dispatch the file get request
   };
 
   return (

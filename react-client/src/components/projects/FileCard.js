@@ -5,13 +5,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import { useDispatch } from "react-redux";
-import { deleteFileAsync, fetchSingleProjectAsync } from "../../features";
+import { deleteFileAsync } from "../../features";
 
-export default function FileCard({ file, projectId }) {
+export default function FileCard({ file }) {
   const dispatch = useDispatch();
-  const handleDelete = async (id) => {
-    await dispatch(deleteFileAsync(id));
-    dispatch(fetchSingleProjectAsync({ projectId }));
+  const handleDelete = (id, fileName, sectionId) => {
+    dispatch(deleteFileAsync({ id, fileName, sectionId }));
   };
 
   return (
@@ -35,7 +34,7 @@ export default function FileCard({ file, projectId }) {
         <Button
           type="button"
           size="small"
-          onClick={() => handleDelete(file.id)}
+          onClick={() => handleDelete(file.id, file.name, file.sectionId)}
         >
           Delete
         </Button>

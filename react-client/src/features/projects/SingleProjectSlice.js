@@ -63,13 +63,17 @@ export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
   }
 });
 
-export const deleteFileAsync = createAsyncThunk("deleteFile", async (id) => {
-  try {
-    await axios.delete(`/api/files/${id}`);
-  } catch (error) {
-    console.error(error);
+export const deleteFileAsync = createAsyncThunk(
+  "deleteFile",
+  async ({ id, fileName, sectionId }) => {
+    try {
+      await axios.delete(`/api/files/${id}`);
+      return { id, fileName, sectionId };
+    } catch (error) {
+      console.error(error);
+    }
   }
-});
+);
 
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
@@ -100,6 +104,7 @@ export const deleteSectionAsync = createAsyncThunk(
   async (id) => {
     try {
       await axios.delete(`/api/sections/${id}`);
+      return id;
     } catch (error) {
       console.error(error);
     }
@@ -144,6 +149,41 @@ export const singleProjectSlice = createSlice({
     });
     builder.addCase(createSectionAsync.fulfilled, (state, action) => {
       state.sections.push(action.payload);
+    });
+    builder.addCase(addFileAsync.fulfilled, (state, action) => {
+      const newFile = action.payload;
+      state.availableFiles[newFile.name] = newFile;
+      for (let section of state.sections) {
+        if (section.id === newFile.sectionId) {
+          section.files.push(newFile);
+          break;
+        }
+      }
+    });
+    builder.addCase(writeFileAsync.fulfilled, (state, action) => {});
+    builder.addCase(deleteFileAsync.fulfilled, (state, action) => {
+      const { id, fileName, sectionId } = action.payload;
+      delete state.availableFiles[fileName];
+      for (let section of state.sections) {
+        if (section.id === sectionId) {
+          for (let [i, file] of section.files.entries()) {
+            if (file.id === id) {
+              section.files.splice(i, 1);
+              break;
+            }
+          }
+          break;
+        }
+      }
+    });
+    builder.addCase(deleteSectionAsync.fulfilled, (state, action) => {
+      const sectionId = action.payload;
+      for (let [i, section] of state.sections.entries()) {
+        if (section.id === sectionId) {
+          state.sections.splice(i, 1);
+          break;
+        }
+      }
     });
   },
 });

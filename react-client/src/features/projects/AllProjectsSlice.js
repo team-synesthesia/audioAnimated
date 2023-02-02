@@ -8,7 +8,6 @@ export const fetchAllProjectsByUserIdAsync = createAsyncThunk(
       const { data } = await axios.get("/api/projects/", {
         params: { userId },
       });
-      console.log(data);
       return data;
     } catch (error) {
       console.log(error);

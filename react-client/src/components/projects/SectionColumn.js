@@ -169,7 +169,7 @@ export default function SectionColumn({
   }, [singleSectionView]);
 
   // this needs redux logic to update state
-  const dispatch = useDispatch;
+  const dispatch = useDispatch();
   const handleDeleteSection = () => {
     dispatch(deleteSectionAsync(sectionId));
   };
