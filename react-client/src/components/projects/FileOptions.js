@@ -17,8 +17,7 @@ const FileOptions = ({ handleClose, clickedFile }) => {
     const sectionCheckboxes = document.querySelectorAll(".sectionCheckbox");
     const sectionsToAssign = [];
     for (let sectionCheckbox of sectionCheckboxes) {
-      if (sectionCheckbox.checked)
-        sectionsToAssign.push(Number(sectionCheckbox.value));
+      sectionCheckbox.checked && sectionsToAssign.push(Number(sectionCheckbox.value));
     }
     for (let sectionToAssign of sectionsToAssign) {
       const { name, filePath, type, userId } = clickedFile;
