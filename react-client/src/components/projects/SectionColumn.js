@@ -41,8 +41,9 @@ export default function SectionColumn({
   React.useEffect(() => {
     const createBuffers = async () => {
       // wait for raw audio to load before executing
-      if (!Object.keys(audioRawFiles).length || typeof files==="undefined") return;
-  
+      if (!Object.keys(audioRawFiles).length || typeof files === "undefined")
+        return;
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileName = file.name;
@@ -201,96 +202,91 @@ export default function SectionColumn({
   };
 
   return (
-    <Box className="sectionColumn" id={sectionNumber}>
+    <Box
+      className="sectionColumn"
+      id={sectionNumber}
+      sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}
+    >
       <Button type="button" onClick={() => handleDeleteSection()}>
         Delete Section
       </Button>
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={8}>
-          <Button
-            type="button"
-            onClick={() => {
-              setSingleSectionView(sectionNumber);
-              setTogglePreviewButton(false);
-            }}
-            sx={
-              togglePreviewButton ? { display: "block" } : { display: "none" }
-            }
-          >
-            Preview
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              setSingleSectionView(null);
-              setTogglePreviewButton(true);
-            }}
-            sx={
-              !togglePreviewButton ? { display: "block" } : { display: "none" }
-            }
-          >
-            Exit Preview
-          </Button>
-          <Player
-            title={`Section ${sectionNumber}`}
-            isPlaying={isPlaying}
-            currentTime={currentTime}
-            playOnClick={playSection}
-            restartOnClick={restartOnClick}
-            disabled={disabled}
-            duration={duration}
-            loop={loop}
-            toggleLoop={toggleLoop}
-          />
-        </Grid>
-        {files && files.length
-          ? files.map((file) => (
-              <Grid key={file.id} item xs={6} md={8}>
-                <FileCard
-                  file={file}
-                  projectId={projectId}
-                  changeVolume={changeVolume}
-                />
-              </Grid>
-            ))
-          : null}
-        <Grid item xs={6} md={8} sx={{ display: "flex" }}>
-          <Button
-            type="button"
-            onClick={() => setAssignSectionFormActive(sectionNumber)}
-          >
-            Add a file
-          </Button>
-          <Button
-            size="small"
-            color="error"
-            onClick={() => setAssignSectionFormActive(null)}
-            sx={
-              sectionNumber !== AssignSectionFormActive
-                ? { display: "none" }
-                : { display: "block" }
-            }
-          >
-            X
-          </Button>
-        </Grid>
-        <Grid
-          item
-          xs={6}
+
+      <Button
+        type="button"
+        onClick={() => {
+          setSingleSectionView(sectionNumber);
+          setTogglePreviewButton(false);
+        }}
+        sx={togglePreviewButton ? { display: "block" } : { display: "none" }}
+      >
+        Preview
+      </Button>
+      <Button
+        type="button"
+        onClick={() => {
+          setSingleSectionView(null);
+          setTogglePreviewButton(true);
+        }}
+        sx={!togglePreviewButton ? { display: "block" } : { display: "none" }}
+      >
+        Exit Preview
+      </Button>
+      <Player
+        title={`Section ${sectionNumber}`}
+        isPlaying={isPlaying}
+        currentTime={currentTime}
+        playOnClick={playSection}
+        restartOnClick={restartOnClick}
+        disabled={disabled}
+        duration={duration}
+        loop={loop}
+        toggleLoop={toggleLoop}
+      />
+      {files && files.length
+        ? files.map((file) => (
+            <FileCard
+              file={file}
+              projectId={projectId}
+              changeVolume={changeVolume}
+            />
+          ))
+        : null}
+      <Grid item xs={6} md={8} sx={{ display: "flex" }}>
+        <Button
+          type="button"
+          onClick={() => setAssignSectionFormActive(sectionNumber)}
+        >
+          Add a file
+        </Button>
+        <Button
+          size="small"
+          color="error"
+          onClick={() => setAssignSectionFormActive(null)}
           sx={
             sectionNumber !== AssignSectionFormActive
               ? { display: "none" }
               : { display: "block" }
           }
         >
-          <AssignFileToSection
-            // projectId={projectId}
-            // userId={userId}
-            section={section}
-            sectionId={sectionId}
-            setAssignSectionFormActive={setAssignSectionFormActive}
-          />
-        </Grid>
+          X
+        </Button>
+      </Grid>
+      <Grid
+        item
+        xs={6}
+        sx={
+          sectionNumber !== AssignSectionFormActive
+            ? { display: "none" }
+            : { display: "block" }
+        }
+      >
+        <AssignFileToSection
+          // projectId={projectId}
+          // userId={userId}
+          section={section}
+          sectionId={sectionId}
+          setAssignSectionFormActive={setAssignSectionFormActive}
+        />
       </Grid>
     </Box>
   );

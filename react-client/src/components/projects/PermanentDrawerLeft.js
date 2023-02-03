@@ -17,7 +17,8 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 
 import TransitionsModal from "./TransitionsModal";
 
-const drawerWidth = 240;
+const drawerWidth = "15vw";
+const minWidth = 150;
 
 export default function PermanentDrawerLeft({ projectId, userId }) {
   const [open, setOpen] = React.useState(false);
@@ -39,9 +40,11 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
       <Drawer
         sx={{
           width: drawerWidth,
+          minWidth: minWidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
+            minWidth: minWidth,
             boxSizing: "border-box",
           },
         }}
@@ -99,23 +102,21 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
             </ListItemButton>
           </ListItem>
           {showMusicLibrary &&
-            Object.values(availableFiles).map((file) =>
-              (
-                <ListItem key={file.id}>
-                  <ListItemButton
-                    onClick={() => {
-                      handleOpen("fileOptions");
-                      setClickedFile(file);
-                    }}
-                  >
-                    <ListItemIcon>
-                      <MusicNoteIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={file.name} />
-                  </ListItemButton>
-                </ListItem>
-              )
-            )}
+            Object.values(availableFiles).map((file) => (
+              <ListItem key={file.id}>
+                <ListItemButton
+                  onClick={() => {
+                    handleOpen("fileOptions");
+                    setClickedFile(file);
+                  }}
+                >
+                  <ListItemIcon>
+                    <MusicNoteIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={file.name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </Drawer>
       <Box

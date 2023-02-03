@@ -20,14 +20,15 @@ export default function Sections({ sections, userId, projectId }) {
   return (
     <Box
       sx={{
-        marginLeft: "270px",
+        marginLeft: "16vw",
         display: "flex",
         flexDirection: "row",
+        gap: "1vw",
       }}
     >
       {sections && sections.length
         ? sections.map((section) => (
-            <div key={section.id}>
+            <Box key={section.id} sx={{ flex: "1 0 10%" }}>
               <SectionColumn
                 section={section}
                 userId={userId}
@@ -39,7 +40,7 @@ export default function Sections({ sections, userId, projectId }) {
                 setGPUconfig={setGPUconfig}
                 setCanvasInitialized={setCanvasInitialized}
               />
-            </div>
+            </Box>
           ))
         : null}
       <div
