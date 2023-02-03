@@ -6,7 +6,7 @@ import { Button } from "@mui/material";
 import { addFileAsync, writeFileAsync } from "../../features";
 
 const FileUploadForm = (props) => {
-  const { projectId, sectionId, userId, setUploadFormActive } = props;
+  const { projectId, userId, handleClose } = props;
 
   const [name, setName] = useState("");
   const [file, setFile] = useState({});
@@ -20,8 +20,8 @@ const FileUploadForm = (props) => {
       name,
       filePath: file.name,
       type: file.name.slice(-3),
-      sectionId,
       userId,
+      projectId,
     };
 
     dispatch(addFileAsync(formData));
@@ -31,7 +31,7 @@ const FileUploadForm = (props) => {
     fileInput.value = "";
     setName("");
     setFile({});
-    setUploadFormActive(null);
+    handleClose();
   };
 
   return (

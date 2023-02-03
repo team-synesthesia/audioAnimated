@@ -138,9 +138,9 @@ export const singleProjectSlice = createSlice({
       state.id = id;
       state.name = name;
       state.type = type;
-      state.sections = sections.sort(
-        (a, b) => a.sectionNumber - b.sectionNumber
-      );
+      state.sections = sections
+        .filter((x) => x.sectionNumber !== 0)
+        .sort((a, b) => a.sectionNumber - b.sectionNumber);
       state.sectionDuration = sectionDuration;
       state.availableFiles = availableFiles;
     });

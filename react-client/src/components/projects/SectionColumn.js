@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 import FileCard from "./FileCard";
 import Player from "./Player";
-import { FileUploadForm } from "../";
 import { deleteSectionAsync } from "../../features";
 
 export default function SectionColumn({
@@ -282,12 +281,13 @@ export default function SectionColumn({
               : { display: "block" }
           }
         >
-          <FileUploadForm
+          <div>Need to add form for adding file to section</div>
+          {/* <FileUploadForm
             projectId={projectId}
             userId={userId}
             sectionId={sectionId}
             setUploadFormActive={setUploadFormActive}
-          />
+          /> */}
         </Grid>
       </Grid>
     </Box>
