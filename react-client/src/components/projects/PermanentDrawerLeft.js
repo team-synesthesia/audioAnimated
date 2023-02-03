@@ -13,6 +13,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
 import TransitionsModal from "./TransitionsModal";
 
@@ -56,6 +57,14 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
+                <DriveFileRenameOutlineIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Edit Project Name"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
                 <BubbleChartIcon />
               </ListItemIcon>
               <ListItemText
@@ -64,6 +73,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               />
             </ListItemButton>
           </ListItem>
+          <Divider />
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -83,30 +93,6 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               <ListItemText primary={"Music Library"} />
             </ListItemButton>
           </ListItem>
-
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
         </List>
       </Drawer>
       <Box
