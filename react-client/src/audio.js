@@ -127,8 +127,6 @@ class AudioContextPlus {
   playSound(source, gainNode, time, fudge) {
     // connect to gainNodes to control relative volume
     source.connect(gainNode);
-    //all audio source/effect/control nodes connect to Analyser before speakers
-    gainNode.connect(this.AA)  
     source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
   }
   loadSources(fileNames) {
