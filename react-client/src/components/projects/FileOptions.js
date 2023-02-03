@@ -32,11 +32,15 @@ const FileOptions = ({ handleClose, clickedFile }) => {
       dispatch(addFileAsync(data));
     }
 
+    for (let sectionCheckbox of sectionCheckboxes) {
+      sectionCheckbox.checked = false;
+    }
     handleClose();
   };
 
   return (
     <div>
+      <h1>{clickedFile.name}</h1>
       <form onSubmit={handleSubmit}>
         {sections.map((section) => (
           <div key={section.id}>

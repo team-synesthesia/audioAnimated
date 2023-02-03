@@ -6,9 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 
 import FileCard from "./FileCard";
 import Player from "./Player";
+import { AssignFileToSection } from "../";
 import { deleteSectionAsync } from "../../features";
 
 export default function SectionColumn({
+  section,
   userId,
   projectId,
   files,
@@ -142,7 +144,8 @@ export default function SectionColumn({
     setLoop(!loop);
   };
 
-  const [uploadFormActive, setUploadFormActive] = React.useState(null);
+  const [AssignSectionFormActive, setAssignSectionFormActive] =
+    React.useState(null);
   const [singleSectionView, setSingleSectionView] = React.useState(null);
   const [togglePreviewButton, setTogglePreviewButton] = React.useState(true);
 
@@ -253,16 +256,16 @@ export default function SectionColumn({
         <Grid item xs={6} md={8} sx={{ display: "flex" }}>
           <Button
             type="button"
-            onClick={() => setUploadFormActive(sectionNumber)}
+            onClick={() => setAssignSectionFormActive(sectionNumber)}
           >
             Add a file
           </Button>
           <Button
             size="small"
             color="error"
-            onClick={() => setUploadFormActive(null)}
+            onClick={() => setAssignSectionFormActive(null)}
             sx={
-              sectionNumber !== uploadFormActive
+              sectionNumber !== AssignSectionFormActive
                 ? { display: "none" }
                 : { display: "block" }
             }
@@ -274,18 +277,18 @@ export default function SectionColumn({
           item
           xs={6}
           sx={
-            sectionNumber !== uploadFormActive
+            sectionNumber !== AssignSectionFormActive
               ? { display: "none" }
               : { display: "block" }
           }
         >
-          <div>Need to add form for adding file to section</div>
-          {/* <FileUploadForm
-            projectId={projectId}
-            userId={userId}
+          <AssignFileToSection
+            // projectId={projectId}
+            // userId={userId}
+            section={section}
             sectionId={sectionId}
-            setUploadFormActive={setUploadFormActive}
-          /> */}
+            setAssignSectionFormActive={setAssignSectionFormActive}
+          />
         </Grid>
       </Grid>
     </Box>
