@@ -40,7 +40,8 @@ export default function SectionColumn({
   React.useEffect(() => {
     const createBuffers = async () => {
       // wait for raw audio to load before executing
-      if (!Object.keys(audioRawFiles).length) return;
+      if (!Object.keys(audioRawFiles).length || typeof files==="undefined") return;
+  
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileName = file.name;
