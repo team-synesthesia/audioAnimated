@@ -88,6 +88,10 @@ class AudioContextPlus {
   }
 
   async createAudioBuffers(data, audio, filename) {
+
+    //this is called sometimes when data is undefined
+    if ( typeof data==="undefined") return
+
     //atob is base64 string to binary
     //formData PUT with an audio file runs btoa at some point
     const raw = window.atob(data);
