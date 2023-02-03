@@ -92,19 +92,19 @@ export  const fragmentShaders = [
     uniform vec4  iMusic;
     
     #define R(p,a,t) mix(a*dot(p,a),p,cos(t))+sin(t)*cross(p,a)
-    #define H(h)  (cos( max(1.,(1.1+sin(t)))*1.3*h +vec3(5,25,21) )*.7 + .2 )
+    #define H(h)  (cos( max(1.,(1.1+sin(t)))*1.3*h +vec3(5,25,21)+iMusic.xyz/30. )*.7 + .2 )
     void mainImage( out vec4 O, vec2 C)
     { 
         O=vec4(0.,0.,0.,1.);
         vec3 r=iResolution,c=vec3(0),
         d = normalize(vec3(C-.5*r.xy,r.y))*4.;
-        float s,e,g=0.,t=1. + iTime + iMusic.x/5.;
+        float s,e,g=0.,t=1. + iTime - iMusic.x/5.;
         for(float i=0.;i<115.;i++){
             vec4 p=vec4(g*d,0.);
             p.xyz=R(p.xyz+vec3(0.,0.,-2.5),normalize(H(t*.05)),t);
             s=1.;
             for(float j=0.;j<7.;j++) {  
-                p= abs(p)*.6208;
+                p= abs(p)*.621;
                 s*=e=max(1./dot(p,p),.3),
                 p=abs(p.x<p.y?p.wzxy:p.wzyx)*e - 1.1;  
             }

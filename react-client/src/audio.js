@@ -120,13 +120,15 @@ class AudioContextPlus {
   }
   addGainNode() {
     const gainNode = this.AC.createGain();
-    gainNode.connect(this.AC.destination);
+    //all audio source/effect/control nodes connect to Analyser before speakers
+    gainNode.connect(this.AA)
     this.gainNodes.push(gainNode);
   }
   playSound(source, gainNode, time, fudge) {
     // connect to gainNodes to control relative volume
-    gainNode.connect(this.AC.destination);
     source.connect(gainNode);
+    //all audio source/effect/control nodes connect to Analyser before speakers
+    gainNode.connect(this.AA)  
     source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
   }
   loadSources(fileNames) {
