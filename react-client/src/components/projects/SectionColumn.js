@@ -191,7 +191,6 @@ export default function SectionColumn({
     }
   }, [attachGPU, isPlaying, sectionNumber, setGPUconfig]);
 
-  // this needs redux logic to update state
   const dispatch = useDispatch();
   const handleDeleteSection = () => {
     dispatch(deleteSectionAsync(sectionId));

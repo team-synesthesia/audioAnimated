@@ -16,8 +16,10 @@ import { deleteFileAsync } from "../../features";
 
 export default function FileCard({ file, changeVolume }) {
   const dispatch = useDispatch();
-  const handleDelete = (name) => {
-    dispatch(deleteFileAsync({ name }));
+  const handleDelete = (sectionNumber) => {
+    dispatch(
+      deleteFileAsync({ deleteParam: Number(sectionNumber), type: "byId" })
+    );
   };
 
   const [onOff, setOnOff] = React.useState(true);
@@ -60,9 +62,9 @@ export default function FileCard({ file, changeVolume }) {
           <Button
             type="button"
             size="small"
-            onClick={() => handleDelete(file.name)}
+            onClick={() => handleDelete(file.id)}
           >
-            Delete
+            Remove From Section
           </Button>
         </AccordionDetails>
       </Accordion>

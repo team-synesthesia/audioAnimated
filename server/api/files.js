@@ -26,15 +26,24 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/:name", async (req, res, next) => {
+router.delete("/", async (req, res, next) => {
   try {
-    const filesToDelete = await File.findAll({
-      where: { name: req.params.name },
-    });
-    for (let file of filesToDelete) {
-      await file.destroy();
+    const { deleteParam, type } = req.query;
+    if (type === "byName") {
+      const name = deleteParam;
+      const filesToDelete = await File.findAll({
+        where: { name },
+      });
+      for (let file of filesToDelete) {
+        await file.destroy();
+      }
+    } else if (type === "byId") {
+      const fileId = deleteParam;
+      const fileToDelete = await File.findByPk(fileId);
+      await fileToDelete.destroy();
     }
-    res.status(202).send("sent");
+
+    res.status(202).send("deleted");
   } catch (err) {
     next(err);
   }

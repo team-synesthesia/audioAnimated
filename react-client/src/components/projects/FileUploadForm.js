@@ -13,7 +13,7 @@ const FileUploadForm = (props) => {
 
   const dispatch = useDispatch();
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
 
     const formData = {
