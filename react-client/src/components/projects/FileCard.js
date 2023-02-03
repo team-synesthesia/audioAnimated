@@ -22,14 +22,14 @@ export default function FileCard({ file, changeVolume }) {
 
   const [onOff, setOnOff] = React.useState(true);
 
-  const [volume, setVolume] = React.useState(100);
+  const [volume, setVolume] = React.useState(50);
   const _changeVolume = (value) => {
     setVolume(value);
-    changeVolume(value / 100, file.name);
+    changeVolume(value / 30, file.name);
   };
 
   const togglerOnOff = (value) => {
-    if (value) _changeVolume(100);
+    if (value) _changeVolume(50);
     else _changeVolume(0);
     setOnOff(value);
   };
