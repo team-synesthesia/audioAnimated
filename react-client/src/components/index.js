@@ -12,3 +12,5 @@ export { default as NotFound } from "./main/NotFound";
 export { default as AllProjects } from "./projects/AllProjects";
 export { default as SingleProject } from "./projects/SingleProject";
 export { default as FileUploadForm } from "./projects/FileUploadForm";
+export { default as FileOptions } from "./projects/FileOptions";
+export { default as AssignFileToSection } from "./projects/AssignFileToSection";

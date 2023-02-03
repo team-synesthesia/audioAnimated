@@ -1,9 +1,10 @@
 import * as React from "react";
+import FileUploadForm from "./FileUploadForm";
+import { FileOptions } from "../";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
-import FileUploadForm from "./FileUploadForm";
 
 const style = {
   position: "absolute",
@@ -23,6 +24,7 @@ export default function TransitionsModal({
   open,
   handleClose,
   type,
+  clickedFile,
 }) {
   return (
     <div>
@@ -46,7 +48,12 @@ export default function TransitionsModal({
                 handleClose={handleClose}
               />
             ) : type === "changeGraphicsFn" ? (
-              <div>'Phil's graphics form component will go here</div>
+              <div>Phil's graphics form component will go here</div>
+            ) : type === "fileOptions" ? (
+              <FileOptions
+                handleClose={handleClose}
+                clickedFile={clickedFile}
+              />
             ) : null}
           </Box>
         </Fade>

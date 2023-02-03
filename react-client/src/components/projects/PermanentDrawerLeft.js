@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,6 +13,7 @@ import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
 
 import TransitionsModal from "./TransitionsModal";
 
@@ -20,6 +22,8 @@ const drawerWidth = 240;
 export default function PermanentDrawerLeft({ projectId, userId }) {
   const [open, setOpen] = React.useState(false);
   const [modalType, setModalType] = React.useState("");
+  const [showMusicLibrary, setShowMusicLibrary] = React.useState(false);
+  const [clickedFile, setClickedFile] = React.useState({});
 
   const handleOpen = (type) => {
     setModalType(type);
@@ -27,6 +31,8 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
   };
 
   const handleClose = () => setOpen(false);
+
+  const { availableFiles } = useSelector((state) => state.singleProject);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -50,6 +56,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           open={open}
           handleClose={handleClose}
           type={modalType}
+          clickedFile={clickedFile}
         />
         <List>
           <ListItem disablePadding>
@@ -61,36 +68,54 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
               <ListItemIcon>
                 <BubbleChartIcon />
               </ListItemIcon>
-              <ListItemText
-                primary={"Graphics Fn"}
-                onClick={() => handleOpen("changeGraphicsFn")}
-              />
+              <ListItemText primary={"Graphics Fn"} />
             </ListItemButton>
           </ListItem>
           <Divider />
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => handleOpen("uploadFile")}>
               <ListItemIcon>
                 <FileUploadIcon />
               </ListItemIcon>
-              <ListItemText
-                primary={"Upload File"}
-                onClick={() => handleOpen("uploadFile")}
-              />
+              <ListItemText primary={"Upload File"} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                !showMusicLibrary
+                  ? setShowMusicLibrary(true)
+                  : setShowMusicLibrary(false);
+              }}
+            >
               <ListItemIcon>
                 <LibraryMusicIcon />
               </ListItemIcon>
               <ListItemText primary={"Music Library"} />
             </ListItemButton>
           </ListItem>
+          {showMusicLibrary &&
+            Object.values(availableFiles).map((file) =>
+              (
+                <ListItem key={file.id}>
+                  <ListItemButton
+                    onClick={() => {
+                      handleOpen("fileOptions");
+                      setClickedFile(file);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <MusicNoteIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={file.name} />
+                  </ListItemButton>
+                </ListItem>
+              )
+            )}
         </List>
       </Drawer>
       <Box

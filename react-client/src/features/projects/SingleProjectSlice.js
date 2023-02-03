@@ -65,10 +65,10 @@ export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
 
 export const deleteFileAsync = createAsyncThunk(
   "deleteFile",
-  async ({ name }) => {
+  async ({ deleteParam, type }) => {
     try {
-      await axios.delete(`/api/files/${name}`);
-      return name;
+      await axios.delete("/api/files/", { params: { deleteParam, type } });
+      return { deleteParam, type };
     } catch (error) {
       console.error(error);
     }
@@ -152,7 +152,8 @@ export const singleProjectSlice = createSlice({
     });
     builder.addCase(addFileAsync.fulfilled, (state, action) => {
       const newFile = action.payload;
-      state.availableFiles[newFile.name] = newFile;
+      if (!state.availableFiles[newFile.name])
+        state.availableFiles[newFile.name] = newFile;
       for (let section of state.sections) {
         if (section.id === newFile.sectionId) {
           section.files.push(newFile);
@@ -161,13 +162,25 @@ export const singleProjectSlice = createSlice({
       }
     });
     builder.addCase(deleteFileAsync.fulfilled, (state, action) => {
-      const fileName = action.payload;
-      delete state.availableFiles[fileName];
-      delete state.audioRawFiles[fileName];
-      for (let section of state.sections) {
-        for (let [i, file] of section.files.entries()) {
-          if (file.name === fileName) {
-            section.files.splice(i, 1);
+      const { deleteParam, type } = action.payload;
+      if (type === "byName") {
+        const fileName = deleteParam;
+        delete state.availableFiles[fileName];
+        delete state.audioRawFiles[fileName];
+        for (let section of state.sections) {
+          for (let [i, file] of section.files.entries()) {
+            if (file.name === fileName) {
+              section.files.splice(i, 1);
+            }
+          }
+        }
+      } else if (type === "byId") {
+        const fileId = deleteParam;
+        for (let section of state.sections) {
+          for (let [i, file] of section.files.entries()) {
+            if (file.id === fileId) {
+              section.files.splice(i, 1);
+            }
           }
         }
       }
