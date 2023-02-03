@@ -1,5 +1,8 @@
 import * as React from "react";
-import { Box, Grid, Button } from "@mui/material";
+import { Box, Grid, Button, IconButton } from "@mui/material";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import BubbleChartIcon from "@mui/icons-material/BubbleChart";
+import Tooltip from "@mui/material/Tooltip";
 
 import AudioContextPlus from "../../audio";
 import { useSelector, useDispatch } from "react-redux";
@@ -207,30 +210,44 @@ export default function SectionColumn({
       id={sectionNumber}
       sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}
     >
-      <Button type="button" onClick={() => handleDeleteSection()}>
-        Delete Section
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Tooltip title="Preview">
+          <IconButton
+            type="button"
+            onClick={() => {
+              setSingleSectionView(sectionNumber);
+              setTogglePreviewButton(false);
+            }}
+            sx={
+              togglePreviewButton ? { display: "block" } : { display: "none" }
+            }
+          >
+            <BubbleChartIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Exit Preview">
+          <IconButton
+            type="button"
+            onClick={() => {
+              setSingleSectionView(null);
+              setTogglePreviewButton(true);
+            }}
+            sx={
+              !togglePreviewButton
+                ? { display: "block", color: "green" }
+                : { display: "none" }
+            }
+          >
+            <BubbleChartIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Remove Section">
+          <IconButton type="button" sx={{ "&:hover": { color: "red" } }}>
+            <RemoveCircleOutlineIcon onClick={() => handleDeleteSection()} />
+          </IconButton>
+        </Tooltip>
+      </Box>
 
-      <Button
-        type="button"
-        onClick={() => {
-          setSingleSectionView(sectionNumber);
-          setTogglePreviewButton(false);
-        }}
-        sx={togglePreviewButton ? { display: "block" } : { display: "none" }}
-      >
-        Preview
-      </Button>
-      <Button
-        type="button"
-        onClick={() => {
-          setSingleSectionView(null);
-          setTogglePreviewButton(true);
-        }}
-        sx={!togglePreviewButton ? { display: "block" } : { display: "none" }}
-      >
-        Exit Preview
-      </Button>
       <Player
         title={`Section ${sectionNumber}`}
         isPlaying={isPlaying}
