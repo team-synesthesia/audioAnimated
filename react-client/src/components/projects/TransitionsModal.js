@@ -18,6 +18,36 @@ const style = {
   p: 4,
 };
 
+function SwitchComponent({
+  projectId,
+  userId,
+  handleClose,
+  type,
+  clickedFile,
+}) {
+  switch (type) {
+    case "uploadFile":
+      return (
+        <FileUploadForm
+          projectId={projectId}
+          userId={userId}
+          handleClose={handleClose}
+        />
+      );
+
+    case "changeGraphicsFn":
+      return <div>Phil's graphics form component will go here</div>;
+
+    case "fileOptions":
+      return (
+        <FileOptions handleClose={handleClose} clickedFile={clickedFile} />
+      );
+
+    default:
+      return null;
+  }
+}
+
 export default function TransitionsModal({
   projectId,
   userId,
@@ -41,20 +71,13 @@ export default function TransitionsModal({
       >
         <Fade in={open}>
           <Box sx={style}>
-            {type === "uploadFile" ? (
-              <FileUploadForm
-                projectId={projectId}
-                userId={userId}
-                handleClose={handleClose}
-              />
-            ) : type === "changeGraphicsFn" ? (
-              <div>Phil's graphics form component will go here</div>
-            ) : type === "fileOptions" ? (
-              <FileOptions
-                handleClose={handleClose}
-                clickedFile={clickedFile}
-              />
-            ) : null}
+            <SwitchComponent
+              projectId={projectId}
+              userId={userId}
+              handleClose={handleClose}
+              type={type}
+              clickedFile={clickedFile}
+            />
           </Box>
         </Fade>
       </Modal>
