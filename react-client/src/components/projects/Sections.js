@@ -20,7 +20,7 @@ export default function Sections({ sections, userId, projectId }) {
   return (
     <Box
       sx={{
-        marginLeft: "16vw",
+        marginLeft: "max(16vw,152px)",
         display: "flex",
         flexDirection: "row",
         gap: "1vw",
