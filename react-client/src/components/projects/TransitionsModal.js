@@ -26,6 +26,7 @@ function SwitchComponent({
   handleClose,
   type,
   clickedFile,
+  availableFiles,
 }) {
   switch (type) {
     case "uploadFile":
@@ -46,7 +47,7 @@ function SwitchComponent({
       );
 
     case "record":
-      return <Checkout />;
+      return <Checkout availableFiles={availableFiles} />;
 
     default:
       return null;
@@ -60,6 +61,7 @@ export default function TransitionsModal({
   handleClose,
   type,
   clickedFile,
+  availableFiles,
 }) {
   return (
     <div>
@@ -82,6 +84,7 @@ export default function TransitionsModal({
               handleClose={handleClose}
               type={type}
               clickedFile={clickedFile}
+              availableFiles={availableFiles}
             />
           </Box>
         </Fade>

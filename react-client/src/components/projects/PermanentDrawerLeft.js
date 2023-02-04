@@ -61,6 +61,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           handleClose={handleClose}
           type={modalType}
           clickedFile={clickedFile}
+          availableFiles={availableFiles}
         />
         <List>
           <ListItem disablePadding>
