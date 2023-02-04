@@ -6,6 +6,12 @@ import { addFileAsync } from "../../features";
 const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
   const { availableFiles } = useSelector((state) => state.singleProject);
   const fileNames = [];
+
+  const dispatch = useDispatch();
+
+  if ( typeof section.files === "undefined") return
+
+
   for (let file of section.files) {
     fileNames.push(file.name);
   }
@@ -13,7 +19,7 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
     (file) => !fileNames.includes(file.name)
   );
 
-  const dispatch = useDispatch();
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
