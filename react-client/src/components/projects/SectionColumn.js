@@ -242,8 +242,12 @@ export default function SectionColumn({
           </IconButton>
         </Tooltip>
         <Tooltip title="Remove Section">
-          <IconButton type="button" sx={{ "&:hover": { color: "red" } }}>
-            <RemoveCircleOutlineIcon onClick={() => handleDeleteSection()} />
+          <IconButton
+            type="button"
+            onClick={() => handleDeleteSection()}
+            sx={{ "&:hover": { color: "red" } }}
+          >
+            <RemoveCircleOutlineIcon />
           </IconButton>
         </Tooltip>
       </Box>
@@ -262,6 +266,7 @@ export default function SectionColumn({
       {files && files.length
         ? files.map((file) => (
             <FileCard
+              key={file.id}
               file={file}
               projectId={projectId}
               changeVolume={changeVolume}
