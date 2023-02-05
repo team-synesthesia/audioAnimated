@@ -1,9 +1,10 @@
 import * as React from "react"
 
 export const graphicsOptions = [
-    {type:"shader", fn:2, name:"Gaz Inspired", imgUrl:"g1.jpg"},
+    {type:"shader", fn:3, name:"Luminescent Tiles", imgUrl:"g2.jpg"},
     {type:"shader", fn:2, name:"Gaz Inspired", imgUrl:"g1.jpg"},
     {type:"shader", fn:3, name:"Luminescent Tiles", imgUrl:"g2.jpg"},
+    {type:"shader", fn:2, name:"Gaz Inspired", imgUrl:"g1.jpg"},
     {type:"vertex", fn:0, name:"Dancing Cube", imgUrl:"g0.jpg"}
 ]
 

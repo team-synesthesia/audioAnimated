@@ -5,24 +5,11 @@ import SectionColumn from "./SectionColumn";
 import SingleSectionView from "./SingleSectionView";
 import AddNewSection from "./AddNewSection";
 
-import { GPU } from "./GPU/GPU";
-
 export default function Sections({ sections, userId, projectId }) {
-  const sectionAnimationRef = React.useRef();
 
   const [singleSection, setSingleSection] = React.useState(false);
   const [selectedSectionId, setSelectedSectionId] = React.useState(1);
   const [selectedSection, setSelectedSection] = React.useState({});
-
-  const [GPUconfig, setGPUconfig] = React.useState({});
-  const [canvasInitialized, setCanvasInitialized] = React.useState(false);
-
-  GPU({
-    GPUconfig,
-    gpuDivRef: sectionAnimationRef.current,
-    canvasInitialized,
-    setCanvasInitialized,
-  });
 
   React.useEffect(() => {
     if (selectedSectionId) {
@@ -41,9 +28,6 @@ export default function Sections({ sections, userId, projectId }) {
           files={selectedSection.files}
           sectionNumber={selectedSection.sectionNumber}
           sectionId={selectedSection.id}
-          sectionAnimationRef={sectionAnimationRef.current}
-          setGPUconfig={setGPUconfig}
-          setCanvasInitialized={setCanvasInitialized}
         />
       ) : (
         <MultiSectionView

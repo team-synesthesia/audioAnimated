@@ -7,6 +7,8 @@ import Tooltip from "@mui/material/Tooltip";
 import MultiFilePlayer from "./MultiFilePlayer";
 import { AssignFileToSection } from "../";
 
+import {GPU} from "./GPU/GPU"
+
 export default function SingleSectionView({
   setSingleSection,
   handleDeleteSection,
@@ -14,12 +16,25 @@ export default function SingleSectionView({
   files,
   sectionNumber,
   sectionId,
-  sectionAnimationRef,
-  setGPUconfig,
-  setCanvasInitialized,
+  //sectionAnimationRef,
+  //setGPUconfig,
+  //setCanvasInitialized,
 }) {
   const [AssignSectionFormActive, setAssignSectionFormActive] =
     React.useState(null);
+
+  const [GPUconfig, setGPUconfig] = React.useState({});
+  const [canvasInitialized, setCanvasInitialized] = React.useState(false);
+
+  const sectionAnimationRef = React.useRef()
+
+  GPU({
+    GPUconfig,
+    gpuDivRef: sectionAnimationRef.current,
+    canvasInitialized,
+    sectionNumberx:sectionNumber,
+    setCanvasInitialized,
+  });
 
   return (
     <Box
@@ -106,6 +121,7 @@ export default function SingleSectionView({
           flexShrink: "0",
           width: 640,
           height: 480,
+          backgroundColor: "blue"
         }}
       ></div>
     </Box>
