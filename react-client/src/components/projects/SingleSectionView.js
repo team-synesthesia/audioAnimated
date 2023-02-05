@@ -1,24 +1,20 @@
 import * as React from "react";
-import { Box, Grid, Button, IconButton } from "@mui/material";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import BubbleChartIcon from "@mui/icons-material/BubbleChart";
-import Tooltip from "@mui/material/Tooltip";
+import { Box, Grid, Button } from "@mui/material";
 
+import { SectionButtons } from "./SectionButtons";
 import MultiFilePlayer from "./MultiFilePlayer";
 import { AssignFileToSection } from "../";
 
 import { GPU } from "./GPU/GPU";
 
 export default function SingleSectionView({
+  singleSection,
   setSingleSection,
   handleDeleteSection,
   section,
   files,
   sectionNumber,
   sectionId,
-  //sectionAnimationRef,
-  //setGPUconfig,
-  //setCanvasInitialized,
 }) {
   const [AssignSectionFormActive, setAssignSectionFormActive] =
     React.useState(null);
@@ -36,6 +32,10 @@ export default function SingleSectionView({
     setCanvasInitialized,
   });
 
+  const togglePreviewOnClick = () => {
+    setSingleSection(false);
+  };
+
   return (
     <Box
       sx={{
@@ -46,28 +46,13 @@ export default function SingleSectionView({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Tooltip title="Exit Preview">
-            <IconButton
-              type="button"
-              onClick={() => {
-                setSingleSection(false);
-              }}
-              sx={{ color: "green" }}
-            >
-              <BubbleChartIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Remove Section">
-            <IconButton
-              type="button"
-              onClick={() => handleDeleteSection()}
-              sx={{ "&:hover": { color: "red" } }}
-            >
-              <RemoveCircleOutlineIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        <SectionButtons
+          singleSection={singleSection}
+          togglePreviewOnClick={togglePreviewOnClick}
+          previewTitle={"Preview"}
+          handleDeleteSection={handleDeleteSection}
+          sectionId={sectionId}
+        />
         <MultiFilePlayer
           title={`Section ${sectionNumber}`}
           files={files}
