@@ -18,24 +18,28 @@ export function SectionButtons({
   return (
     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
       <Tooltip title={previewTitle}>
-        <IconButton
-          type="button"
-          onClick={() => togglePreviewOnClick(singleSection, sectionId)}
-          sx={sx}
-          disabled={disabled}
-        >
-          <BubbleChartIcon />
-        </IconButton>
+        <span>
+          <IconButton
+            type="button"
+            onClick={() => togglePreviewOnClick(singleSection, sectionId)}
+            sx={sx}
+            disabled={disabled}
+          >
+            <BubbleChartIcon />
+          </IconButton>
+        </span>
       </Tooltip>
       <Tooltip title="Remove Section">
-        <IconButton
-          type="button"
-          onClick={() => handleDeleteSection(sectionId)}
-          sx={{ "&:hover": { color: "red" } }}
-          disabled={disabled}
-        >
-          <RemoveCircleOutlineIcon />
-        </IconButton>
+        <span>
+          <IconButton
+            type="button"
+            onClick={() => handleDeleteSection(sectionId)}
+            sx={{ "&:hover": { color: "red" } }}
+            disabled={disabled}
+          >
+            <RemoveCircleOutlineIcon />
+          </IconButton>
+        </span>
       </Tooltip>
     </Box>
   );
