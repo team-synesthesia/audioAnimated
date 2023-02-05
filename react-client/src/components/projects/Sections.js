@@ -6,20 +6,30 @@ import SingleSectionView from "./SingleSectionView";
 import AddNewSection from "./AddNewSection";
 
 export default function Sections({ sections, userId, projectId }) {
-
   const [singleSection, setSingleSection] = React.useState(false);
+  const [singleSectionRender, setSingleSectionRender] = React.useState(false);
   const [selectedSectionId, setSelectedSectionId] = React.useState(1);
   const [selectedSection, setSelectedSection] = React.useState({});
 
   React.useEffect(() => {
-    if (selectedSectionId) {
+    if (singleSection) {
       setSelectedSection(sections.filter((x) => x.id === selectedSectionId)[0]);
+    } else {
+      setSelectedSection({});
     }
-  }, [sections, selectedSectionId, setSelectedSection]);
+  }, [sections, singleSection, selectedSectionId, setSelectedSection]);
+
+  React.useEffect(() => {
+    if (singleSection & (Object.keys(selectedSection).length > 0)) {
+      setSingleSectionRender(true);
+    } else {
+      setSingleSectionRender(false);
+    }
+  }, [singleSection, selectedSection]);
 
   return (
     <div>
-      {singleSection ? (
+      {singleSectionRender ? (
         <SingleSectionView
           setSingleSection={setSingleSection}
           section={selectedSection}
