@@ -9,6 +9,7 @@ export function SectionButtons({
   previewTitle,
   handleDeleteSection,
   sectionId,
+  disabled,
 }) {
   let sx;
   if (singleSection) {
@@ -21,6 +22,7 @@ export function SectionButtons({
           type="button"
           onClick={() => togglePreviewOnClick(singleSection, sectionId)}
           sx={sx}
+          disabled={disabled}
         >
           <BubbleChartIcon />
         </IconButton>
@@ -30,6 +32,7 @@ export function SectionButtons({
           type="button"
           onClick={() => handleDeleteSection(sectionId)}
           sx={{ "&:hover": { color: "red" } }}
+          disabled={disabled}
         >
           <RemoveCircleOutlineIcon />
         </IconButton>

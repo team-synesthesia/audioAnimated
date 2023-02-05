@@ -117,7 +117,9 @@ function MultiSectionView({
             </Box>
           ))
         : null}
-      <AddNewSection projectId={projectId} />
+      <Box sx={{ flex: "1 0 10%" }}>
+        <AddNewSection projectId={projectId} />
+      </Box>
     </Box>
   );
 }
