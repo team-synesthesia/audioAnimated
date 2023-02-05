@@ -11,7 +11,6 @@ export default function PlayAll() {
 
     React.useEffect(()=>{
         if ( !started.current) {
-            console.log('starting')
             dispatch(setTryToStart(true))
             dispatch(setSectionToPlay(0))
             started.current = true
@@ -24,7 +23,6 @@ export default function PlayAll() {
             dispatch(setTryToStart(false))
             dispatch(setFinished(false))
             dispatch(setSectionToPlay(-1))
-            console.log('finished')
         }
     },[finished, dispatch])
  

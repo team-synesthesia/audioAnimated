@@ -6,8 +6,7 @@ export const playAllSlice = createSlice({
         sectionToPlay: -1,  //this is actually an array index
         tryToStart: false,
         playAllStarted: false,
-        alreadyPlaying: false,
-        next: -1, 
+        alreadyPlaying: false, 
         finished: false,
     },
     reducers: {
@@ -23,9 +22,6 @@ export const playAllSlice = createSlice({
         setAlreadyPlaying(state,action) {
             state.alreadyPlaying = action.payload
         },
-        setNext(state,action) {
-            state.next = action.payload
-        },
         setFinished(state,action) {
             state.finished = action.payload
         }
@@ -33,7 +29,7 @@ export const playAllSlice = createSlice({
 })
 
 export const {setSectionToPlay,setTryToStart,
-    setPlayAllStarted, alreadyPlaying, setNext, setFinished } = playAllSlice.actions
+    setPlayAllStarted, alreadyPlaying, setFinished } = playAllSlice.actions
 
 export default playAllSlice.reducer
 

@@ -24,7 +24,7 @@ export default function MultiFilePlayer({
     (state) => state.singleProject.audioRawFiles
   );
 
-  const { sectionToPlay, playAllStarted, tryToStart } = useSelector(
+  const { sectionToPlay, tryToStart } = useSelector(
     (state) => state.playAll );
 
   const {sections} = useSelector( state => state.singleProject )
@@ -78,15 +78,12 @@ export default function MultiFilePlayer({
     getDuration();
   }, [disabled]);
 
-  const [playAll,setPlayAll] = React.useState(false)
+
   const [sectionPlayed,setSectionPlayed] = React.useState(-1)
-
-
   const playSection = React.useCallback( async () => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
-      console.log('sectionPlayed',sectionPlayed, playAll)
     }
 
     const onEndCallback = () => {
@@ -174,38 +171,32 @@ export default function MultiFilePlayer({
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
 
-  //console.log(playAllSectionIdx)
   React.useEffect(()=>{
  
       //loop  through  the sections array in index order
       try {
 
-        //console.log('llllll try to start',sectionNumber)
         if (tryToStart) {
           const sectionNum = sections[sectionToPlay].sectionNumber
-          console.log('trying to start',sectionNum,sectionNumber,sectionPlayed,isPlaying)
+          //I found that the only consistent way to get playAll moving was to track
+          //these 4 states (sectionNum,sectionNumber,sectionPlayed,isPlaying)
+          //and check for certain conditions, keying it off of 
+          //onEndCallback was a disaster
           if ( !isPlaying & (sectionNum === sectionNumber) & sectionPlayed === -1 ) {
-            console.log('xxxxxxxxx', sectionNum, sectionNumber)
             playSection()
-            setPlayAll(true)
             setSectionPlayed(sectionNum)
           }
           else if ( !isPlaying & (sectionNum===sectionNumber)&(sectionPlayed===sectionNumber) ) {
-            console.log("yyyyyyyy maybe this is our chance?")
             const nextSection = sectionToPlay+1
-            if ( nextSection < sections.length) {
-              setSectionPlayed(-1)
+            setSectionPlayed(-1)
+            if ( nextSection < sections.length) {    
               dispatch(setSectionToPlay(nextSection))
             }
             else {
-              setSectionPlayed(-1)
-              setPlayAll(false)
               dispatch(setFinished(true))
-
             }
           }
-          
-
+  
         }
       }
       catch (err) {
