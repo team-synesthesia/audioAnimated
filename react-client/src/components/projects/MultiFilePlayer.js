@@ -42,7 +42,7 @@ export default function MultiFilePlayer({
   userId,
   projectId,
   setMsgKey,
-  msgKey,
+  smallPlayer,
 }) {
   const dispatch = useDispatch();
 
@@ -185,9 +185,12 @@ export default function MultiFilePlayer({
         recorderRef.current.start();
         setMsgKey("recording");
       }
+    } else {
+      if (isPlaying) setMsgKey("playing");
+      else setMsgKey("stopped");
     }
     setIsPlaying(acPlusRef.current.isPlaying);
-  }, [recordReady, isPlaying, ended, files]);
+  }, [recordReady, isPlaying, ended, files, setMsgKey]);
 
   React.useEffect(() => {
     if (ended) {
@@ -318,14 +321,14 @@ export default function MultiFilePlayer({
         toggleLoop={toggleLoop}
         record={record}
       />
-      {record ? (
+      {smallPlayer === true ? (
         <Card>
           <CardContent>
             <Files
               files={files}
               changeVolume={changeVolume}
               inSection={inSection}
-              record={record}
+              smallPlayer={smallPlayer}
             />
           </CardContent>
         </Card>
@@ -334,14 +337,13 @@ export default function MultiFilePlayer({
           files={files}
           changeVolume={changeVolume}
           inSection={inSection}
-          record={record}
         />
       )}
     </Box>
   );
 }
 
-function Files({ files, changeVolume, inSection, record }) {
+function Files({ files, changeVolume, inSection, smallPlayer }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
       {files && files.length
@@ -351,7 +353,7 @@ function Files({ files, changeVolume, inSection, record }) {
               file={file}
               changeVolume={changeVolume}
               inSection={inSection}
-              record={record}
+              smallPlayer={smallPlayer}
             />
           ))
         : null}

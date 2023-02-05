@@ -6,12 +6,14 @@ import Alert from "@mui/material/Alert";
 import MultiFilePlayer from "../MultiFilePlayer";
 
 const MESSAGES = {
-  begin: "Click on the microphone to begin recording",
-  recording: "Click the Mic again to stop recording",
-  stopped: "Recording saved. Hit the 'NEXT' button to listen back",
+  begin: "Hit the play button to listen back",
+  playing:
+    "If you're satisfied with you're recording, hit the 'DONE', otherwise, click 'BACK' to re-record",
+  stopped:
+    "If you're satisfied with you're recording, hit the 'DONE', otherwise, click 'BACK' to re-record",
 };
 
-export default function RecordForm({ selectedFiles, projectId, userId }) {
+export default function PlaybackForm({ selectedFiles }) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
     const _files = [];
@@ -38,14 +40,12 @@ export default function RecordForm({ selectedFiles, projectId, userId }) {
           <MultiFilePlayer
             msgKey={msgKey}
             setMsgKey={setMsgKey}
-            projectId={projectId}
-            userId={userId}
             files={files}
             inSection={false}
             sectionNumber={null}
             setGPUconfig={null}
             renderGraphics={false}
-            record={true}
+            record={false}
             smallPlayer={smallPlayer}
           />
         </Box>
