@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Grid, Button } from "@mui/material";
+import { Box } from "@mui/material";
 
 import { SectionButtons } from "./SectionButtons";
 import MultiFilePlayer from "./MultiFilePlayer";

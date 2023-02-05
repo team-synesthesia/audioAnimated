@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Grid, Button } from "@mui/material";
+import { Box } from "@mui/material";
 
 import { SectionButtons } from "./SectionButtons";
 import MultiFilePlayer from "./MultiFilePlayer";
@@ -38,14 +38,12 @@ export default function SectionColumn({
         inSection={true}
         renderGraphics={false}
       />
-      <Grid item xs={6} md={8} sx={{ display: "flex" }}>
-        <ToggleAssignFileForm
-          section={section}
-          sectionId={sectionId}
-          assignSectionFormActive={assignSectionFormActive}
-          setAssignSectionFormActive={setAssignSectionFormActive}
-        />
-      </Grid>
+      <ToggleAssignFileForm
+        section={section}
+        sectionId={sectionId}
+        assignSectionFormActive={assignSectionFormActive}
+        setAssignSectionFormActive={setAssignSectionFormActive}
+      />
     </Box>
   );
 }
