@@ -3,7 +3,7 @@ import { Box, Grid, Button } from "@mui/material";
 
 import { SectionButtons } from "./SectionButtons";
 import MultiFilePlayer from "./MultiFilePlayer";
-import { AssignFileToSection } from "../";
+import { ToggleAssignFileForm } from "./ToggleAssignFileForm";
 
 import { GPU } from "./GPU/GPU";
 
@@ -15,10 +15,9 @@ export default function SingleSectionView({
   files,
   sectionNumber,
   sectionId,
+  assignSectionFormActive,
+  setAssignSectionFormActive,
 }) {
-  const [AssignSectionFormActive, setAssignSectionFormActive] =
-    React.useState(null);
-
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
 
@@ -61,41 +60,12 @@ export default function SingleSectionView({
           setGPUconfig={setGPUconfig}
           renderGraphics={true}
         />
-        <Grid item xs={6} md={8} sx={{ display: "flex" }}>
-          <Button
-            type="button"
-            onClick={() => setAssignSectionFormActive(sectionNumber)}
-          >
-            Add a file
-          </Button>
-          <Button
-            size="small"
-            color="error"
-            onClick={() => setAssignSectionFormActive(null)}
-            sx={
-              sectionNumber !== AssignSectionFormActive
-                ? { display: "none" }
-                : { display: "block" }
-            }
-          >
-            X
-          </Button>
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          sx={
-            sectionNumber !== AssignSectionFormActive
-              ? { display: "none" }
-              : { display: "block" }
-          }
-        >
-          <AssignFileToSection
-            section={section}
-            sectionId={sectionId}
-            setAssignSectionFormActive={setAssignSectionFormActive}
-          />
-        </Grid>
+        <ToggleAssignFileForm
+          section={section}
+          sectionId={sectionId}
+          assignSectionFormActive={assignSectionFormActive}
+          setAssignSectionFormActive={setAssignSectionFormActive}
+        />
       </Box>
       <div
         id="sectionAnimation"

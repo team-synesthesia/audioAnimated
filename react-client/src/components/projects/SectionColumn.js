@@ -3,7 +3,7 @@ import { Box, Grid, Button } from "@mui/material";
 
 import { SectionButtons } from "./SectionButtons";
 import MultiFilePlayer from "./MultiFilePlayer";
-import { AssignFileToSection } from "../";
+import { ToggleAssignFileForm } from "./ToggleAssignFileForm";
 
 export default function SectionColumn({
   singleSection,
@@ -14,10 +14,9 @@ export default function SectionColumn({
   sectionNumber,
   sectionId,
   handleDeleteSection,
+  assignSectionFormActive,
+  setAssignSectionFormActive,
 }) {
-  const [AssignSectionFormActive, setAssignSectionFormActive] =
-    React.useState(null);
-
   const togglePreviewOnClick = () => {
     setSelectedSectionId(sectionId);
     setSingleSection(true);
@@ -40,37 +39,10 @@ export default function SectionColumn({
         renderGraphics={false}
       />
       <Grid item xs={6} md={8} sx={{ display: "flex" }}>
-        <Button
-          type="button"
-          onClick={() => setAssignSectionFormActive(sectionNumber)}
-        >
-          Add a file
-        </Button>
-        <Button
-          size="small"
-          color="error"
-          onClick={() => setAssignSectionFormActive(null)}
-          sx={
-            sectionNumber !== AssignSectionFormActive
-              ? { display: "none" }
-              : { display: "block" }
-          }
-        >
-          X
-        </Button>
-      </Grid>
-      <Grid
-        item
-        xs={6}
-        sx={
-          sectionNumber !== AssignSectionFormActive
-            ? { display: "none" }
-            : { display: "block" }
-        }
-      >
-        <AssignFileToSection
+        <ToggleAssignFileForm
           section={section}
           sectionId={sectionId}
+          assignSectionFormActive={assignSectionFormActive}
           setAssignSectionFormActive={setAssignSectionFormActive}
         />
       </Grid>

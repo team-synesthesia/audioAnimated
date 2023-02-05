@@ -14,6 +14,8 @@ export default function Sections({ sections, userId, projectId }) {
   const [singleSectionRender, setSingleSectionRender] = React.useState(false);
   const [selectedSectionId, setSelectedSectionId] = React.useState(1);
   const [selectedSection, setSelectedSection] = React.useState({});
+  const [assignSectionFormActive, setAssignSectionFormActive] =
+    React.useState(false);
 
   React.useEffect(() => {
     if (singleSection) {
@@ -52,6 +54,8 @@ export default function Sections({ sections, userId, projectId }) {
           sectionNumber={selectedSection.sectionNumber}
           sectionId={selectedSection.id}
           handleDeleteSection={handleDeleteSection}
+          assignSectionFormActive={assignSectionFormActive}
+          setAssignSectionFormActive={setAssignSectionFormActive}
         />
       ) : (
         <MultiSectionView
@@ -61,6 +65,8 @@ export default function Sections({ sections, userId, projectId }) {
           sections={sections}
           projectId={projectId}
           handleDeleteSection={handleDeleteSection}
+          assignSectionFormActive={assignSectionFormActive}
+          setAssignSectionFormActive={setAssignSectionFormActive}
         />
       )}
     </div>
@@ -74,6 +80,8 @@ function MultiSectionView({
   sections,
   projectId,
   handleDeleteSection,
+  assignSectionFormActive,
+  setAssignSectionFormActive,
 }) {
   return (
     <Box
@@ -96,6 +104,8 @@ function MultiSectionView({
                 sectionNumber={section.sectionNumber}
                 sectionId={section.id}
                 handleDeleteSection={handleDeleteSection}
+                assignSectionFormActive={assignSectionFormActive}
+                setAssignSectionFormActive={setAssignSectionFormActive}
               />
             </Box>
           ))
