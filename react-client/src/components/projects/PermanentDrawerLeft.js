@@ -72,6 +72,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               <ListItemText primary={"Edit Project Name"} />
             </ListItemButton>
           </ListItem>
+
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
               <ListItemIcon>
@@ -80,6 +81,17 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               <ListItemText primary={"Graphics Fn"} />
             </ListItemButton>
           </ListItem>
+
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => handleOpen("playAll")}>
+              <ListItemIcon>
+                xxx
+              </ListItemIcon>
+              <ListItemText primary={"Play  All"} />
+            </ListItemButton>
+          </ListItem>
+
+
           <Divider />
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("record")}>

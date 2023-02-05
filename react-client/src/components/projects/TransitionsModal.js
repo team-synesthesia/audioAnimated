@@ -7,6 +7,7 @@ import Fade from "@mui/material/Fade";
 import FileUploadForm from "./FileUploadForm";
 import { FileOptions } from "../";
 import Record from "./recordForm/Record";
+import PlayAll from "./PlayAll"
 
 const style = {
   position: "absolute",
@@ -48,6 +49,11 @@ function SwitchComponent({
 
     case "record":
       return <Record availableFiles={availableFiles} />;
+
+    case "playAll":
+      return <PlayAll />
+
+
 
     default:
       return null;
