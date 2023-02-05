@@ -21,3 +21,10 @@ export {
   createProjectAsync,
   fetchAllProjectsByUserIdAsync,
 } from "./projects/AllProjectsSlice";
+
+export {
+  default as playAllReducer,
+  setSectionToPlay, setTryToStart, setPlayAllStarted,
+  alreadyPlaying, setFinished
+} from "./projects/playAllSlice"
+

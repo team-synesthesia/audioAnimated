@@ -1,22 +1,64 @@
 import * as React from "react";
-import FileUploadForm from "./FileUploadForm";
-import { FileOptions } from "../";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
+
+import FileUploadForm from "./FileUploadForm";
+import { FileOptions } from "../";
+import Record from "./recordForm/Record";
+import PlayAll from "./PlayAll"
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 800,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
+
+function SwitchComponent({
+  projectId,
+  userId,
+  handleClose,
+  type,
+  clickedFile,
+  availableFiles,
+}) {
+  switch (type) {
+    case "uploadFile":
+      return (
+        <FileUploadForm
+          projectId={projectId}
+          userId={userId}
+          handleClose={handleClose}
+        />
+      );
+
+    case "changeGraphicsFn":
+      return <div>Phil's graphics form component will go here</div>;
+
+    case "fileOptions":
+      return (
+        <FileOptions handleClose={handleClose} clickedFile={clickedFile} />
+      );
+
+    case "record":
+      return <Record availableFiles={availableFiles} />;
+
+    case "playAll":
+      return <PlayAll />
+
+
+
+    default:
+      return null;
+  }
+}
 
 export default function TransitionsModal({
   projectId,
@@ -25,6 +67,7 @@ export default function TransitionsModal({
   handleClose,
   type,
   clickedFile,
+  availableFiles,
 }) {
   return (
     <div>
@@ -41,20 +84,14 @@ export default function TransitionsModal({
       >
         <Fade in={open}>
           <Box sx={style}>
-            {type === "uploadFile" ? (
-              <FileUploadForm
-                projectId={projectId}
-                userId={userId}
-                handleClose={handleClose}
-              />
-            ) : type === "changeGraphicsFn" ? (
-              <div>Phil's graphics form component will go here</div>
-            ) : type === "fileOptions" ? (
-              <FileOptions
-                handleClose={handleClose}
-                clickedFile={clickedFile}
-              />
-            ) : null}
+            <SwitchComponent
+              projectId={projectId}
+              userId={userId}
+              handleClose={handleClose}
+              type={type}
+              clickedFile={clickedFile}
+              availableFiles={availableFiles}
+            />
           </Box>
         </Fade>
       </Modal>

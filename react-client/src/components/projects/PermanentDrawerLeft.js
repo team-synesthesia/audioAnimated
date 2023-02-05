@@ -14,6 +14,7 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import MicIcon from "@mui/icons-material/Mic";
 
 import TransitionsModal from "./TransitionsModal";
 
@@ -60,6 +61,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           handleClose={handleClose}
           type={modalType}
           clickedFile={clickedFile}
+          availableFiles={availableFiles}
         />
         <List>
           <ListItem disablePadding>
@@ -70,6 +72,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               <ListItemText primary={"Edit Project Name"} />
             </ListItemButton>
           </ListItem>
+
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
               <ListItemIcon>
@@ -78,7 +81,26 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               <ListItemText primary={"Graphics Fn"} />
             </ListItemButton>
           </ListItem>
+
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => handleOpen("playAll")}>
+              <ListItemIcon>
+                xxx
+              </ListItemIcon>
+              <ListItemText primary={"Play  All"} />
+            </ListItemButton>
+          </ListItem>
+
+
           <Divider />
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => handleOpen("record")}>
+              <ListItemIcon>
+                <MicIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Record a new layer"} />
+            </ListItemButton>
+          </ListItem>
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("uploadFile")}>
               <ListItemIcon>

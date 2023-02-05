@@ -14,7 +14,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import { useDispatch } from "react-redux";
 import { deleteFileAsync } from "../../features";
 
-export default function FileCard({ file, changeVolume }) {
+export default function FileCard({ file, changeVolume, inSection, record }) {
   const dispatch = useDispatch();
   const handleDelete = (sectionNumber) => {
     dispatch(
@@ -38,19 +38,12 @@ export default function FileCard({ file, changeVolume }) {
 
   return (
     <Box sx={{ minWidth: 210 }}>
-      <Accordion expanded={onOff}>
-        <AccordionSummary>
-          <Switch
-            checked={onOff}
-            onChange={(_, value) => togglerOnOff(value)}
-            inputProps={{ "aria-label": "controlled" }}
-          />
-          <Typography variant="h5" component="div">
+      {record ? (
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {file.name}
           </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
+          <Box sx={{ flexGrow: 8, display: "flex", flexDirection: "row" }}>
             <VolumeDown />
             <Slider
               aria-label="Volume"
@@ -58,16 +51,47 @@ export default function FileCard({ file, changeVolume }) {
               onChange={(_, value) => _changeVolume(value)}
             />
             <VolumeUp />
-          </Stack>
-          <Button
-            type="button"
-            size="small"
-            onClick={() => handleDelete(file.id)}
-          >
-            Remove From Section
-          </Button>
-        </AccordionDetails>
-      </Accordion>
+          </Box>
+        </Box>
+      ) : (
+        <Accordion expanded={onOff}>
+          <AccordionSummary>
+            <Switch
+              checked={onOff}
+              onChange={(_, value) => togglerOnOff(value)}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+            <Typography variant="h6" component="div">
+              {file.name}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack
+              spacing={2}
+              direction="row"
+              sx={{ mb: 1 }}
+              alignItems="center"
+            >
+              <VolumeDown />
+              <Slider
+                aria-label="Volume"
+                value={volume}
+                onChange={(_, value) => _changeVolume(value)}
+              />
+              <VolumeUp />
+            </Stack>
+            {inSection ? (
+              <Button
+                type="button"
+                size="small"
+                onClick={() => handleDelete(file.id)}
+              >
+                Remove From Section
+              </Button>
+            ) : null}
+          </AccordionDetails>
+        </Accordion>
+      )}
     </Box>
   );
 }
