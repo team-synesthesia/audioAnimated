@@ -26,6 +26,7 @@ export default function RecordForm({ selectedFiles }) {
           sectionNumber={null}
           setGPUconfig={null}
           renderGraphics={false}
+          record={true}
         />
       </Box>
     </React.Fragment>

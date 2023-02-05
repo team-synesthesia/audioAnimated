@@ -12,7 +12,7 @@ export default function Sections({ sections, userId, projectId }) {
 
   const [singleSection, setSingleSection] = React.useState(false);
   const [selectedSectionId, setSelectedSectionId] = React.useState(1);
-  const [selectedSection, setSelectedSection] = React.useState(0);
+  const [selectedSection, setSelectedSection] = React.useState({});
 
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);

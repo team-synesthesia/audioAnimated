@@ -14,6 +14,7 @@ export default function MultiFilePlayer({
   inSection,
   setGPUconfig,
   renderGraphics,
+  record,
 }) {
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
@@ -175,6 +176,7 @@ export default function MultiFilePlayer({
               file={file}
               changeVolume={changeVolume}
               inSection={inSection}
+              record={record}
             />
           ))
         : null}
