@@ -2,10 +2,12 @@ import * as React from "react";
 import { Box } from "@mui/material";
 
 import AudioContextPlus from "../../audio";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import FileCard from "./FileCard";
 import Player from "./Player";
+
+import {setSectionToPlay, setFinished} from "../../features/projects/playAllSlice"
 
 export default function MultiFilePlayer({
   title,
@@ -15,9 +17,18 @@ export default function MultiFilePlayer({
   setGPUconfig,
   renderGraphics,
 }) {
+
+  const dispatch = useDispatch()
+
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
   );
+
+  const { sectionToPlay, playAllStarted, tryToStart } = useSelector(
+    (state) => state.playAll );
+
+  const {sections} = useSelector( state => state.singleProject )
+
 
   const [disabled, setDisabled] = React.useState(true);
   const [currentTime, setCurrentTime] = React.useState(0);
@@ -67,21 +78,28 @@ export default function MultiFilePlayer({
     getDuration();
   }, [disabled]);
 
-  const playSection = React.useCallback(async () => {
+  const [playAll,setPlayAll] = React.useState(false)
+  const [sectionPlayed,setSectionPlayed] = React.useState(-1)
+
+
+  const playSection = React.useCallback( async () => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
+      console.log('sectionPlayed',sectionPlayed, playAll)
     }
+
+    const onEndCallback = () => {
+      setEnded(true);
+    } 
     await acPlusRef.current.playNSongs(
-      files.map((x) => x.name),
-      onEndCallback
-    );
-    setIsPlaying(acPlusRef.current.isPlaying);
+        files.map((x) => x.name),
+        onEndCallback)
+    
+    setIsPlaying(acPlusRef.current.isPlaying)
+
   }, [ended, files]);
 
-  const onEndCallback = () => {
-    setEnded(true);
-  };
 
   React.useEffect(() => {
     if (ended) {
@@ -154,6 +172,49 @@ export default function MultiFilePlayer({
       });
     }
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
+
+
+  //console.log(playAllSectionIdx)
+  React.useEffect(()=>{
+ 
+      //loop  through  the sections array in index order
+      try {
+
+        //console.log('llllll try to start',sectionNumber)
+        if (tryToStart) {
+          const sectionNum = sections[sectionToPlay].sectionNumber
+          console.log('trying to start',sectionNum,sectionNumber,sectionPlayed,isPlaying)
+          if ( !isPlaying & (sectionNum === sectionNumber) & sectionPlayed === -1 ) {
+            console.log('xxxxxxxxx', sectionNum, sectionNumber)
+            playSection()
+            setPlayAll(true)
+            setSectionPlayed(sectionNum)
+          }
+          else if ( !isPlaying & (sectionNum===sectionNumber)&(sectionPlayed===sectionNumber) ) {
+            console.log("yyyyyyyy maybe this is our chance?")
+            const nextSection = sectionToPlay+1
+            if ( nextSection < sections.length) {
+              setSectionPlayed(-1)
+              dispatch(setSectionToPlay(nextSection))
+            }
+            else {
+              setSectionPlayed(-1)
+              setPlayAll(false)
+              dispatch(setFinished(true))
+
+            }
+          }
+          
+
+        }
+      }
+      catch (err) {
+
+      }
+    
+  },[playSection,sectionToPlay,ended,sectionPlayed,
+    sectionNumber,sections,dispatch, isPlaying,tryToStart])
+
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
