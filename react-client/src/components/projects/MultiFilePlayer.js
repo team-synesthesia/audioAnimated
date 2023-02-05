@@ -41,6 +41,8 @@ export default function MultiFilePlayer({
   record,
   userId,
   projectId,
+  setMsgKey,
+  msgKey,
 }) {
   const dispatch = useDispatch();
 
@@ -97,7 +99,7 @@ export default function MultiFilePlayer({
 
   React.useEffect(() => {
     const fnSaveRecording = async () => {
-      const name = prompt("Enter a label to identify your new:");
+      const name = prompt("Enter a label to identify your new track:");
       const filePath = `${name}.ogg`;
 
       const file = new Blob(recordedChunks, {
@@ -176,8 +178,13 @@ export default function MultiFilePlayer({
     );
 
     if (recordReady) {
-      if (isPlaying) recorderRef.current.stop();
-      else recorderRef.current.start();
+      if (isPlaying) {
+        recorderRef.current.stop();
+        setMsgKey("stopped");
+      } else {
+        recorderRef.current.start();
+        setMsgKey("recording");
+      }
     }
     setIsPlaying(acPlusRef.current.isPlaying);
   }, [recordReady, isPlaying, ended, files]);

@@ -40,7 +40,6 @@ export default function Player({
     <Card
       sx={{
         minWidth: 210,
-        minHeight: 180,
         paddingLeft: "20px",
         paddingRight: "20px",
       }}
@@ -51,13 +50,13 @@ export default function Player({
           flexDirection: "column",
         }}
       >
-        <CardContent sx={{ flex: "1 0 auto" }}>
-          {title ? (
+        {title ? (
+          <CardContent sx={{ flex: "1 0 auto" }}>
             <Typography component="div" variant="h5">
               {title}
             </Typography>
-          ) : null}
-        </CardContent>
+          </CardContent>
+        ) : null}
         <Box
           sx={{
             display: "flex",
@@ -95,14 +94,20 @@ export default function Player({
             <TinyText>{formatDuration(Math.round(currentTime))}</TinyText>
             <TinyText>{"/" + formatDuration(Math.round(duration))}</TinyText>
           </Box>
-          <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-            <IconButton aria-label="restart" onClick={restartOnClick}>
-              <RestartAltIcon />
-            </IconButton>
-            <IconButton aria-label="loop" onClick={toggleLoop}>
-              {loop ? <LoopIcon sx={{ color: "lightgreen" }} /> : <LoopIcon />}
-            </IconButton>
-          </Box>
+          {!record ? (
+            <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
+              <IconButton aria-label="restart" onClick={restartOnClick}>
+                <RestartAltIcon />
+              </IconButton>
+              <IconButton aria-label="loop" onClick={toggleLoop}>
+                {loop ? (
+                  <LoopIcon sx={{ color: "lightgreen" }} />
+                ) : (
+                  <LoopIcon />
+                )}
+              </IconButton>
+            </Box>
+          ) : null}
         </Box>
       </Box>
     </Card>
