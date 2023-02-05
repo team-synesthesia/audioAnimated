@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 
 import MultiFilePlayer from "../MultiFilePlayer";
 
-export default function RecordForm({ selectedFiles }) {
+export default function RecordForm({ selectedFiles, projectId, userId }) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
     const _files = [];
@@ -20,6 +20,8 @@ export default function RecordForm({ selectedFiles }) {
     <React.Fragment>
       <Box>
         <MultiFilePlayer
+          projectId={projectId}
+          userId={userId}
           files={files}
           inSection={false}
           sectionNumber={null}

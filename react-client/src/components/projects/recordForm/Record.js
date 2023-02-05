@@ -14,7 +14,14 @@ import Review from "./Review";
 
 const steps = ["Select Tracks", "Record", "Add to your project"];
 
-function getStepContent(step, selectedFiles, setSelectedFiles, availableFiles) {
+function getStepContent(
+  step,
+  userId,
+  projectId,
+  selectedFiles,
+  setSelectedFiles,
+  availableFiles
+) {
   switch (step) {
     case 0:
       return (
@@ -25,7 +32,13 @@ function getStepContent(step, selectedFiles, setSelectedFiles, availableFiles) {
         />
       );
     case 1:
-      return <RecordForm selectedFiles={selectedFiles} />;
+      return (
+        <RecordForm
+          selectedFiles={selectedFiles}
+          userId={userId}
+          projectId={projectId}
+        />
+      );
     case 2:
       return <Review />;
     default:
@@ -33,7 +46,7 @@ function getStepContent(step, selectedFiles, setSelectedFiles, availableFiles) {
   }
 }
 
-export default function Record({ availableFiles }) {
+export default function Record({ availableFiles, userId, projectId }) {
   const [selectedFiles, setSelectedFiles] = React.useState({});
 
   React.useEffect(() => {
@@ -88,6 +101,8 @@ export default function Record({ availableFiles }) {
           <React.Fragment>
             {getStepContent(
               activeStep,
+              userId,
+              projectId,
               selectedFiles,
               setSelectedFiles,
               availableFiles

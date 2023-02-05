@@ -7,10 +7,29 @@ import { useDispatch, useSelector } from "react-redux";
 import FileCard from "./FileCard";
 import Player from "./Player";
 
+import { addFileAsync, writeFileAsync } from "../../features";
+
 import {
   setSectionToPlay,
   setFinished,
 } from "../../features/projects/playAllSlice";
+
+function getRecordingPermission(setRecordingStream) {
+  if (navigator.mediaDevices.getUserMedia) {
+    const constraints = { audio: true };
+    let onSuccess = function (stream) {
+      setRecordingStream(stream);
+    };
+
+    let onError = function (err) {
+      console.log("The following error occured: " + err);
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+  } else {
+    console.log("getUserMedia not supported on your browser!");
+  }
+}
 
 export default function MultiFilePlayer({
   title,
@@ -20,6 +39,8 @@ export default function MultiFilePlayer({
   setGPUconfig,
   renderGraphics,
   record,
+  userId,
+  projectId,
 }) {
   const dispatch = useDispatch();
 
@@ -40,6 +61,65 @@ export default function MultiFilePlayer({
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
+  const [recordingStream, setRecordingStream] = React.useState(false);
+  const [recordReady, setRecordReady] = React.useState(false);
+  const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
+  const [recordedChunks, setRecordedChunks] = React.useState([]);
+  const [saveRecording, setSaveRecording] = React.useState(false);
+
+  const recorderRef = React.useRef();
+
+  if (record) {
+    getRecordingPermission(setRecordingStream);
+  }
+
+  React.useEffect(() => {
+    if (recordingStream && !recorderRef.current) {
+      recorderRef.current = new MediaRecorder(recordingStream);
+
+      recorderRef.current.ondataavailable = function (e) {
+        setRecordedChunk(e.data);
+      };
+
+      recorderRef.current.onstop = async function () {
+        setSaveRecording(true);
+      };
+      setRecordReady(true);
+    }
+  }, [recordingStream]);
+
+  React.useEffect(() => {
+    if (recordedChunk.size > 0) {
+      const newChunks = recordedChunks.concat(recordedChunk);
+      setRecordedChunks(newChunks);
+    }
+  }, [recordedChunk]);
+
+  React.useEffect(() => {
+    const fnSaveRecording = async () => {
+      const name = prompt("Enter a label to identify your new:");
+      const filePath = `${name}.ogg`;
+
+      const file = new Blob(recordedChunks, {
+        type: "audio/ogg; codecs=opus",
+      });
+      console.log("blob");
+      console.log(file);
+
+      const data = {
+        name,
+        filePath,
+        type: "ogg",
+        userId: userId,
+        projectId: projectId,
+      };
+      await dispatch(addFileAsync(data));
+      await dispatch(writeFileAsync({ projectId, filePath, file }));
+    };
+    if (saveRecording && recordedChunks.length > 0) {
+      fnSaveRecording();
+    }
+  }, [dispatch, recordedChunks, saveRecording, userId, projectId]);
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
@@ -84,6 +164,7 @@ export default function MultiFilePlayer({
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
+      if (recordReady) recorderRef.current.stop();
     }
 
     const onEndCallback = () => {
@@ -94,8 +175,12 @@ export default function MultiFilePlayer({
       onEndCallback
     );
 
+    if (recordReady) {
+      if (isPlaying) recorderRef.current.stop();
+      else recorderRef.current.start();
+    }
     setIsPlaying(acPlusRef.current.isPlaying);
-  }, [ended, files]);
+  }, [recordReady, isPlaying, ended, files]);
 
   React.useEffect(() => {
     if (ended) {
