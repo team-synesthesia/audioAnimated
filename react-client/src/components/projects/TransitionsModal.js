@@ -6,7 +6,7 @@ import Fade from "@mui/material/Fade";
 
 import FileUploadForm from "./FileUploadForm";
 import { FileOptions } from "../";
-import Checkout from "./recordForm/Checkout";
+import Record from "./recordForm/Record";
 
 const style = {
   position: "absolute",
@@ -47,7 +47,7 @@ function SwitchComponent({
       );
 
     case "record":
-      return <Checkout availableFiles={availableFiles} />;
+      return <Record availableFiles={availableFiles} />;
 
     default:
       return null;
