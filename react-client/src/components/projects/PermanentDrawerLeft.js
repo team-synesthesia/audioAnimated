@@ -15,6 +15,7 @@ import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import MicIcon from "@mui/icons-material/Mic";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 
 import TransitionsModal from "./TransitionsModal";
 
@@ -85,12 +86,11 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("playAll")}>
               <ListItemIcon>
-                xxx
+                <VideoLibraryIcon />
               </ListItemIcon>
               <ListItemText primary={"Play  All"} />
             </ListItemButton>
           </ListItem>
-
 
           <Divider />
           <ListItem disablePadding>

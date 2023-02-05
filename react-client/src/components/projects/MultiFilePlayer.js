@@ -7,7 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import FileCard from "./FileCard";
 import Player from "./Player";
 
-import {setSectionToPlay, setFinished} from "../../features/projects/playAllSlice"
+import {
+  setSectionToPlay,
+  setFinished,
+} from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
   title,
@@ -18,18 +21,15 @@ export default function MultiFilePlayer({
   renderGraphics,
   record,
 }) {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
   );
 
-  const { sectionToPlay, tryToStart } = useSelector(
-    (state) => state.playAll );
+  const { sectionToPlay, tryToStart } = useSelector((state) => state.playAll);
 
-  const {sections} = useSelector( state => state.singleProject )
-
+  const { sections } = useSelector((state) => state.singleProject);
 
   const [disabled, setDisabled] = React.useState(true);
   const [currentTime, setCurrentTime] = React.useState(0);
@@ -79,9 +79,8 @@ export default function MultiFilePlayer({
     getDuration();
   }, [disabled]);
 
-
-  const [sectionPlayed,setSectionPlayed] = React.useState(-1)
-  const playSection = React.useCallback( async () => {
+  const [sectionPlayed, setSectionPlayed] = React.useState(-1);
+  const playSection = React.useCallback(async () => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
@@ -89,15 +88,14 @@ export default function MultiFilePlayer({
 
     const onEndCallback = () => {
       setEnded(true);
-    } 
+    };
     await acPlusRef.current.playNSongs(
-        files.map((x) => x.name),
-        onEndCallback)
-    
-    setIsPlaying(acPlusRef.current.isPlaying)
+      files.map((x) => x.name),
+      onEndCallback
+    );
 
+    setIsPlaying(acPlusRef.current.isPlaying);
   }, [ended, files]);
-
 
   React.useEffect(() => {
     if (ended) {
@@ -171,42 +169,48 @@ export default function MultiFilePlayer({
     }
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
-
-  React.useEffect(()=>{
- 
-      //loop  through  the sections array in index order
-      try {
-
-        if (tryToStart) {
-          const sectionNum = sections[sectionToPlay].sectionNumber
-          //I found that the only consistent way to get playAll moving was to track
-          //these 4 states (sectionNum,sectionNumber,sectionPlayed,isPlaying)
-          //and check for certain conditions, keying it off of 
-          //onEndCallback was a disaster
-          if ( !isPlaying & (sectionNum === sectionNumber) & sectionPlayed === -1 ) {
-            playSection()
-            setSectionPlayed(sectionNum)
+  React.useEffect(() => {
+    //loop  through  the sections array in index order
+    try {
+      if (tryToStart) {
+        const sectionNum = sections[sectionToPlay].sectionNumber;
+        //I found that the only consistent way to get playAll moving was to track
+        //these 4 states (sectionNum,sectionNumber,sectionPlayed,isPlaying)
+        //and check for certain conditions, keying it off of
+        //onEndCallback was a disaster
+        if (
+          !isPlaying &
+          (sectionNum === sectionNumber) &
+          (sectionPlayed === -1)
+        ) {
+          playSection();
+          setSectionPlayed(sectionNum);
+        } else if (
+          !isPlaying &
+          (sectionNum === sectionNumber) &
+          (sectionPlayed === sectionNumber)
+        ) {
+          const nextSection = sectionToPlay + 1;
+          setSectionPlayed(-1);
+          if (nextSection < sections.length) {
+            dispatch(setSectionToPlay(nextSection));
+          } else {
+            dispatch(setFinished(true));
           }
-          else if ( !isPlaying & (sectionNum===sectionNumber)&(sectionPlayed===sectionNumber) ) {
-            const nextSection = sectionToPlay+1
-            setSectionPlayed(-1)
-            if ( nextSection < sections.length) {    
-              dispatch(setSectionToPlay(nextSection))
-            }
-            else {
-              dispatch(setFinished(true))
-            }
-          }
-  
         }
       }
-      catch (err) {
-
-      }
-    
-  },[playSection,sectionToPlay,ended,sectionPlayed,
-    sectionNumber,sections,dispatch, isPlaying,tryToStart])
-
+    } catch (err) {}
+  }, [
+    playSection,
+    sectionToPlay,
+    ended,
+    sectionPlayed,
+    sectionNumber,
+    sections,
+    dispatch,
+    isPlaying,
+    tryToStart,
+  ]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
@@ -220,6 +224,7 @@ export default function MultiFilePlayer({
         duration={duration}
         loop={loop}
         toggleLoop={toggleLoop}
+        record={record}
       />
       {record ? (
         <Card>

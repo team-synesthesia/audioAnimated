@@ -20,7 +20,6 @@ export default function RecordForm({ selectedFiles }) {
     <React.Fragment>
       <Box>
         <MultiFilePlayer
-          title={"Record"}
           files={files}
           inSection={false}
           sectionNumber={null}

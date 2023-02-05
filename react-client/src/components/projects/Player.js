@@ -8,6 +8,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LoopIcon from "@mui/icons-material/Loop";
+import MicIcon from "@mui/icons-material/Mic";
 
 import { styled } from "@mui/material/styles";
 const TinyText = styled(Typography)({
@@ -33,6 +34,7 @@ export default function Player({
   disabled,
   toggleLoop,
   loop,
+  record,
 }) {
   return (
     <Card
@@ -50,9 +52,11 @@ export default function Player({
         }}
       >
         <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" variant="h5">
-            {title}
-          </Typography>
+          {title ? (
+            <Typography component="div" variant="h5">
+              {title}
+            </Typography>
+          ) : null}
         </CardContent>
         <Box
           sx={{
@@ -77,7 +81,13 @@ export default function Player({
               disabled={disabled}
             >
               {isPlaying ? (
-                <PauseIcon sx={{ height: 38, width: 38 }} />
+                record ? (
+                  <MicIcon sx={{ height: 38, width: 38, color: "red" }} />
+                ) : (
+                  <PauseIcon sx={{ height: 38, width: 38 }} />
+                )
+              ) : record ? (
+                <MicIcon sx={{ height: 38, width: 38 }} />
               ) : (
                 <PlayArrowIcon sx={{ height: 38, width: 38 }} />
               )}
