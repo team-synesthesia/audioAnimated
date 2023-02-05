@@ -6,19 +6,11 @@ import { Container } from "@mui/material";
 
 import FormGroup from "@mui/material/FormGroup";
 
-export default function SelectTracksForm({ availableFiles }) {
-  const [selectedFiles, setSelectedFiles] = React.useState({});
-
-  React.useEffect(() => {
-    if (availableFiles && Object.keys(availableFiles).length) {
-      const fileObj = {};
-      Object.keys(availableFiles).forEach((name) => {
-        fileObj[name] = true;
-      });
-      setSelectedFiles(fileObj);
-    }
-  }, [availableFiles]);
-
+export default function SelectTracksForm({
+  selectedFiles,
+  setSelectedFiles,
+  availableFiles,
+}) {
   const names = Object.keys(availableFiles);
 
   const handleCheckBox = (name, checked) => {
@@ -26,10 +18,6 @@ export default function SelectTracksForm({ availableFiles }) {
     fileObj[name] = checked;
     setSelectedFiles(fileObj);
   };
-
-  React.useEffect(() => {
-    console.log(selectedFiles);
-  }, [selectedFiles]);
 
   return (
     <React.Fragment>

@@ -14,7 +14,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import { useDispatch } from "react-redux";
 import { deleteFileAsync } from "../../features";
 
-export default function FileCard({ file, changeVolume }) {
+export default function FileCard({ file, changeVolume, inSection }) {
   const dispatch = useDispatch();
   const handleDelete = (sectionNumber) => {
     dispatch(
@@ -59,13 +59,15 @@ export default function FileCard({ file, changeVolume }) {
             />
             <VolumeUp />
           </Stack>
-          <Button
-            type="button"
-            size="small"
-            onClick={() => handleDelete(file.id)}
-          >
-            Remove From Section
-          </Button>
+          {inSection ? (
+            <Button
+              type="button"
+              size="small"
+              onClick={() => handleDelete(file.id)}
+            >
+              Remove From Section
+            </Button>
+          ) : null}
         </AccordionDetails>
       </Accordion>
     </Box>

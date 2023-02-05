@@ -14,12 +14,18 @@ import Review from "./Review";
 
 const steps = ["Select Tracks", "Record", "Add to your project"];
 
-function getStepContent(step, availableFiles) {
+function getStepContent(step, selectedFiles, setSelectedFiles, availableFiles) {
   switch (step) {
     case 0:
-      return <SelectTracksForm availableFiles={availableFiles} />;
+      return (
+        <SelectTracksForm
+          selectedFiles={selectedFiles}
+          setSelectedFiles={setSelectedFiles}
+          availableFiles={availableFiles}
+        />
+      );
     case 1:
-      return <RecordForm />;
+      return <RecordForm selectedFiles={selectedFiles} />;
     case 2:
       return <Review />;
     default:
@@ -28,6 +34,18 @@ function getStepContent(step, availableFiles) {
 }
 
 export default function Checkout({ availableFiles }) {
+  const [selectedFiles, setSelectedFiles] = React.useState({});
+
+  React.useEffect(() => {
+    if (availableFiles && Object.keys(availableFiles).length) {
+      const fileObj = {};
+      Object.keys(availableFiles).forEach((name) => {
+        fileObj[name] = true;
+      });
+      setSelectedFiles(fileObj);
+    }
+  }, [availableFiles]);
+
   const [activeStep, setActiveStep] = React.useState(0);
 
   const handleNext = () => {
@@ -68,7 +86,12 @@ export default function Checkout({ availableFiles }) {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            {getStepContent(activeStep, availableFiles)}
+            {getStepContent(
+              activeStep,
+              selectedFiles,
+              setSelectedFiles,
+              availableFiles
+            )}
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               {activeStep !== 0 && (
                 <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
