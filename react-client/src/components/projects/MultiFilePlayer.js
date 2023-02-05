@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box } from "@mui/material";
+import { Card, Box, CardContent } from "@mui/material";
 
 import AudioContextPlus from "../../audio";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,7 @@ export default function MultiFilePlayer({
   inSection,
   setGPUconfig,
   renderGraphics,
+  record,
 }) {
 
   const dispatch = useDispatch()
@@ -220,6 +221,32 @@ export default function MultiFilePlayer({
         loop={loop}
         toggleLoop={toggleLoop}
       />
+      {record ? (
+        <Card>
+          <CardContent>
+            <Files
+              files={files}
+              changeVolume={changeVolume}
+              inSection={inSection}
+              record={record}
+            />
+          </CardContent>
+        </Card>
+      ) : (
+        <Files
+          files={files}
+          changeVolume={changeVolume}
+          inSection={inSection}
+          record={record}
+        />
+      )}
+    </Box>
+  );
+}
+
+function Files({ files, changeVolume, inSection, record }) {
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
       {files && files.length
         ? files.map((file) => (
             <FileCard
@@ -227,6 +254,7 @@ export default function MultiFilePlayer({
               file={file}
               changeVolume={changeVolume}
               inSection={inSection}
+              record={record}
             />
           ))
         : null}

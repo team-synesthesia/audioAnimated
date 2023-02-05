@@ -33,7 +33,7 @@ function getStepContent(step, selectedFiles, setSelectedFiles, availableFiles) {
   }
 }
 
-export default function Checkout({ availableFiles }) {
+export default function Record({ availableFiles }) {
   const [selectedFiles, setSelectedFiles] = React.useState({});
 
   React.useEffect(() => {
