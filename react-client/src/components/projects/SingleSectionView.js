@@ -1,28 +1,23 @@
 import * as React from "react";
-import { Box, Grid, Button, IconButton } from "@mui/material";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import BubbleChartIcon from "@mui/icons-material/BubbleChart";
-import Tooltip from "@mui/material/Tooltip";
+import { Box } from "@mui/material";
 
+import { SectionButtons } from "./SectionButtons";
 import MultiFilePlayer from "./MultiFilePlayer";
-import { AssignFileToSection } from "../";
+import { ToggleAssignFileForm } from "./ToggleAssignFileForm";
 
 import { GPU } from "./GPU/GPU";
 
 export default function SingleSectionView({
-  setSingleSection,
-  handleDeleteSection,
+  singleSection,
   section,
   files,
   sectionNumber,
   sectionId,
-  //sectionAnimationRef,
-  //setGPUconfig,
-  //setCanvasInitialized,
+  assignSectionFormActive,
+  setAssignSectionFormActive,
+  togglePreviewOnClick,
+  handleDeleteSection,
 }) {
-  const [AssignSectionFormActive, setAssignSectionFormActive] =
-    React.useState(null);
-
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
 
@@ -45,28 +40,13 @@ export default function SingleSectionView({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Tooltip title="Exit Preview">
-            <IconButton
-              type="button"
-              onClick={() => {
-                setSingleSection(false);
-              }}
-              sx={{ color: "green" }}
-            >
-              <BubbleChartIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Remove Section">
-            <IconButton
-              type="button"
-              onClick={() => handleDeleteSection()}
-              sx={{ "&:hover": { color: "red" } }}
-            >
-              <RemoveCircleOutlineIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        <SectionButtons
+          singleSection={singleSection}
+          togglePreviewOnClick={togglePreviewOnClick}
+          previewTitle={"Preview"}
+          handleDeleteSection={handleDeleteSection}
+          sectionId={sectionId}
+        />
         <MultiFilePlayer
           title={`Section ${sectionNumber}`}
           files={files}
@@ -75,41 +55,12 @@ export default function SingleSectionView({
           setGPUconfig={setGPUconfig}
           renderGraphics={true}
         />
-        <Grid item xs={6} md={8} sx={{ display: "flex" }}>
-          <Button
-            type="button"
-            onClick={() => setAssignSectionFormActive(sectionNumber)}
-          >
-            Add a file
-          </Button>
-          <Button
-            size="small"
-            color="error"
-            onClick={() => setAssignSectionFormActive(null)}
-            sx={
-              sectionNumber !== AssignSectionFormActive
-                ? { display: "none" }
-                : { display: "block" }
-            }
-          >
-            X
-          </Button>
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          sx={
-            sectionNumber !== AssignSectionFormActive
-              ? { display: "none" }
-              : { display: "block" }
-          }
-        >
-          <AssignFileToSection
-            section={section}
-            sectionId={sectionId}
-            setAssignSectionFormActive={setAssignSectionFormActive}
-          />
-        </Grid>
+        <ToggleAssignFileForm
+          section={section}
+          sectionId={sectionId}
+          assignSectionFormActive={assignSectionFormActive}
+          setAssignSectionFormActive={setAssignSectionFormActive}
+        />
       </Box>
       <div
         id="sectionAnimation"
