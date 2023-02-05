@@ -5,7 +5,7 @@ import {createVertexModel,animateVertexModel,
 import { graphicsOptions } from "./graphicsOptions"
 
 //gpuDivRef was passed in as:  gpuDivRef.current in order to satisfy the dependencies array
-export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized,sectionNumberx} ) {
+export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized} ) {
     
     const { isPlaying,acPlusRef,sectionNumber,graphicsFn } = GPUconfig
 
@@ -18,7 +18,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     const fps = 30
     const fpsInterval = 1000/fps
 
-
     React.useEffect(()=>{
 
         let canvas, canvasDim, hidden
@@ -30,7 +29,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
         if (gpuDivRef && !canvasInitialized && !hidden) {
 
-            console.log('zzzzzzzzz graphicsFn',graphicsFn, sectionNumberx)
             setCanvasInitialized(true)
 
             const [width,height] = [canvasDim.width, canvasDim.height]
@@ -122,6 +120,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     },[gpuDivRef,canvasInitialized,GL,fpsInterval,
         setCanvasInitialized,isPlaying,acPlusRef,
-        sectionNumber,graphicsFn,sectionNumberx])
+        sectionNumber,graphicsFn])
    
 }

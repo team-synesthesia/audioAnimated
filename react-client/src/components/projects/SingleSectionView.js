@@ -32,7 +32,6 @@ export default function SingleSectionView({
     GPUconfig,
     gpuDivRef: sectionAnimationRef.current,
     canvasInitialized,
-    sectionNumberx: sectionNumber,
     setCanvasInitialized,
   });
 
