@@ -7,21 +7,15 @@ import { ToggleAssignFileForm } from "./ToggleAssignFileForm";
 
 export default function SectionColumn({
   singleSection,
-  setSingleSection,
-  setSelectedSectionId,
   section,
   files,
   sectionNumber,
   sectionId,
-  handleDeleteSection,
   assignSectionFormActive,
   setAssignSectionFormActive,
+  togglePreviewOnClick,
+  handleDeleteSection,
 }) {
-  const togglePreviewOnClick = () => {
-    setSelectedSectionId(sectionId);
-    setSingleSection(true);
-  };
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
       <SectionButtons

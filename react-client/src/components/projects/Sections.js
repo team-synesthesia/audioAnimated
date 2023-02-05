@@ -41,32 +41,41 @@ export default function Sections({ sections, userId, projectId }) {
     if (singleSection) setSingleSection(false);
   };
 
+  const togglePreviewOnClick = (singleSection, sectionId) => {
+    if (singleSection) {
+      setSingleSection(false);
+    } else {
+      setSelectedSectionId(sectionId);
+      setSingleSection(true);
+    }
+  };
+
   return (
     <div>
       {singleSectionRender ? (
         <SingleSectionView
           singleSection={singleSection}
-          setSingleSection={setSingleSection}
           section={selectedSection}
           userId={userId}
           projectId={projectId}
           files={selectedSection.files}
           sectionNumber={selectedSection.sectionNumber}
           sectionId={selectedSection.id}
-          handleDeleteSection={handleDeleteSection}
           assignSectionFormActive={assignSectionFormActive}
           setAssignSectionFormActive={setAssignSectionFormActive}
+          setSelectedSectionId={setSelectedSectionId}
+          togglePreviewOnClick={togglePreviewOnClick}
+          handleDeleteSection={handleDeleteSection}
         />
       ) : (
         <MultiSectionView
           singleSection={singleSection}
-          setSingleSection={setSingleSection}
-          setSelectedSectionId={setSelectedSectionId}
           sections={sections}
           projectId={projectId}
-          handleDeleteSection={handleDeleteSection}
           assignSectionFormActive={assignSectionFormActive}
           setAssignSectionFormActive={setAssignSectionFormActive}
+          togglePreviewOnClick={togglePreviewOnClick}
+          handleDeleteSection={handleDeleteSection}
         />
       )}
     </div>
@@ -75,13 +84,12 @@ export default function Sections({ sections, userId, projectId }) {
 
 function MultiSectionView({
   singleSection,
-  setSingleSection,
-  setSelectedSectionId,
   sections,
   projectId,
-  handleDeleteSection,
   assignSectionFormActive,
   setAssignSectionFormActive,
+  togglePreviewOnClick,
+  handleDeleteSection,
 }) {
   return (
     <Box
@@ -97,15 +105,14 @@ function MultiSectionView({
             <Box key={section.id} sx={{ flex: "1 0 10%" }}>
               <SectionColumn
                 singleSection={singleSection}
-                setSingleSection={setSingleSection}
-                setSelectedSectionId={setSelectedSectionId}
                 section={section}
                 files={section.files}
                 sectionNumber={section.sectionNumber}
                 sectionId={section.id}
-                handleDeleteSection={handleDeleteSection}
                 assignSectionFormActive={assignSectionFormActive}
                 setAssignSectionFormActive={setAssignSectionFormActive}
+                togglePreviewOnClick={togglePreviewOnClick}
+                handleDeleteSection={handleDeleteSection}
               />
             </Box>
           ))

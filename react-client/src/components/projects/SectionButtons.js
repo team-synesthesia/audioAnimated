@@ -19,7 +19,7 @@ export function SectionButtons({
       <Tooltip title={previewTitle}>
         <IconButton
           type="button"
-          onClick={() => togglePreviewOnClick()}
+          onClick={() => togglePreviewOnClick(singleSection, sectionId)}
           sx={sx}
         >
           <BubbleChartIcon />

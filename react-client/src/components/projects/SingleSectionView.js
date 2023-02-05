@@ -9,14 +9,14 @@ import { GPU } from "./GPU/GPU";
 
 export default function SingleSectionView({
   singleSection,
-  setSingleSection,
-  handleDeleteSection,
   section,
   files,
   sectionNumber,
   sectionId,
   assignSectionFormActive,
   setAssignSectionFormActive,
+  togglePreviewOnClick,
+  handleDeleteSection,
 }) {
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
@@ -30,10 +30,6 @@ export default function SingleSectionView({
     sectionNumberx: sectionNumber,
     setCanvasInitialized,
   });
-
-  const togglePreviewOnClick = () => {
-    setSingleSection(false);
-  };
 
   return (
     <Box
