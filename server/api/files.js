@@ -10,8 +10,12 @@ router.post("/", async (req, res, next) => {
     if (typeof sectionNumber === "undefined") {
       sectionNumber = 0;
     }
-    let section = await Section.findOne({ where: { sectionNumber } });
+    let section = await Section.findOne({
+      where: { projectId, sectionNumber },
+    });
     if (!section) section = await Section.create({ projectId, sectionNumber });
+
+    console.log(section);
 
     const newFile = await File.create({
       name,
