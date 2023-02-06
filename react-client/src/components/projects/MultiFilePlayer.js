@@ -7,7 +7,29 @@ import { useDispatch, useSelector } from "react-redux";
 import FileCard from "./FileCard";
 import Player from "./Player";
 
-import {setSectionToPlay, setFinished} from "../../features/projects/playAllSlice"
+import { addFileAsync, writeFileAsync } from "../../features";
+
+import {
+  setSectionToPlay,
+  setFinished,
+} from "../../features/projects/playAllSlice";
+
+function getRecordingPermission(setRecordingStream) {
+  if (navigator.mediaDevices.getUserMedia) {
+    const constraints = { audio: true };
+    let onSuccess = function (stream) {
+      setRecordingStream(stream);
+    };
+
+    let onError = function (err) {
+      console.log("The following error occured: " + err);
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+  } else {
+    console.log("getUserMedia not supported on your browser!");
+  }
+}
 
 export default function MultiFilePlayer({
   title,
@@ -17,19 +39,20 @@ export default function MultiFilePlayer({
   setGPUconfig,
   renderGraphics,
   record,
+  userId,
+  projectId,
+  setMsgKey,
+  smallPlayer,
 }) {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
   );
 
-  const { sectionToPlay, tryToStart } = useSelector(
-    (state) => state.playAll );
+  const { sectionToPlay, tryToStart } = useSelector((state) => state.playAll);
 
-  const {sections} = useSelector( state => state.singleProject )
-
+  const { sections } = useSelector((state) => state.singleProject);
 
   const [disabled, setDisabled] = React.useState(true);
   const [currentTime, setCurrentTime] = React.useState(0);
@@ -40,6 +63,65 @@ export default function MultiFilePlayer({
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
+  const [recordingStream, setRecordingStream] = React.useState(false);
+  const [recordReady, setRecordReady] = React.useState(false);
+  const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
+  const [recordedChunks, setRecordedChunks] = React.useState([]);
+  const [saveRecording, setSaveRecording] = React.useState(false);
+
+  const recorderRef = React.useRef();
+
+  if (record) {
+    getRecordingPermission(setRecordingStream);
+  }
+
+  React.useEffect(() => {
+    if (recordingStream && !recorderRef.current) {
+      recorderRef.current = new MediaRecorder(recordingStream);
+
+      recorderRef.current.ondataavailable = function (e) {
+        setRecordedChunk(e.data);
+      };
+
+      recorderRef.current.onstop = async function () {
+        setSaveRecording(true);
+      };
+      setRecordReady(true);
+    }
+  }, [recordingStream]);
+
+  React.useEffect(() => {
+    if (recordedChunk.size > 0) {
+      const newChunks = recordedChunks.concat(recordedChunk);
+      setRecordedChunks(newChunks);
+    }
+  }, [recordedChunk]);
+
+  React.useEffect(() => {
+    const fnSaveRecording = async () => {
+      const name = prompt("Enter a label to identify your new track:");
+      const filePath = `${name}.ogg`;
+
+      const file = new Blob(recordedChunks, {
+        type: "audio/ogg; codecs=opus",
+      });
+      console.log("blob");
+      console.log(file);
+
+      const data = {
+        name,
+        filePath,
+        type: "ogg",
+        userId: userId,
+        projectId: projectId,
+      };
+      await dispatch(addFileAsync(data));
+      await dispatch(writeFileAsync({ projectId, filePath, file }));
+    };
+    if (saveRecording && recordedChunks.length > 0) {
+      fnSaveRecording();
+    }
+  }, [dispatch, recordedChunks, saveRecording, userId, projectId]);
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
@@ -79,25 +161,36 @@ export default function MultiFilePlayer({
     getDuration();
   }, [disabled]);
 
-
-  const [sectionPlayed,setSectionPlayed] = React.useState(-1)
-  const playSection = React.useCallback( async () => {
+  const [sectionPlayed, setSectionPlayed] = React.useState(-1);
+  const playSection = React.useCallback(async () => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
+      if (recordReady) recorderRef.current.stop();
     }
 
     const onEndCallback = () => {
       setEnded(true);
-    } 
+    };
     await acPlusRef.current.playNSongs(
-        files.map((x) => x.name),
-        onEndCallback)
-    
-    setIsPlaying(acPlusRef.current.isPlaying)
+      files.map((x) => x.name),
+      onEndCallback
+    );
 
-  }, [ended, files]);
-
+    if (recordReady) {
+      if (isPlaying) {
+        recorderRef.current.stop();
+        setMsgKey("stopped");
+      } else {
+        recorderRef.current.start();
+        setMsgKey("recording");
+      }
+    } else {
+      if (isPlaying) setMsgKey("playing");
+      else setMsgKey("stopped");
+    }
+    setIsPlaying(acPlusRef.current.isPlaying);
+  }, [recordReady, isPlaying, ended, files, setMsgKey]);
 
   React.useEffect(() => {
     if (ended) {
@@ -171,42 +264,48 @@ export default function MultiFilePlayer({
     }
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
-
-  React.useEffect(()=>{
- 
-      //loop  through  the sections array in index order
-      try {
-
-        if (tryToStart) {
-          const sectionNum = sections[sectionToPlay].sectionNumber
-          //I found that the only consistent way to get playAll moving was to track
-          //these 4 states (sectionNum,sectionNumber,sectionPlayed,isPlaying)
-          //and check for certain conditions, keying it off of 
-          //onEndCallback was a disaster
-          if ( !isPlaying & (sectionNum === sectionNumber) & sectionPlayed === -1 ) {
-            playSection()
-            setSectionPlayed(sectionNum)
+  React.useEffect(() => {
+    //loop  through  the sections array in index order
+    try {
+      if (tryToStart) {
+        const sectionNum = sections[sectionToPlay].sectionNumber;
+        //I found that the only consistent way to get playAll moving was to track
+        //these 4 states (sectionNum,sectionNumber,sectionPlayed,isPlaying)
+        //and check for certain conditions, keying it off of
+        //onEndCallback was a disaster
+        if (
+          !isPlaying &
+          (sectionNum === sectionNumber) &
+          (sectionPlayed === -1)
+        ) {
+          playSection();
+          setSectionPlayed(sectionNum);
+        } else if (
+          !isPlaying &
+          (sectionNum === sectionNumber) &
+          (sectionPlayed === sectionNumber)
+        ) {
+          const nextSection = sectionToPlay + 1;
+          setSectionPlayed(-1);
+          if (nextSection < sections.length) {
+            dispatch(setSectionToPlay(nextSection));
+          } else {
+            dispatch(setFinished(true));
           }
-          else if ( !isPlaying & (sectionNum===sectionNumber)&(sectionPlayed===sectionNumber) ) {
-            const nextSection = sectionToPlay+1
-            setSectionPlayed(-1)
-            if ( nextSection < sections.length) {    
-              dispatch(setSectionToPlay(nextSection))
-            }
-            else {
-              dispatch(setFinished(true))
-            }
-          }
-  
         }
       }
-      catch (err) {
-
-      }
-    
-  },[playSection,sectionToPlay,ended,sectionPlayed,
-    sectionNumber,sections,dispatch, isPlaying,tryToStart])
-
+    } catch (err) {}
+  }, [
+    playSection,
+    sectionToPlay,
+    ended,
+    sectionPlayed,
+    sectionNumber,
+    sections,
+    dispatch,
+    isPlaying,
+    tryToStart,
+  ]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
@@ -220,15 +319,16 @@ export default function MultiFilePlayer({
         duration={duration}
         loop={loop}
         toggleLoop={toggleLoop}
+        record={record}
       />
-      {record ? (
+      {smallPlayer === true ? (
         <Card>
           <CardContent>
             <Files
               files={files}
               changeVolume={changeVolume}
               inSection={inSection}
-              record={record}
+              smallPlayer={smallPlayer}
             />
           </CardContent>
         </Card>
@@ -237,14 +337,13 @@ export default function MultiFilePlayer({
           files={files}
           changeVolume={changeVolume}
           inSection={inSection}
-          record={record}
         />
       )}
     </Box>
   );
 }
 
-function Files({ files, changeVolume, inSection, record }) {
+function Files({ files, changeVolume, inSection, smallPlayer }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
       {files && files.length
@@ -254,7 +353,7 @@ function Files({ files, changeVolume, inSection, record }) {
               file={file}
               changeVolume={changeVolume}
               inSection={inSection}
-              record={record}
+              smallPlayer={smallPlayer}
             />
           ))
         : null}

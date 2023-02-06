@@ -21,7 +21,7 @@ export default function SectionColumn({
       <SectionButtons
         singleSection={singleSection}
         togglePreviewOnClick={togglePreviewOnClick}
-        previewTitle={"Exit Preview"}
+        previewTitle={"Preview Graphics"}
         handleDeleteSection={handleDeleteSection}
         sectionId={sectionId}
       />

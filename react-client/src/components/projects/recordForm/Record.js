@@ -10,11 +10,18 @@ import Typography from "@mui/material/Typography";
 
 import SelectTracksForm from "./SelectTracksForm";
 import RecordForm from "./RecordForm";
-import Review from "./Review";
+import PlaybackForm from "./PlaybackForm";
 
-const steps = ["Select Tracks", "Record", "Add to your project"];
+const steps = ["Select Tracks", "Record", "Listen Back"];
 
-function getStepContent(step, selectedFiles, setSelectedFiles, availableFiles) {
+function getStepContent(
+  step,
+  userId,
+  projectId,
+  selectedFiles,
+  setSelectedFiles,
+  availableFiles
+) {
   switch (step) {
     case 0:
       return (
@@ -25,15 +32,21 @@ function getStepContent(step, selectedFiles, setSelectedFiles, availableFiles) {
         />
       );
     case 1:
-      return <RecordForm selectedFiles={selectedFiles} />;
+      return (
+        <RecordForm
+          selectedFiles={selectedFiles}
+          userId={userId}
+          projectId={projectId}
+        />
+      );
     case 2:
-      return <Review />;
+      return <PlaybackForm selectedFiles={selectedFiles} />;
     default:
       throw new Error("Unknown step");
   }
 }
 
-export default function Record({ availableFiles }) {
+export default function Record({ availableFiles, userId, projectId }) {
   const [selectedFiles, setSelectedFiles] = React.useState({});
 
   React.useEffect(() => {
@@ -76,18 +89,18 @@ export default function Record({ availableFiles }) {
         {activeStep === steps.length ? (
           <React.Fragment>
             <Typography variant="h5" gutterBottom>
-              Thank you for your order.
+              Your track has been saved!
             </Typography>
             <Typography variant="subtitle1">
-              Your order number is #2001539. We have emailed your order
-              confirmation, and will send you an update when your order has
-              shipped.
+              Use the Project editor to drop your track into a section!
             </Typography>
           </React.Fragment>
         ) : (
           <React.Fragment>
             {getStepContent(
               activeStep,
+              userId,
+              projectId,
               selectedFiles,
               setSelectedFiles,
               availableFiles
@@ -104,7 +117,7 @@ export default function Record({ availableFiles }) {
                 onClick={handleNext}
                 sx={{ mt: 3, ml: 1 }}
               >
-                {activeStep === steps.length - 1 ? "Place order" : "Next"}
+                {activeStep === steps.length - 1 ? "Done" : "Next"}
               </Button>
             </Box>
           </React.Fragment>

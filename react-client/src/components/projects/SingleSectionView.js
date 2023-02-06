@@ -43,7 +43,7 @@ export default function SingleSectionView({
         <SectionButtons
           singleSection={singleSection}
           togglePreviewOnClick={togglePreviewOnClick}
-          previewTitle={"Preview"}
+          previewTitle={"Exit Graphics Preview"}
           handleDeleteSection={handleDeleteSection}
           sectionId={sectionId}
         />

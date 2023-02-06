@@ -14,7 +14,12 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import { useDispatch } from "react-redux";
 import { deleteFileAsync } from "../../features";
 
-export default function FileCard({ file, changeVolume, inSection, record }) {
+export default function FileCard({
+  file,
+  changeVolume,
+  inSection,
+  smallPlayer,
+}) {
   const dispatch = useDispatch();
   const handleDelete = (sectionNumber) => {
     dispatch(
@@ -35,10 +40,9 @@ export default function FileCard({ file, changeVolume, inSection, record }) {
     else _changeVolume(0);
     setOnOff(value);
   };
-
   return (
     <Box sx={{ minWidth: 210 }}>
-      {record ? (
+      {smallPlayer ? (
         <Box sx={{ display: "flex", flexDirection: "row" }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {file.name}
