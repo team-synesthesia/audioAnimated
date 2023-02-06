@@ -156,6 +156,7 @@ export const singleProjectSlice = createSlice({
         state.availableFiles[newFile.name] = newFile;
       for (let section of state.sections) {
         if (section.id === newFile.sectionId) {
+          if (!section.files) section.files = [];
           section.files.push(newFile);
           break;
         }

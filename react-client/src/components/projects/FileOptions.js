@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { deleteFileAsync, addFileAsync } from "../../features";
 
 const FileOptions = ({ handleClose, clickedFile }) => {
-  const { sections } = useSelector((state) => state.singleProject);
+  const { sections, id } = useSelector((state) => state.singleProject);
 
   const dispatch = useDispatch();
   const handleDelete = (fileName) => {
@@ -17,7 +17,8 @@ const FileOptions = ({ handleClose, clickedFile }) => {
     const sectionCheckboxes = document.querySelectorAll(".sectionCheckbox");
     const sectionsToAssign = [];
     for (let sectionCheckbox of sectionCheckboxes) {
-      sectionCheckbox.checked && sectionsToAssign.push(Number(sectionCheckbox.value));
+      sectionCheckbox.checked &&
+        sectionsToAssign.push(Number(sectionCheckbox.value));
     }
     for (let sectionToAssign of sectionsToAssign) {
       const { name, filePath, type, userId } = clickedFile;
@@ -27,6 +28,7 @@ const FileOptions = ({ handleClose, clickedFile }) => {
         type,
         userId,
         sectionNumber: sectionToAssign,
+        projectId: id,
       };
       dispatch(addFileAsync(data));
     }

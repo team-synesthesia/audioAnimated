@@ -4,13 +4,12 @@ import { Button } from "@mui/material";
 import { addFileAsync } from "../../features";
 
 const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
-  const { availableFiles } = useSelector((state) => state.singleProject);
+  const { availableFiles, id } = useSelector((state) => state.singleProject);
   const fileNames = [];
 
   const dispatch = useDispatch();
 
-  if ( typeof section.files === "undefined") return
-
+  if (typeof section.files === "undefined") return;
 
   for (let file of section.files) {
     fileNames.push(file.name);
@@ -18,7 +17,6 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
   const unassignedFiles = Object.values(availableFiles).filter(
     (file) => !fileNames.includes(file.name)
   );
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,6 +34,7 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
         type,
         userId,
         sectionNumber: section.sectionNumber,
+        projectId: id,
       };
       dispatch(addFileAsync(data));
     }
