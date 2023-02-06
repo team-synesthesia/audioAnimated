@@ -14,23 +14,6 @@ import {
   setFinished,
 } from "../../features/projects/playAllSlice";
 
-function getRecordingPermission(setRecordingStream) {
-  if (navigator.mediaDevices.getUserMedia) {
-    const constraints = { audio: true };
-    let onSuccess = function (stream) {
-      setRecordingStream(stream);
-    };
-
-    let onError = function (err) {
-      console.log("The following error occured: " + err);
-    };
-
-    navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
-  } else {
-    console.log("getUserMedia not supported on your browser!");
-  }
-}
-
 export default function MultiFilePlayer({
   title,
   files,
@@ -43,6 +26,8 @@ export default function MultiFilePlayer({
   projectId,
   setMsgKey,
   smallPlayer,
+  setRecorded,
+  newFileName,
 }) {
   const dispatch = useDispatch();
 
@@ -63,53 +48,65 @@ export default function MultiFilePlayer({
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
-  const [recordingStream, setRecordingStream] = React.useState(false);
-  const [recordReady, setRecordReady] = React.useState(false);
   const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
   const [recordedChunks, setRecordedChunks] = React.useState([]);
   const [saveRecording, setSaveRecording] = React.useState(false);
 
   const recorderRef = React.useRef();
+  const recordStreamRef = React.useRef();
 
-  if (record) {
-    getRecordingPermission(setRecordingStream);
+  if (record && !recordStreamRef.current) {
+    getRecordingPermission();
   }
 
-  React.useEffect(() => {
-    if (recordingStream && !recorderRef.current) {
-      recorderRef.current = new MediaRecorder(recordingStream);
-
-      recorderRef.current.ondataavailable = function (e) {
-        setRecordedChunk(e.data);
+  function getRecordingPermission() {
+    if (navigator.mediaDevices.getUserMedia) {
+      const constraints = { audio: true };
+      let onSuccess = function (stream) {
+        recordStreamRef.current = stream;
       };
 
-      recorderRef.current.onstop = async function () {
-        setSaveRecording(true);
+      let onError = function (err) {
+        console.log("The following error occured: " + err);
       };
-      setRecordReady(true);
+
+      navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+    } else {
+      console.log("getUserMedia not supported on your browser!");
     }
-  }, [recordingStream]);
+  }
+
+  if (recordStreamRef.current && !recorderRef.current) {
+    recorderRef.current = new MediaRecorder(recordStreamRef.current);
+
+    recorderRef.current.ondataavailable = function (e) {
+      setRecordedChunk(e.data);
+    };
+
+    recorderRef.current.onstop = async function () {
+      setSaveRecording(true);
+    };
+  }
 
   React.useEffect(() => {
     if (recordedChunk.size > 0) {
       const newChunks = recordedChunks.concat(recordedChunk);
       setRecordedChunks(newChunks);
     }
+    // intentionally leaving out 'recordedChunks' to avoid
+    // infinite loop
   }, [recordedChunk]);
 
   React.useEffect(() => {
     const fnSaveRecording = async () => {
-      const name = prompt("Enter a label to identify your new track:");
-      const filePath = `${name}.ogg`;
+      const filePath = `${newFileName}.ogg`;
 
       const file = new Blob(recordedChunks, {
         type: "audio/ogg; codecs=opus",
       });
-      console.log("blob");
-      console.log(file);
 
       const data = {
-        name,
+        name: newFileName,
         filePath,
         type: "ogg",
         userId: userId,
@@ -117,11 +114,15 @@ export default function MultiFilePlayer({
       };
       await dispatch(addFileAsync(data));
       await dispatch(writeFileAsync({ projectId, filePath, file }));
+      setRecorded(true);
     };
-    if (saveRecording && recordedChunks.length > 0) {
+    if (
+      saveRecording &&
+      (recordedChunks.length > 0) & (newFileName && newFileName.length > 0)
+    ) {
       fnSaveRecording();
     }
-  }, [dispatch, recordedChunks, saveRecording, userId, projectId]);
+  }, [dispatch, recordedChunks, saveRecording, userId, projectId, newFileName]);
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
@@ -162,13 +163,24 @@ export default function MultiFilePlayer({
   }, [disabled]);
 
   const [sectionPlayed, setSectionPlayed] = React.useState(-1);
+
+  const recordStartStop = async () => {
+    if (recorderRef.current) {
+      if (recorderRef.current.state === "recording") {
+        recorderRef.current.stop();
+        setMsgKey("stopped");
+      } else if (["inactive", "paused"].includes(recorderRef.current.state)) {
+        recorderRef.current.start();
+        setMsgKey("recording");
+      }
+    }
+  };
+
   const playSection = React.useCallback(async () => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
-      if (recordReady) recorderRef.current.stop();
     }
-
     const onEndCallback = () => {
       setEnded(true);
     };
@@ -177,20 +189,8 @@ export default function MultiFilePlayer({
       onEndCallback
     );
 
-    if (recordReady) {
-      if (isPlaying) {
-        recorderRef.current.stop();
-        setMsgKey("stopped");
-      } else {
-        recorderRef.current.start();
-        setMsgKey("recording");
-      }
-    } else if (setMsgKey) {
-      if (isPlaying) setMsgKey("playing");
-      else setMsgKey("stopped");
-    }
     setIsPlaying(acPlusRef.current.isPlaying);
-  }, [recordReady, isPlaying, ended, files, setMsgKey]);
+  }, [ended, files]);
 
   React.useEffect(() => {
     if (ended) {
@@ -209,6 +209,13 @@ export default function MultiFilePlayer({
       }
     }
   }, [intervalId, ended, playSection, restart, loop]);
+
+  React.useEffect(() => {
+    if (setMsgKey & !record) {
+      if (isPlaying) setMsgKey("playing");
+      else setMsgKey("stopped");
+    }
+  }, [record, isPlaying, setMsgKey]);
 
   // Set the current time to display time passed on playback
   React.useEffect(() => {
@@ -314,6 +321,7 @@ export default function MultiFilePlayer({
         isPlaying={isPlaying}
         currentTime={currentTime}
         playOnClick={playSection}
+        recordStartStop={recordStartStop}
         restartOnClick={restartOnClick}
         disabled={disabled}
         duration={duration}
