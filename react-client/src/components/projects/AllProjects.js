@@ -26,6 +26,8 @@ export default function AllProjects() {
   const dispatch = useDispatch();
   const handleDelete = (id) => {
     dispatch(deleteProjectAsync(id));
+
+    navigate("/projects");
   };
 
   return (

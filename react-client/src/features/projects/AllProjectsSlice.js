@@ -45,7 +45,12 @@ export const allProjectsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllProjectsByUserIdAsync.fulfilled, (state, action) => {
-        return action.payload;
+        const stateCopy = [...state];
+        const projects = action.payload;
+        for (let project of projects) {
+          stateCopy.push(project);
+        }
+        return stateCopy;
       })
       .addCase(createProjectAsync.fulfilled, (state, action) => {
         const stateCopy = [...state];
@@ -53,7 +58,12 @@ export const allProjectsSlice = createSlice({
         return stateCopy;
       })
       .addCase(deleteProjectAsync.fulfilled, (state, action) => {
-        // change state to delete project from all projects
+        const stateCopy = [...state];
+        const projectToDeleteId = action.payload;
+        for (let [i, project] of stateCopy.entries()) {
+          project.id === projectToDeleteId && stateCopy.splice(i, 1);
+        }
+        return stateCopy;
       });
   },
 });
