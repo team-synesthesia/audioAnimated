@@ -12,15 +12,21 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { AddNewProject } from "../";
+import { deleteProjectAsync } from "../../features";
 
 export default function AllProjects() {
   const navigate = useNavigate();
   const projects = useSelector((state) => state.allProjects);
 
   const [toggleNewProjectForm, setToggleNewProjectForm] = React.useState(false);
+
+  const dispatch = useDispatch();
+  const handleDelete = (id) => {
+    dispatch(deleteProjectAsync(id));
+  };
 
   return (
     <Container sx={{ marginTop: "30px" }}>
@@ -109,6 +115,12 @@ export default function AllProjects() {
                         }}
                       >
                         Edit
+                      </Button>
+                      <Button
+                        size="small"
+                        onClick={() => handleDelete(project.id)}
+                      >
+                        Delete
                       </Button>
                     </CardActions>
                   </Card>

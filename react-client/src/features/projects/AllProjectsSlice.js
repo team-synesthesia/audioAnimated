@@ -10,7 +10,7 @@ export const fetchAllProjectsByUserIdAsync = createAsyncThunk(
       });
       return data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 );
@@ -22,7 +22,19 @@ export const createProjectAsync = createAsyncThunk(
       const { data } = await axios.post("/api/projects/", payload);
       return data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    }
+  }
+);
+
+export const deleteProjectAsync = createAsyncThunk(
+  "deleteProject",
+  async (projectId) => {
+    try {
+      const { data } = await axios.delete(`/api/projects/${projectId}`);
+      return data;
+    } catch (error) {
+      console.error(error);
     }
   }
 );
@@ -39,6 +51,9 @@ export const allProjectsSlice = createSlice({
         const stateCopy = [...state];
         stateCopy.push(action.payload);
         return stateCopy;
+      })
+      .addCase(deleteProjectAsync.fulfilled, (state, action) => {
+        // change state to delete project from all projects
       });
   },
 });

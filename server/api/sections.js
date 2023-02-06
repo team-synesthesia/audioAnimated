@@ -25,7 +25,6 @@ router.delete("/:id", async (req, res, next) => {
       where: { sectionId: sectionToDelete.id },
     });
     for (let file of filesToDelete) {
-      console.log(file);
       await file.destroy();
     }
     const deletedSection = await sectionToDelete.destroy();

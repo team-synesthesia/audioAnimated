@@ -45,7 +45,7 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
     setAssignSectionFormActive(null);
   };
 
-  return unassignedFiles.length ? (
+  return unassignedFiles && unassignedFiles.length ? (
     <form onSubmit={handleSubmit}>
       {unassignedFiles.map(
         (file) =>
