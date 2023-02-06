@@ -30,13 +30,16 @@ export const createProjectAsync = createAsyncThunk(
 export const allProjectsSlice = createSlice({
   name: "allProjects",
   initialState: [],
-  extraReducers: (builder) => [
-    builder.addCase(
-      fetchAllProjectsByUserIdAsync.fulfilled,
-      (state, action) => {
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllProjectsByUserIdAsync.fulfilled, (state, action) => {
         return action.payload;
-      }
-    ),
-  ],
+      })
+      .addCase(createProjectAsync.fulfilled, (state, action) => {
+        const stateCopy = [...state];
+        stateCopy.push(action.payload);
+        return stateCopy;
+      });
+  },
 });
 export default allProjectsSlice.reducer;

@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const {
-  models: { Section },
+  models: { Section, File },
 } = require("../db");
 module.exports = router;
 
@@ -21,6 +21,13 @@ router.post("/", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
   try {
     const sectionToDelete = await Section.findByPk(req.params.id);
+    const filesToDelete = await File.findAll({
+      where: { sectionId: sectionToDelete.id },
+    });
+    for (let file of filesToDelete) {
+      console.log(file);
+      await file.destroy();
+    }
     const deletedSection = await sectionToDelete.destroy();
     res.status(202).send(deletedSection);
   } catch (err) {
