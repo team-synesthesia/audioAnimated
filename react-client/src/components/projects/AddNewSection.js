@@ -11,7 +11,7 @@ import CardContent from "@mui/material/CardContent";
 import { createSectionAsync } from "../../features";
 import { SectionButtons } from "./SectionButtons";
 
-export default function AddNewSection({ projectId, sx }) {
+export default function AddNewSection({ projectId }) {
   const dispatch = useDispatch();
 
   const addNewSection = () => {
