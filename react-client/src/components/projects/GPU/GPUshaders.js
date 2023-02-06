@@ -209,7 +209,7 @@ export  const fragmentShaders = [
             if (i>=oct) break;
             v += a * noise(p);
             p = p * 2.;
-            a *= .7 * (1.+iMusic.y/200.);  //changed from the usual .5
+            a *= .7 * (1.+iMusic.w/10.);  //changed from the usual .5
         }
         return v;
     }
@@ -250,9 +250,12 @@ export  const fragmentShaders = [
         vec3 rd = normalize( vec3(uv, -2.) );  
         vec3 ro = vec3(0.,0.,0.);
         
-        float delta = 2.*pi/10.; //*(1.+iMusic.y/3000.);
+        float st = sin(iTime);
+
+        //float delta = iTime/500.;
+        float delta = 2.*pi/10.; //*(1.-iMusic.y/600.) - iTime/500.;
      
-        mat3 rot = rxz(-2.*delta) * ryz(.2*delta); 
+        mat3 rot = rxz(-2.*delta) * ryz(.2*delta+(iMusic.z-128.)/4000.); 
         
         ro -= rot[2]*myTime/4.;
         
@@ -265,9 +268,9 @@ export  const fragmentShaders = [
         float stepsize = .01;
         float totdist = stepsize;
       
-        vec3 spherepos = ro + 1.5*rot[2] * (1.-iMusic.x/10.) ;
-        //spherepos += iMusic.w/500.*rot[0];
-        //spherepos += (iMusic.z/600.-.1)*rot[1];
+        vec3 spherepos = ro - 2.5*rot[2] * (1. - (iMusic.x)/15.) ;
+        //spherepos.y += (iMusic.y-50.)/200.;
+        spherepos.x += .1 + (iMusic.z-100.)/200.; // * rot[0];
     
         //if ( iMouse.w != 0. ) 
         //spherepos += -mm.x*rot[0] - mm.y*rot[1];
@@ -280,7 +283,7 @@ export  const fragmentShaders = [
             nn = gradient( ri.p1 );
             vec3 rd2 =  refract( rd, -nn, .1);  //change ray direction
             p+= 1.3*(length(ri.p2-ri.p1))*rd2;   //move the ray to exit  the sphere
-            oct = 7;   //make the sphere noisier 
+            oct = 6;   //make the sphere noisier 
         }
       
         for (int i=0; i<16; i++) {
