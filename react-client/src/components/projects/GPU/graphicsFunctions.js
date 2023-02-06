@@ -27,7 +27,7 @@ export function createShaderModel(scene,uniforms,shaderFunc) {
 
 export function animateShaderModel(GL,md,time) {
     const uu = GL.material.uniforms
-    uu.iMusic.value = new THREE.Vector4( (md.sumLow*md.sumLow/2),md.sumMid*10,md.sum*md.sum*20,0)
+    uu.iMusic.value = new THREE.Vector4( (md.sumLow*md.sumLow/2),md.sumMid*10,md.sum*md.sum*20,md.wsum1)
     uu.iTime.value = time
 }
 
