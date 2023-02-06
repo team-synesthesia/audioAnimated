@@ -29,6 +29,7 @@ export default function Player({
   currentTime,
   duration,
   playOnClick,
+  recordStartStop,
   restartOnClick,
   isPlaying,
   disabled,
@@ -36,6 +37,13 @@ export default function Player({
   loop,
   record,
 }) {
+  const play = async () => {
+    await playOnClick();
+    if (record) {
+      recordStartStop();
+    }
+  };
+
   return (
     <Card
       sx={{
@@ -76,7 +84,7 @@ export default function Player({
           >
             <IconButton
               aria-label="play/pause"
-              onClick={playOnClick}
+              onClick={play}
               disabled={disabled}
             >
               {isPlaying ? (

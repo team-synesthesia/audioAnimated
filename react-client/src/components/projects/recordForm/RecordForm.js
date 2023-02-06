@@ -2,16 +2,26 @@ import * as React from "react";
 
 import { Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
+import TextField from "@mui/material/TextField";
 
 import MultiFilePlayer from "../MultiFilePlayer";
 
 const MESSAGES = {
+  label: "Label, you're recording",
   begin: "Click on the microphone to begin recording",
   recording: "Click the Mic again to stop recording",
-  stopped: "Recording saved. Hit the 'NEXT' button to listen back",
+  stopped:
+    "Recording saved. Hit the 'NEXT' button to listen back (or hit the mic to continue the recording)",
 };
 
-export default function RecordForm({ selectedFiles, projectId, userId }) {
+export default function RecordForm({
+  selectedFiles,
+  projectId,
+  userId,
+  newFileName,
+  setNewFileName,
+  setRecorded,
+}) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
     const _files = [];
@@ -23,9 +33,21 @@ export default function RecordForm({ selectedFiles, projectId, userId }) {
     setFiles(_files);
   }, [selectedFiles]);
 
+  const handleNameChange = (event) => {
+    setNewFileName(event.target.value);
+  };
+
   const smallPlayer = true;
-  const [msgKey, setMsgKey] = React.useState("begin");
-  console.log(msgKey);
+  const [msgKey, setMsgKey] = React.useState("label");
+
+  React.useEffect(() => {
+    if (newFileName && (newFileName.length > 0) & (msgKey === "label")) {
+      setMsgKey("begin");
+    } else if ((newFileName === "") & (msgKey === "begin")) {
+      setMsgKey("label");
+    }
+  }, [newFileName, msgKey]);
+
   return (
     <React.Fragment>
       <Box>
@@ -34,20 +56,34 @@ export default function RecordForm({ selectedFiles, projectId, userId }) {
         ) : (
           <Alert severity="info">{MESSAGES[msgKey]}</Alert>
         )}
-        <Box sx={{ margin: "10px" }}>
-          <MultiFilePlayer
-            msgKey={msgKey}
-            setMsgKey={setMsgKey}
-            projectId={projectId}
-            userId={userId}
-            files={files}
-            inSection={false}
-            sectionNumber={null}
-            setGPUconfig={null}
-            renderGraphics={false}
-            record={true}
-            smallPlayer={smallPlayer}
+        <Box sx={{ display: "flex", alignItems: "center", margin: "10px" }}>
+          <TextField
+            label="Label"
+            variant="outlined"
+            value={newFileName}
+            onChange={handleNameChange}
+            sx={{ margin: "auto", width: "25%" }}
           />
+        </Box>
+
+        <Box sx={{ margin: "10px" }}>
+          {newFileName && newFileName.length > 0 ? (
+            <MultiFilePlayer
+              msgKey={msgKey}
+              setMsgKey={setMsgKey}
+              projectId={projectId}
+              userId={userId}
+              files={files}
+              inSection={false}
+              sectionNumber={null}
+              setGPUconfig={null}
+              renderGraphics={false}
+              record={true}
+              smallPlayer={smallPlayer}
+              setRecorded={setRecorded}
+              newFileName={newFileName}
+            />
+          ) : null}
         </Box>
       </Box>
     </React.Fragment>
