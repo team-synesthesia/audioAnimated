@@ -185,7 +185,7 @@ export default function MultiFilePlayer({
         recorderRef.current.start();
         setMsgKey("recording");
       }
-    } else {
+    } else if (setMsgKey) {
       if (isPlaying) setMsgKey("playing");
       else setMsgKey("stopped");
     }
