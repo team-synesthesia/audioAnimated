@@ -43,6 +43,8 @@ export default function MultiFilePlayer({
   projectId,
   setMsgKey,
   smallPlayer,
+  setRecorded,
+  newFileName,
 }) {
   const dispatch = useDispatch();
 
@@ -99,17 +101,14 @@ export default function MultiFilePlayer({
 
   React.useEffect(() => {
     const fnSaveRecording = async () => {
-      const name = prompt("Enter a label to identify your new track:");
-      const filePath = `${name}.ogg`;
+      const filePath = `${newFileName}.ogg`;
 
       const file = new Blob(recordedChunks, {
         type: "audio/ogg; codecs=opus",
       });
-      console.log("blob");
-      console.log(file);
 
       const data = {
-        name,
+        name: newFileName,
         filePath,
         type: "ogg",
         userId: userId,
@@ -117,11 +116,15 @@ export default function MultiFilePlayer({
       };
       await dispatch(addFileAsync(data));
       await dispatch(writeFileAsync({ projectId, filePath, file }));
+      setRecorded(true);
     };
-    if (saveRecording && recordedChunks.length > 0) {
+    if (
+      saveRecording &&
+      (recordedChunks.length > 0) & (newFileName && newFileName.length > 0)
+    ) {
       fnSaveRecording();
     }
-  }, [dispatch, recordedChunks, saveRecording, userId, projectId]);
+  }, [dispatch, recordedChunks, saveRecording, userId, projectId, newFileName]);
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {

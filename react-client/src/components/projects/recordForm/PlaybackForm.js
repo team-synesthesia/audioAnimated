@@ -8,9 +8,9 @@ import MultiFilePlayer from "../MultiFilePlayer";
 const MESSAGES = {
   begin: "Hit the play button to listen back",
   playing:
-    "If you're satisfied with you're recording, hit the 'DONE', otherwise, click 'BACK' to re-record",
+    "If you're satisfied with you're recording, hit the 'DONE', or hit the trash can to delete",
   stopped:
-    "If you're satisfied with you're recording, hit the 'DONE', otherwise, click 'BACK' to re-record",
+    "If you're satisfied with you're recording, hit the 'DONE', or hit the trash can to delete",
 };
 
 export default function PlaybackForm({ selectedFiles }) {
