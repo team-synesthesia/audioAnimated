@@ -7,10 +7,15 @@ module.exports = router;
 router.post("/", async (req, res, next) => {
   try {
     const { projectId } = req.body;
-    const existingSections = await Section.findAll({ where: { projectId } });
-    let sectionNumber;
-    if (existingSections.length) sectionNumber = existingSections.length + 1;
-    else sectionNumber = 1;
+    const existingSections = await Section.findAll({
+      where: { projectId },
+    });
+    let sectionNumber = 1;
+    for (let section of existingSections) {
+      if (section.sectionNumber >= sectionNumber) {
+        sectionNumber = section.sectionNumber + 1;
+      }
+    }
     const section = await Section.create({ sectionNumber, projectId });
     res.send(section);
   } catch (err) {
