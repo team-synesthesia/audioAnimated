@@ -12,11 +12,9 @@ import { addFileAsync, writeFileAsync } from "../../features";
 import {
   setSectionToPlay,
   setFinished,
-  setPlayAllCanvasCreated,
-  setTryToStart
+  setTryToStart,
+  setPlayAllStarted
 } from "../../features/projects/playAllSlice";
-
-import { GPU } from "./GPU/GPU"
 
 export default function MultiFilePlayer({
   title,
@@ -305,11 +303,9 @@ export default function MultiFilePlayer({
     }
   },[finished,sectionNumber,dispatch])
 
-  const [canvasInitialized,setCanvasInitialized] = React.useState(false)
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
-
 
       if (tryToStart && !finishedRef.current ) {
         console.log('zzzzzzzzzzz',sectionNumber, tryToStart, finishedRef.current)
@@ -326,7 +322,7 @@ export default function MultiFilePlayer({
           playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
           playAllCanvasCreatedRef.current = true
           finishedRef.current = false
-
+          dispatch(setPlayAllStarted(true))
           setPlayAllGPUconfig(
             {isPlaying:true,
               acPlusRef:acPlusRef.current,
@@ -391,7 +387,6 @@ export default function MultiFilePlayer({
     tryToStart,
     playAllCanvasRef,
     acRefs,
-    canvasInitialized,
     setPlayAllGPUconfig,
     finished
   ]);

@@ -9,7 +9,7 @@ const store = configureStore({
     allProjects: allProjectsReducer,
     playAll: playAllReducer,
   },
-  //middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
 
 export default store;

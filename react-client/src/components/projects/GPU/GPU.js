@@ -31,7 +31,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     }
     //console.log(sectionNumber,acPlusRef)
 
-    console.log('d1', sectionNumber )
+    //console.log('d1', sectionNumber )
 
     const resizeRef = React.useRef(false)
  
