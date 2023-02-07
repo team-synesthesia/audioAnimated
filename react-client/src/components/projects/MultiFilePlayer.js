@@ -2,6 +2,7 @@ import * as React from "react";
 import { Card, Box, CardContent } from "@mui/material";
 
 import AudioContextPlus from "../../audio";
+import Metronome from "../../metronome";
 import { useDispatch, useSelector } from "react-redux";
 
 import FileCard from "./FileCard";
@@ -28,6 +29,8 @@ export default function MultiFilePlayer({
   smallPlayer,
   setRecorded,
   newFileName,
+  useMetronome,
+  metronomeTempo,
 }) {
   const dispatch = useDispatch();
 
@@ -59,6 +62,7 @@ export default function MultiFilePlayer({
 
   const recorderRef = React.useRef();
   const recordStreamRef = React.useRef();
+  const metrnomeRef = React.useRef();
 
   if (record && !recordStreamRef.current) {
     getRecordingPermission();
@@ -127,12 +131,28 @@ export default function MultiFilePlayer({
     ) {
       fnSaveRecording();
     }
-  }, [dispatch, recordedChunks, saveRecording, userId, projectId, newFileName]);
+  }, [
+    dispatch,
+    recordedChunks,
+    saveRecording,
+    userId,
+    projectId,
+    newFileName,
+    setRecorded,
+  ]);
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
-    if (!acPlusRef.current) acPlusRef.current = new AudioContextPlus();
+    if (!acPlusRef.current) {
+      acPlusRef.current = new AudioContextPlus();
+    }
   }, []);
+
+  React.useEffect(() => {
+    if (useMetronome && metronomeTempo && !metrnomeRef.current) {
+      metrnomeRef.current = new Metronome(metronomeTempo);
+    }
+  }, [useMetronome, metronomeTempo]);
 
   // you dont need to wait for audio buffers if you have no files
   // and you want to record
@@ -183,10 +203,12 @@ export default function MultiFilePlayer({
         recorderRef.current.stop();
         setMsgKey("stopped");
         setIsRecording(false);
+        if (metrnomeRef.current) metrnomeRef.current.stop();
       } else if (["inactive", "paused"].includes(recorderRef.current.state)) {
         recorderRef.current.start();
         setMsgKey("recording");
         setIsRecording(true);
+        if (metrnomeRef.current) metrnomeRef.current.start();
       }
     }
   };

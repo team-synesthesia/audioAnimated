@@ -21,6 +21,8 @@ export default function RecordForm({
   setNewFileName,
   setRecorded,
   displayRecorder,
+  useMetronome,
+  metronomeTempo,
 }) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
@@ -82,6 +84,8 @@ export default function RecordForm({
               smallPlayer={smallPlayer}
               setRecorded={setRecorded}
               newFileName={newFileName}
+              useMetronome={useMetronome}
+              metronomeTempo={metronomeTempo}
             />
           ) : null}
         </Box>
