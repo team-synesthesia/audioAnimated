@@ -15,3 +15,4 @@ export { default as FileUploadForm } from "./projects/FileUploadForm";
 export { default as FileOptions } from "./projects/FileOptions";
 export { default as AssignFileToSection } from "./projects/AssignFileToSection";
 export { default as AddNewProject } from "./projects/AddNewProject";
+export { default as DeleteConfirmation } from "./projects/DeleteConfirmation";

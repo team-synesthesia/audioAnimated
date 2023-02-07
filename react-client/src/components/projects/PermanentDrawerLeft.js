@@ -36,6 +36,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
   const handleClose = () => setOpen(false);
 
   const { availableFiles } = useSelector((state) => state.singleProject);
+  const availableFilesValues = Object.values(availableFiles);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -123,22 +124,30 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               <ListItemText primary={"Music Library"} />
             </ListItemButton>
           </ListItem>
-          {showMusicLibrary &&
-            Object.values(availableFiles).map((file) => (
-              <ListItem key={file.id}>
-                <ListItemButton
-                  onClick={() => {
-                    handleOpen("fileOptions");
-                    setClickedFile(file);
-                  }}
-                >
-                  <ListItemIcon>
-                    <MusicNoteIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={file.name} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+          {showMusicLibrary ? (
+            availableFiles && availableFilesValues.length ? (
+              availableFilesValues.map((file) => (
+                <ListItem key={file.id}>
+                  <ListItemButton
+                    onClick={() => {
+                      handleOpen("fileOptions");
+                      setClickedFile(file);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <MusicNoteIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={file.name} />
+                  </ListItemButton>
+                </ListItem>
+              ))
+            ) : (
+              <ListItemText
+                primary={"No music available :("}
+                sx={{ marginLeft: "5px" }}
+              />
+            )
+          ) : null}
         </List>
       </Drawer>
       <Box

@@ -1,6 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
+
+import { DeleteConfirmation } from "../";
 import { deleteFileAsync, addFileAsync } from "../../features";
 
 const FileOptions = ({ handleClose, clickedFile }) => {
@@ -59,7 +61,7 @@ const FileOptions = ({ handleClose, clickedFile }) => {
         ))}
         <Button type="submit">Assign to Section(s)</Button>
       </form>
-      <Button
+      {/* <Button
         type="button"
         size="small"
         onClick={() => {
@@ -68,7 +70,11 @@ const FileOptions = ({ handleClose, clickedFile }) => {
         }}
       >
         Delete File
-      </Button>
+      </Button> */}
+      <DeleteConfirmation
+        handleDelete={handleDelete}
+        deleteParam={clickedFile.name}
+      />
     </div>
   );
 };

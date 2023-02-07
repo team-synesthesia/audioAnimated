@@ -7,7 +7,6 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
   const { availableFiles, id } = useSelector((state) => state.singleProject);
   const fileNames = [];
 
-  console.log(availableFiles);
   const dispatch = useDispatch();
 
   section.files && section.files.forEach((file) => fileNames.push(file.name));

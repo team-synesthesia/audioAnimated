@@ -14,7 +14,7 @@ import Container from "@mui/material/Container";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { AddNewProject } from "../";
+import { AddNewProject, DeleteConfirmation } from "../";
 import { deleteProjectAsync } from "../../features";
 
 export default function AllProjects() {
@@ -118,12 +118,10 @@ export default function AllProjects() {
                       >
                         Edit
                       </Button>
-                      <Button
-                        size="small"
-                        onClick={() => handleDelete(project.id)}
-                      >
-                        Delete
-                      </Button>
+                      <DeleteConfirmation
+                        handleDelete={handleDelete}
+                        deleteParam={project.id}
+                      />
                     </CardActions>
                   </Card>
                 </Grid>

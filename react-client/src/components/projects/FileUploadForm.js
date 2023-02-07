@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from "@mui/material";
 
-import { addFileAsync, writeFileAsync } from "../../features";
+import { addFileAsync, writeFileAsync, getFilesAsync } from "../../features";
 
 const FileUploadForm = (props) => {
   const { projectId, userId, handleClose } = props;
+  const { availableFiles } = useSelector((state) => state.singleProject);
 
   const [name, setName] = useState("");
   const [file, setFile] = useState({});
@@ -26,6 +27,7 @@ const FileUploadForm = (props) => {
 
     dispatch(addFileAsync(formData));
     dispatch(writeFileAsync({ projectId, filePath: file.name, file }));
+    dispatch(getFilesAsync({ projectId, availableFiles }));
 
     const fileInput = document.querySelector("#fileInput");
     fileInput.value = "";
