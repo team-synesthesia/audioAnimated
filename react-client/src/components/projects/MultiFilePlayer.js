@@ -32,7 +32,8 @@ export default function MultiFilePlayer({
   setRecorded,
   newFileName,
   playAllCanvasRef,
-  acRefs
+  acRefs,
+  setPlayAllGPUconfig
 }) {
   const dispatch = useDispatch();
 
@@ -137,7 +138,7 @@ export default function MultiFilePlayer({
     }
   }, []);
 
-  if ( acPlusRef && acPlusRef.current &&
+  if ( acPlusRef && acPlusRef.current && acRefs &&
       acRefs.current && !acRefs.current[sectionNumber]) {
     console.log('saving acPlus ref for section',sectionNumber)
     acRefs.current[sectionNumber] = acPlusRef.current
@@ -286,17 +287,24 @@ export default function MultiFilePlayer({
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
   const playAllCanvasCreatedRef = React.useRef(false)
-  const newCanvasRef = React.useRef()
+  const finishedRef = React.useRef(false)
 
   if ( finished && playAllCanvasCreatedRef.current) {
     console.log('resetting canvas ref',sectionNumber)
     playAllCanvasRef.current = false
+    //only happens for 1st section
   }
 
+  if ( finished && finishedRef.current) {
+    finishedRef.current = false
+    //only happens for last section
+  }
+
+  const [canvasInitialized,setCanvasInitialized] = React.useState(false)
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
-      if (tryToStart) {
+      if (tryToStart && !finishedRef.current) {
 
         const sectionNum = sections[sectionToPlay].sectionNumber;
 
@@ -304,13 +312,21 @@ export default function MultiFilePlayer({
             sectionNumber === sectionNum &&
             !playAllCanvasCreatedRef.current ) {
           console.log('acRefs',acRefs.current.slice(0,5))
-          const newCanvas = document.createElement('div')
-          playAllCanvasRef.current.appendChild(newCanvas)
-          newCanvas.style.width = "95vw"
-          newCanvas.style.height = "75vh"
-          newCanvas.style.backgroundColor = "blue"
-          newCanvasRef.current = newCanvas
+   
+          playAllCanvasRef.current.style.width = "95vw"
+          playAllCanvasRef.current.style.height = "75vh"
+          playAllCanvasRef.current.style.backgroundColor = "blue"
           playAllCanvasCreatedRef.current = true
+          finishedRef.current = false
+
+          setPlayAllGPUconfig(
+            {isPlaying:true,
+              acPlusRef:acPlusRef.current,
+              sectionNumber,
+              graphicsFn:0
+            }
+          )
+
         }
 
         //I found that the only consistent way to get playAll moving was to track
@@ -333,14 +349,20 @@ export default function MultiFilePlayer({
           setSectionPlayed(-1);
           if (nextSection < sections.length) {
             dispatch(setSectionToPlay(nextSection));
+            setPlayAllGPUconfig(
+              {isPlaying:true,
+                acPlusRef:acPlusRef.current,
+                sectionNumber,
+                graphicsFn:0
+              }
+            )
             console.log(sectionNumber)
           } else {
             dispatch(setFinished(true));
             console.log('trying to remove it')
-            playAllCanvasRef.current.removeChild(playAllCanvasRef.current.firstChild)
+            
             dispatch(setPlayAllCanvasCreated(false))
-            console.log('canvas ref after child birth',playAllCanvasRef)
-            playAllCanvasRef.current.innerHTML= "xxxxxxxxxxxxxxxxxxxx"
+            finishedRef.current = true
           }
         }
       }
@@ -356,7 +378,9 @@ export default function MultiFilePlayer({
     isPlaying,
     tryToStart,
     playAllCanvasRef,
-    acRefs
+    acRefs,
+    canvasInitialized,
+    setPlayAllGPUconfig
   ]);
 
   return (

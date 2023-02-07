@@ -9,6 +9,8 @@ import AddNewSection from "./AddNewSection";
 
 import { deleteSectionAsync } from "../../features";
 
+import {GPU} from "./GPU/GPU"
+
 export default function Sections({ sections, userId, projectId }) {
   const [singleSection, setSingleSection] = React.useState(false);
   const [singleSectionRender, setSingleSectionRender] = React.useState(false);
@@ -50,8 +52,16 @@ export default function Sections({ sections, userId, projectId }) {
     }
   };
 
+  const [canvasInitialized,setCanvasInitialized] = React.useState(false)
+  const [playAllGPUconfig,setPlayAllGPUconfig] = React.useState({})
   const playAllCanvasRef = React.useRef()
   const acRefs = React.useRef(Array(25).fill(null))
+  GPU({
+    GPUconfig:playAllGPUconfig,
+    gpuDivRef:playAllCanvasRef.current,
+    canvasInitialized,
+    setCanvasInitialized
+  })
 
   return ([
     <div key="playAllCanvas" id="playAllCanvas" ref={playAllCanvasRef}></div>,
@@ -83,6 +93,7 @@ export default function Sections({ sections, userId, projectId }) {
           handleDeleteSection={handleDeleteSection}
           playAllCanvasRef={playAllCanvasRef}
           acRefs={acRefs}
+          setPlayAllGPUconfig={setPlayAllGPUconfig}
         />
       )}
     </div>
@@ -98,7 +109,8 @@ function MultiSectionView({
   togglePreviewOnClick,
   handleDeleteSection,
   playAllCanvasRef,
-  acRefs
+  acRefs,
+  setPlayAllGPUconfig
 }) {
   return (
     <Box
@@ -124,6 +136,7 @@ function MultiSectionView({
                 handleDeleteSection={handleDeleteSection}
                 playAllCanvasRef={playAllCanvasRef}
                 acRefs={acRefs}
+                setPlayAllGPUconfig={setPlayAllGPUconfig}
               />
             </Box>
           ))

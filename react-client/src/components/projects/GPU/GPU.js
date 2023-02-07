@@ -7,10 +7,10 @@ import { graphicsOptions } from "./graphicsOptions"
 //gpuDivRef was passed in as:  gpuDivRef.current in order to satisfy the dependencies array
 export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized} ) {
     
-    const { isPlaying,acPlusRef,sectionNumber,graphicsFn } = GPUconfig
+    console.log('in gpu',gpuDivRef)
 
     const [GL, setGL] = React.useState({})
-
+ 
     const frameIdRef = React.useRef()
     const isRendering = React.useRef(false)
     const isPlayingRef = React.useRef()
@@ -18,6 +18,9 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     const fps = 30
     const fpsInterval = 1000/fps
 
+    const { isPlaying,acPlusRef,sectionNumber,graphicsFn } = GPUconfig
+
+    console.log(sectionNumber,acPlusRef)
     React.useEffect(()=>{
 
         let canvas, canvasDim, hidden
@@ -27,7 +30,8 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             hidden = (canvas.classList.value.includes('hidden') )
         }
 
-        if (gpuDivRef && !canvasInitialized && !hidden) {
+        if (gpuDivRef && !canvasInitialized 
+            && !hidden && typeof graphicsFn !== "undefined") {
 
             setCanvasInitialized(true)
 

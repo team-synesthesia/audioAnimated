@@ -16,7 +16,8 @@ export default function SectionColumn({
   togglePreviewOnClick,
   handleDeleteSection,
   playAllCanvasRef,
-  acRefs
+  acRefs,
+  setPlayAllGPUconfig
 }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
@@ -35,6 +36,7 @@ export default function SectionColumn({
         renderGraphics={false}
         playAllCanvasRef={playAllCanvasRef}
         acRefs={acRefs}
+        setPlayAllGPUconfig={setPlayAllGPUconfig}
       />
       <ToggleAssignFileForm
         section={section}
