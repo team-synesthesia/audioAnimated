@@ -12,7 +12,10 @@ import { addFileAsync, writeFileAsync } from "../../features";
 import {
   setSectionToPlay,
   setFinished,
+  setPlayAllCanvasCreated
 } from "../../features/projects/playAllSlice";
+
+import { GPU } from "./GPU/GPU"
 
 export default function MultiFilePlayer({
   title,
@@ -28,6 +31,8 @@ export default function MultiFilePlayer({
   smallPlayer,
   setRecorded,
   newFileName,
+  playAllCanvasRef,
+  acRefs
 }) {
   const dispatch = useDispatch();
 
@@ -35,7 +40,8 @@ export default function MultiFilePlayer({
     (state) => state.singleProject.audioRawFiles
   );
 
-  const { sectionToPlay, tryToStart } = useSelector((state) => state.playAll);
+  const { sectionToPlay, tryToStart,
+    finished, playAllCanvasCreated } = useSelector((state) => state.playAll);
 
   const { sections } = useSelector((state) => state.singleProject);
 
@@ -126,8 +132,16 @@ export default function MultiFilePlayer({
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
-    if (!acPlusRef.current) acPlusRef.current = new AudioContextPlus();
+    if (!acPlusRef.current) {
+      acPlusRef.current = new AudioContextPlus();
+    }
   }, []);
+
+  if ( acPlusRef && acPlusRef.current &&
+      acRefs.current && !acRefs.current[sectionNumber]) {
+    console.log('saving acPlus ref for section',sectionNumber)
+    acRefs.current[sectionNumber] = acPlusRef.current
+  }
 
   React.useEffect(() => {
     const createBuffers = async () => {
@@ -271,11 +285,34 @@ export default function MultiFilePlayer({
     }
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
+  const playAllCanvasCreatedRef = React.useRef(false)
+  const newCanvasRef = React.useRef()
+
+  if ( finished && playAllCanvasCreatedRef.current) {
+    console.log('resetting canvas ref',sectionNumber)
+    playAllCanvasRef.current = false
+  }
+
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
       if (tryToStart) {
+
         const sectionNum = sections[sectionToPlay].sectionNumber;
+
+        if (sectionToPlay === 0 && 
+            sectionNumber === sectionNum &&
+            !playAllCanvasCreatedRef.current ) {
+          console.log('acRefs',acRefs.current.slice(0,5))
+          const newCanvas = document.createElement('div')
+          playAllCanvasRef.current.appendChild(newCanvas)
+          newCanvas.style.width = "95vw"
+          newCanvas.style.height = "75vh"
+          newCanvas.style.backgroundColor = "blue"
+          newCanvasRef.current = newCanvas
+          playAllCanvasCreatedRef.current = true
+        }
+
         //I found that the only consistent way to get playAll moving was to track
         //these 4 states (sectionNum,sectionNumber,sectionPlayed,isPlaying)
         //and check for certain conditions, keying it off of
@@ -296,8 +333,14 @@ export default function MultiFilePlayer({
           setSectionPlayed(-1);
           if (nextSection < sections.length) {
             dispatch(setSectionToPlay(nextSection));
+            console.log(sectionNumber)
           } else {
             dispatch(setFinished(true));
+            console.log('trying to remove it')
+            playAllCanvasRef.current.removeChild(playAllCanvasRef.current.firstChild)
+            dispatch(setPlayAllCanvasCreated(false))
+            console.log('canvas ref after child birth',playAllCanvasRef)
+            playAllCanvasRef.current.innerHTML= "xxxxxxxxxxxxxxxxxxxx"
           }
         }
       }
@@ -312,6 +355,8 @@ export default function MultiFilePlayer({
     dispatch,
     isPlaying,
     tryToStart,
+    playAllCanvasRef,
+    acRefs
   ]);
 
   return (

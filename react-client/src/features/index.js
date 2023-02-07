@@ -25,6 +25,6 @@ export {
 export {
   default as playAllReducer,
   setSectionToPlay, setTryToStart, setPlayAllStarted,
-  alreadyPlaying, setFinished
+  alreadyPlaying, setPlayAllCanvasCreated, setFinished
 } from "./projects/playAllSlice"
 

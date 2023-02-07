@@ -3,6 +3,7 @@ import {setSectionToPlay,setTryToStart,setFinished} from "../../features/project
 import { useDispatch, useSelector } from "react-redux";
 
 export default function PlayAll() {
+
     const dispatch = useDispatch()
 
     const sections = useSelector(state=>state.singleProject.sections)
@@ -26,5 +27,8 @@ export default function PlayAll() {
         }
     },[finished, dispatch])
  
-    return ( <div>Looks like there are: {sections.length} Sections to Play</div>)
+    return ( 
+        <div>
+            Looks like there are: {sections.length} Sections to Play
+        </div>)
 }

@@ -50,8 +50,12 @@ export default function Sections({ sections, userId, projectId }) {
     }
   };
 
-  return (
-    <div>
+  const playAllCanvasRef = React.useRef()
+  const acRefs = React.useRef(Array(25).fill(null))
+
+  return ([
+    <div key="playAllCanvas" id="playAllCanvas" ref={playAllCanvasRef}></div>,
+    <div key="sectionContainer">
       {singleSectionRender ? (
         <SingleSectionView
           singleSection={singleSection}
@@ -66,6 +70,7 @@ export default function Sections({ sections, userId, projectId }) {
           setSelectedSectionId={setSelectedSectionId}
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
+
         />
       ) : (
         <MultiSectionView
@@ -76,10 +81,12 @@ export default function Sections({ sections, userId, projectId }) {
           setAssignSectionFormActive={setAssignSectionFormActive}
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
+          playAllCanvasRef={playAllCanvasRef}
+          acRefs={acRefs}
         />
       )}
     </div>
-  );
+  ]);
 }
 
 function MultiSectionView({
@@ -90,6 +97,8 @@ function MultiSectionView({
   setAssignSectionFormActive,
   togglePreviewOnClick,
   handleDeleteSection,
+  playAllCanvasRef,
+  acRefs
 }) {
   return (
     <Box
@@ -113,6 +122,8 @@ function MultiSectionView({
                 setAssignSectionFormActive={setAssignSectionFormActive}
                 togglePreviewOnClick={togglePreviewOnClick}
                 handleDeleteSection={handleDeleteSection}
+                playAllCanvasRef={playAllCanvasRef}
+                acRefs={acRefs}
               />
             </Box>
           ))

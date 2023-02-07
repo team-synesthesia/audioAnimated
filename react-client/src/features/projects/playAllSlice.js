@@ -8,6 +8,7 @@ export const playAllSlice = createSlice({
         playAllStarted: false,
         alreadyPlaying: false, 
         finished: false,
+        playAllCanvasCreated: false
     },
     reducers: {
         setSectionToPlay(state,action) {
@@ -24,12 +25,16 @@ export const playAllSlice = createSlice({
         },
         setFinished(state,action) {
             state.finished = action.payload
+        },
+        setPlayAllCanvasCreated(state,action) {
+            state.finished = action.playload
         }
     }
 })
 
 export const {setSectionToPlay,setTryToStart,
-    setPlayAllStarted, alreadyPlaying, setFinished } = playAllSlice.actions
+    setPlayAllStarted, alreadyPlaying, 
+    setPlayAllCanvasCreated, setFinished } = playAllSlice.actions
 
 export default playAllSlice.reducer
 
