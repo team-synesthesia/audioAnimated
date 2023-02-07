@@ -57,7 +57,7 @@ function SwitchComponent({
       );
 
     case "playAll":
-      return <PlayAll />;
+      return <PlayAll closeModal={handleClose}/>;
 
     default:
       return null;

@@ -2,7 +2,9 @@ import * as React from "react"
 import {setSectionToPlay,setTryToStart,setFinished} from "../../features/projects/playAllSlice"
 import { useDispatch, useSelector } from "react-redux";
 
-export default function PlayAll() {
+export default function PlayAll({closeModal}) {
+
+
 
     const dispatch = useDispatch()
 
@@ -11,12 +13,13 @@ export default function PlayAll() {
     const started = React.useRef(false)
 
     React.useEffect(()=>{
+        closeModal()
         if ( !started.current) {
             dispatch(setTryToStart(true))
             dispatch(setSectionToPlay(0))
             started.current = true
         }
-    },[playAllStarted,dispatch])
+    },[playAllStarted,dispatch,closeModal])
 
     React.useEffect( ()=>{
         if (finished) {

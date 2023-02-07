@@ -64,7 +64,13 @@ export default function Sections({ sections, userId, projectId }) {
   })
 
   return ([
-    <div key="playAllCanvas" id="playAllCanvas" ref={playAllCanvasRef}></div>,
+    <div
+      key="playAllCanvas"
+      id="playAllCanvas"
+      ref={playAllCanvasRef}
+      style={{position:"relative",left:"16vw"}}
+    >
+    </div>,
     <div key="sectionContainer">
       {singleSectionRender ? (
         <SingleSectionView

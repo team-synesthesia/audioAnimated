@@ -268,7 +268,7 @@ export  const fragmentShaders = [
         float stepsize = .01;
         float totdist = stepsize;
       
-        vec3 spherepos = ro - 2.5*rot[2] * (1. - (iMusic.x)/15.) ;
+        vec3 spherepos = ro - 1.5*rot[2] * (1. - (iMusic.x)/15.) ;
         //spherepos.y += (iMusic.y-50.)/200.;
         spherepos.x += .1 + (iMusic.z-100.)/200.; // * rot[0];
     

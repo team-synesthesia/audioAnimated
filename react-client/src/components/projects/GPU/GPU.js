@@ -7,7 +7,7 @@ import { graphicsOptions } from "./graphicsOptions"
 //gpuDivRef was passed in as:  gpuDivRef.current in order to satisfy the dependencies array
 export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized} ) {
     
-    console.log('in gpu',gpuDivRef)
+    //console.log('in gpu',gpuDivRef)
 
     const [GL, setGL] = React.useState({})
  
@@ -20,8 +20,43 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     const { isPlaying,acPlusRef,sectionNumber,graphicsFn } = GPUconfig
 
-    console.log(sectionNumber,acPlusRef)
+    const ACtoUse = React.useRef()
+
+    if (GPUconfig.acRefs) {
+        //console.log('acrefs',GPUconfig.acRefs)
+        ACtoUse.current = GPUconfig.acRefs.current[sectionNumber]
+    }
+    else {
+        ACtoUse.current = acPlusRef
+    }
+    //console.log(sectionNumber,acPlusRef)
+
+    console.log('d1', sectionNumber )
+
+    const [windowSize,setWindowSize] = React.useState()
+    const resizeRef = React.useRef(false)
+ 
+    React.useEffect(() => {
+        // Handler to call on window resize
+        function handleResize() {
+          // Set window width/height to state
+          setWindowSize({
+            width: window.innerWidth,
+            height: window.innerHeight,
+          });
+          resizeRef.current = true
+        }
+        // Add event listener
+        window.addEventListener("resize", handleResize);
+        // Call handler right away so state gets updated with initial window size
+        handleResize();
+        // Remove event listener on cleanup
+        return () => window.removeEventListener("resize", handleResize);
+    }, []); 
+
     React.useEffect(()=>{
+
+        console.log('d2', sectionNumber )
 
         let canvas, canvasDim, hidden
         if ( gpuDivRef) {
@@ -39,7 +74,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             //set canvas property so that we get WebGL2 ???
 
             const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
-            renderer.setSize(width, height);  //get dimensions of gpuDivRef
+            renderer.setSize(width, height,  false);  //get dimensions of gpuDivRef
             renderer.setClearColor("rgb(255,255,255)", 0);
             canvas.appendChild(renderer.domElement);
             const aspect = width/height;
@@ -87,15 +122,28 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             if ( isPlaying && !isRendering.current ) {
                 requestAnimationFrame(render)
                 isRendering.current = true
+                console.log('xxx',ACtoUse.current)
             }
 
             function render(time) {
    
+                //console.log('section',sectionNumber)
+
                 if ( !isPlayingRef.current ) {
                     isRendering.current = false
                     cancelAnimationFrame(frameIdRef.current)
                     return
                 } 
+
+                if ( resizeRef.current) {
+                    console.log('xxxxxxxxxxxxx',gpuDivRef.getBoundingClientRect())
+                    resizeRef.current = false
+                    const newDim = gpuDivRef.getBoundingClientRect()
+                    const {width,height} = newDim
+                    //camera.aspect = width/height
+                    //camera.updateProjectionMatrix()
+                    renderer.setSize(width,height)
+                }
 
                 frameIdRef.current = requestAnimationFrame(render);
                 //we are rendering way too many times a second
@@ -107,7 +155,8 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                 prevRenderTime = currentRenderTime - (elapsed%fpsInterval)
                 time *= .001  //convert from milliseconds to seconds
 
-                const AC =  acPlusRef     
+                const AC =  ACtoUse.current //acPlusRef 
+  
                 const md = AC.musicData()
 
                 if ( useShader ) {
@@ -124,6 +173,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     },[gpuDivRef,canvasInitialized,GL,fpsInterval,
         setCanvasInitialized,isPlaying,acPlusRef,
-        sectionNumber,graphicsFn])
+        sectionNumber,graphicsFn,GPUconfig])
    
 }

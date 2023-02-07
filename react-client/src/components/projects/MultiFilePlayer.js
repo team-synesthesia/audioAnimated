@@ -313,9 +313,10 @@ export default function MultiFilePlayer({
             !playAllCanvasCreatedRef.current ) {
           console.log('acRefs',acRefs.current.slice(0,5))
    
-          playAllCanvasRef.current.style.width = "95vw"
-          playAllCanvasRef.current.style.height = "75vh"
+          playAllCanvasRef.current.style.width = "82vw"
+          playAllCanvasRef.current.style.height = "82vh"
           playAllCanvasRef.current.style.backgroundColor = "blue"
+          playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
           playAllCanvasCreatedRef.current = true
           finishedRef.current = false
 
@@ -323,7 +324,8 @@ export default function MultiFilePlayer({
             {isPlaying:true,
               acPlusRef:acPlusRef.current,
               sectionNumber,
-              graphicsFn:0
+              graphicsFn:0,
+              acRefs:acRefs
             }
           )
 
@@ -348,21 +350,23 @@ export default function MultiFilePlayer({
           const nextSection = sectionToPlay + 1;
           setSectionPlayed(-1);
           if (nextSection < sections.length) {
+            //acPlusRef.current.close()
             dispatch(setSectionToPlay(nextSection));
             setPlayAllGPUconfig(
               {isPlaying:true,
                 acPlusRef:acPlusRef.current,
-                sectionNumber,
-                graphicsFn:0
+                sectionNumber:sections[nextSection].sectionNumber,
+                graphicsFn:0,
+                acRefs:acRefs
               }
             )
-            console.log(sectionNumber)
+            console.log('from player',sectionNumber)
           } else {
+            finishedRef.current = true
             dispatch(setFinished(true));
             console.log('trying to remove it')
-            
             dispatch(setPlayAllCanvasCreated(false))
-            finishedRef.current = true
+      
           }
         }
       }
