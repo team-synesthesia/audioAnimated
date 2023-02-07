@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Grid, Card, Button, Input } from "@mui/material";
+import { Box, Card, Button, Input } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 import { createProjectAsync } from "../../features";
 
-const AddNewProject = () => {
+const AddNewProject = ({ setToggleNewProjectForm }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth.me.id);
@@ -27,41 +28,35 @@ const AddNewProject = () => {
   };
 
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <Card variant="outlined" sx={{ display: "flex", flexDirection: "column" }}>
+      <Button
+        color="error"
+        size="small"
+        onClick={() => setToggleNewProjectForm(false)}
+        sx={{ alignSelf: "flex-end" }}
+      >
+        <CloseIcon />
+      </Button>
       <form onSubmit={handleSubmit}>
-        <Grid container sx={{ margin: "10px" }}>
-          <Grid item xs={4}>
+        <Box sx={{ display: "flex", flexDirection: "column", margin: "10px" }}>
+          <div>
             <label htmlFor="projectName">Project Name: </label>
-          </Grid>
-          <Grid item xs={4}>
             <Input
               name="projectName"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            sx={{
-              display: "flex",
-              flexDirection: "row-reverse",
-              margin: "5px",
-            }}
+          </div>
+          <Button
+            variant="contained"
+            size="small"
+            type="submit"
+            sx={{ alignSelf: "flex-end", marginTop: "10px" }}
           >
-            <Button variant="contained" type="submit">
-              Create Project
-            </Button>
-          </Grid>
-        </Grid>
+            Create Project
+          </Button>
+        </Box>
       </form>
     </Card>
   );

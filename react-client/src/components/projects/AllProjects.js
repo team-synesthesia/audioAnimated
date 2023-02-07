@@ -66,7 +66,9 @@ export default function AllProjects() {
             justifyContent="center"
           >
             {toggleNewProjectForm ? (
-              <AddNewProject />
+              <AddNewProject
+                setToggleNewProjectForm={setToggleNewProjectForm}
+              />
             ) : (
               <Button
                 variant="contained"

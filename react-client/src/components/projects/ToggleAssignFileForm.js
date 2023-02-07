@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
 
 import { AssignFileToSection } from "../";
 

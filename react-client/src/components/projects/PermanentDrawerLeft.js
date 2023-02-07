@@ -19,7 +19,7 @@ import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 
 import TransitionsModal from "./TransitionsModal";
 
-const drawerWidth = "15vw";
+const drawerWidth = "12vw";
 const minWidth = 150;
 
 export default function PermanentDrawerLeft({ projectId, userId }) {
@@ -68,46 +68,61 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
         <List>
           <ListItem disablePadding>
             <ListItemButton>
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
                 <DriveFileRenameOutlineIcon />
               </ListItemIcon>
-              <ListItemText primary={"Edit Project Name"} />
+              <ListItemText
+                primary={"Edit Project Name"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
             </ListItemButton>
           </ListItem>
 
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
                 <BubbleChartIcon />
               </ListItemIcon>
-              <ListItemText primary={"Graphics Fn"} />
+              <ListItemText
+                primary={"Graphics Fn"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
             </ListItemButton>
           </ListItem>
 
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("playAll")}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
                 <VideoLibraryIcon />
               </ListItemIcon>
-              <ListItemText primary={"Play  All"} />
+              <ListItemText
+                primary={"Play  All"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
             </ListItemButton>
           </ListItem>
 
           <Divider />
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("record")}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
                 <MicIcon />
               </ListItemIcon>
-              <ListItemText primary={"Record a new layer"} />
+              <ListItemText
+                primary={"Record a new layer"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("uploadFile")}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
                 <FileUploadIcon />
               </ListItemIcon>
-              <ListItemText primary={"Upload File"} />
+              <ListItemText
+                primary={"Upload File"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -118,10 +133,13 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
                   : setShowMusicLibrary(false);
               }}
             >
-              <ListItemIcon>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
                 <LibraryMusicIcon />
               </ListItemIcon>
-              <ListItemText primary={"Music Library"} />
+              <ListItemText
+                primary={"Music Library"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
             </ListItemButton>
           </ListItem>
           {showMusicLibrary ? (
@@ -137,7 +155,10 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
                     <ListItemIcon>
                       <MusicNoteIcon />
                     </ListItemIcon>
-                    <ListItemText primary={file.name} />
+                    <ListItemText
+                      primary={file.name}
+                      primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+                    />
                   </ListItemButton>
                 </ListItem>
               ))

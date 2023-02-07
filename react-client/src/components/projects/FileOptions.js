@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "@mui/material/Button";
+import { Box, Button, Checkbox, FormControlLabel } from "@mui/material";
 
 import { DeleteConfirmation } from "../";
 import { deleteFileAsync, addFileAsync } from "../../features";
@@ -13,15 +13,19 @@ const FileOptions = ({ handleClose, clickedFile }) => {
     dispatch(deleteFileAsync({ deleteParam: fileName, type: "byName" }));
   };
 
+  const sectionsToAssign = [];
+  const handleCheckBox = (sectionNumber, checked) => {
+    if (!sectionsToAssign.includes(sectionNumber) && checked) {
+      sectionsToAssign.push(sectionNumber);
+    } else {
+      const spliceIndex = sectionsToAssign.indexOf();
+      sectionsToAssign.splice(spliceIndex, 1);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const sectionCheckboxes = document.querySelectorAll(".sectionCheckbox");
-    const sectionsToAssign = [];
-    for (let sectionCheckbox of sectionCheckboxes) {
-      sectionCheckbox.checked &&
-        sectionsToAssign.push(Number(sectionCheckbox.value));
-    }
     for (let sectionToAssign of sectionsToAssign) {
       const { name, filePath, type, userId } = clickedFile;
       const data = {
@@ -35,38 +39,42 @@ const FileOptions = ({ handleClose, clickedFile }) => {
       dispatch(addFileAsync(data));
     }
 
-    for (let sectionCheckbox of sectionCheckboxes) {
-      sectionCheckbox.checked = false;
-    }
     handleClose();
   };
 
   return (
-    <div>
+    <Box>
       <h1>{clickedFile.name}</h1>
-      <form onSubmit={handleSubmit}>
-        {sections.map((section) => (
-          <div key={section.id}>
-            <label htmlFor={"section " + section.sectionNumber}>
-              Section {section.sectionNumber}
-            </label>
-            <input
-              type="checkbox"
-              name="selectSections"
-              value={section.sectionNumber}
-              id={"section " + section.sectionNumber}
-              className="sectionCheckbox"
-            />
-          </div>
-        ))}
-        <Button type="submit">Assign to Section(s)</Button>
-      </form>
       <DeleteConfirmation
         handleDelete={handleDelete}
         deleteParam={clickedFile.name}
         origin={"FileOptions"}
       />
-    </div>
+      <form onSubmit={handleSubmit}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {sections.map((section) => (
+            <FormControlLabel
+              key={section.id}
+              control={<Checkbox />}
+              label={`Section ${section.sectionNumber}`}
+              name={String(section.sectionNumber)}
+              onChange={(_, value) =>
+                handleCheckBox(section.sectionNumber, value)
+              }
+            />
+          ))}
+          <Button type="submit" sx={{ alignSelf: "flex-end" }}>
+            Assign to Section(s)
+          </Button>
+        </Box>
+      </form>
+    </Box>
   );
 };
 
