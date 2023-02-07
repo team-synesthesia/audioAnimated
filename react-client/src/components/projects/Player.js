@@ -36,9 +36,13 @@ export default function Player({
   toggleLoop,
   loop,
   record,
+  isRecording,
+  availableFiles,
 }) {
   const play = async () => {
-    await playOnClick();
+    if (Object.keys(availableFiles).length) {
+      await playOnClick();
+    }
     if (record) {
       recordStartStop();
     }
@@ -87,14 +91,14 @@ export default function Player({
               onClick={play}
               disabled={disabled}
             >
-              {isPlaying ? (
-                record ? (
+              {record ? (
+                isRecording ? (
                   <MicIcon sx={{ height: 38, width: 38, color: "red" }} />
                 ) : (
-                  <PauseIcon sx={{ height: 38, width: 38 }} />
+                  <MicIcon sx={{ height: 38, width: 38 }} />
                 )
-              ) : record ? (
-                <MicIcon sx={{ height: 38, width: 38 }} />
+              ) : isPlaying ? (
+                <PauseIcon sx={{ height: 38, width: 38 }} />
               ) : (
                 <PlayArrowIcon sx={{ height: 38, width: 38 }} />
               )}

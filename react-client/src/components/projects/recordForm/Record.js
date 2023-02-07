@@ -17,7 +17,7 @@ import PlaybackForm from "./PlaybackForm";
 
 import { deleteFileAsync } from "../../../features";
 
-const steps = ["Select Tracks", "Record", "Listen Back"];
+const steps = ["Select Backing", "Record", "Listen Back"];
 
 function getStepContent(
   step,
@@ -28,7 +28,14 @@ function getStepContent(
   availableFiles,
   newFileName,
   setNewFileName,
-  setRecorded
+  setRecorded,
+  displayRecorder,
+  error,
+  setError,
+  useMetronome,
+  setUseMetronome,
+  metronomeTempo,
+  setMetronomeTempo
 ) {
   switch (step) {
     case 0:
@@ -37,6 +44,12 @@ function getStepContent(
           selectedFiles={selectedFiles}
           setSelectedFiles={setSelectedFiles}
           availableFiles={availableFiles}
+          error={error}
+          setError={setError}
+          useMetronome={useMetronome}
+          setUseMetronome={setUseMetronome}
+          metronomeTempo={metronomeTempo}
+          setMetronomeTempo={setMetronomeTempo}
         />
       );
     case 1:
@@ -48,6 +61,9 @@ function getStepContent(
           newFileName={newFileName}
           setNewFileName={setNewFileName}
           setRecorded={setRecorded}
+          displayRecorder={displayRecorder}
+          useMetronome={useMetronome}
+          metronomeTempo={metronomeTempo}
         />
       );
     case 2:
@@ -58,7 +74,15 @@ function getStepContent(
 }
 
 export default function Record({ availableFiles, userId, projectId }) {
+  const [error, setError] = React.useState(false);
   const [selectedFiles, setSelectedFiles] = React.useState({});
+  const [displayRecorder, setDisplayRecorder] = React.useState({});
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [newFileName, setNewFileName] = React.useState("");
+  const [recorded, setRecorded] = React.useState(false);
+  const [deleted, setDeleted] = React.useState(false);
+  const [useMetronome, setUseMetronome] = React.useState(false);
+  const [metronomeTempo, setMetronomeTempo] = React.useState(120);
 
   const dispatch = useDispatch();
 
@@ -78,14 +102,30 @@ export default function Record({ availableFiles, userId, projectId }) {
     }
   }, [availableFiles]);
 
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [newFileName, setNewFileName] = React.useState("");
-  const [recorded, setRecorded] = React.useState(false);
-  const [deleted, setDeleted] = React.useState(false);
+  React.useEffect(() => {
+    if (recorded) {
+      setDisplayRecorder(false);
+    } else if (newFileName && newFileName.length > 0) {
+      setDisplayRecorder(true);
+    } else {
+      setDisplayRecorder(false);
+    }
+  }, [newFileName, recorded]);
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
+
+  React.useEffect(() => {
+    if ((activeStep === 1) & recorded) setActiveStep(activeStep + 1);
+  }, [activeStep, recorded]);
+
+  function disableButton() {
+    if ((activeStep === 0) & error) return true;
+    else if ((activeStep === 1) & ((newFileName === "") | (recorded === false)))
+      return true;
+    else return false;
+  }
 
   return (
     <div>
@@ -137,7 +177,14 @@ export default function Record({ availableFiles, userId, projectId }) {
               availableFiles,
               newFileName,
               setNewFileName,
-              setRecorded
+              setRecorded,
+              displayRecorder,
+              error,
+              setError,
+              useMetronome,
+              setUseMetronome,
+              metronomeTempo,
+              setMetronomeTempo
             )}
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               {activeStep === steps.length - 1 ? (
@@ -152,14 +199,9 @@ export default function Record({ availableFiles, userId, projectId }) {
                 variant="contained"
                 onClick={handleNext}
                 sx={{ mt: 3, ml: 1 }}
-                disabled={
-                  (activeStep === 1) &
-                  ((newFileName === "") | (recorded === false))
-                    ? true
-                    : false
-                }
+                disabled={disableButton()}
               >
-                {activeStep === steps.length - 1 ? "Done" : "Next"}
+                {activeStep === 0 ? "Next" : "Done"}
               </Button>
             </Box>
           </React.Fragment>
