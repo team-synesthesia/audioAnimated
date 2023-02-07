@@ -95,7 +95,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
         
             if (useShader) {
                 const {camera,material} = createShaderModel(scene,uniforms,gfn)
-                setGL({renderer,scene,camera,width,height,useShader,material})
+                setGL({renderer,scene,camera,width,height,useShader,material,uniforms})
                 renderer.render(scene,camera)
             }
             else {
@@ -108,7 +108,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
         
         else if ( canvasInitialized ) {
 
-            const {renderer,scene,camera,useShader} = GL
+            const {renderer,scene,camera,useShader,uniforms} = GL
 
             isPlayingRef.current = isPlaying
             let prevRenderTime = Date.now()
@@ -136,6 +136,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                     const {width,height} = newDim
                     //camera.aspect = width/height
                     //camera.updateProjectionMatrix()
+                    uniforms.iResolution.value = new THREE.Vector3(width, height, 1.0)
                     renderer.setSize(width,height)
                 }
 

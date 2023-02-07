@@ -65,7 +65,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           availableFiles={availableFiles}
         />
         <List>
-          <ListItem disablePadding>
+          <ListItem disablePadding sx={{minWidth:"0"}}>
             <ListItemButton>
               <ListItemIcon>
                 <DriveFileRenameOutlineIcon />
@@ -84,7 +84,8 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton onClick={() => handleOpen("playAll")}>
+            <ListItemButton 
+                onClick={() => handleOpen("playAll")}>
               <ListItemIcon>
                 <VideoLibraryIcon />
               </ListItemIcon>

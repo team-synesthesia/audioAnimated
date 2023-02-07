@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function PlayAll({closeModal}) {
 
-    console.log('why are we in play all??????')
     const dispatch = useDispatch()
 
     const sections = useSelector(state=>state.singleProject.sections)
@@ -17,7 +16,7 @@ export default function PlayAll({closeModal}) {
 
         counter.current ++
         console.log("counter",playAllStarted)
-        closeModal()
+       // closeModal()
    
         if ( !started.current ) {
             dispatch(setTryToStart(true))
