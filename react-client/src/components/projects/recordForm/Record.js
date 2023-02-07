@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
 
-import { Box, IconButton } from "@mui/material";
+import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -130,10 +129,6 @@ export default function Record({ availableFiles, userId, projectId }) {
   return (
     <div>
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-        {/* <Paper
-          variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-        > */}
         <Typography component="h1" variant="h4" align="center">
           Record
         </Typography>
@@ -206,7 +201,6 @@ export default function Record({ availableFiles, userId, projectId }) {
             </Box>
           </React.Fragment>
         )}
-        {/* </Paper> */}
       </Container>
     </div>
   );

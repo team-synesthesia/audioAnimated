@@ -9,11 +9,8 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
 
   const dispatch = useDispatch();
 
-  if (typeof section.files === "undefined") return;
+  section.files && section.files.forEach((file) => fileNames.push(file.name));
 
-  for (let file of section.files) {
-    fileNames.push(file.name);
-  }
   const unassignedFiles = Object.values(availableFiles).filter(
     (file) => !fileNames.includes(file.name)
   );
@@ -45,7 +42,7 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
     setAssignSectionFormActive(null);
   };
 
-  return unassignedFiles.length ? (
+  return unassignedFiles && unassignedFiles.length ? (
     <form onSubmit={handleSubmit}>
       {unassignedFiles.map(
         (file) =>

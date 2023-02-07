@@ -1,25 +1,38 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "@mui/material/Button";
+import { Box, Button, Checkbox, FormControlLabel } from "@mui/material";
+
+import { DeleteConfirmation } from "../";
 import { deleteFileAsync, addFileAsync } from "../../features";
 
 const FileOptions = ({ handleClose, clickedFile }) => {
   const { sections, id } = useSelector((state) => state.singleProject);
 
   const dispatch = useDispatch();
-  const handleDelete = (fileName) => {
-    dispatch(deleteFileAsync({ deleteParam: fileName, type: "byName" }));
+
+  const sectionsCopy = [...sections];
+  for (let section of sectionsCopy) {
+    for (let file of section.files) {
+      if (file.name === clickedFile.name) {
+        const spliceIndex = section.files.indexOf(clickedFile);
+        sectionsCopy.splice(spliceIndex, 1);
+      }
+    }
+  }
+
+  const sectionsToAssign = [];
+  const handleCheckBox = (sectionNumber, checked) => {
+    if (!sectionsToAssign.includes(sectionNumber) && checked) {
+      sectionsToAssign.push(sectionNumber);
+    } else {
+      const spliceIndex = sectionsToAssign.indexOf(sectionNumber);
+      sectionsToAssign.splice(spliceIndex, 1);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const sectionCheckboxes = document.querySelectorAll(".sectionCheckbox");
-    const sectionsToAssign = [];
-    for (let sectionCheckbox of sectionCheckboxes) {
-      sectionCheckbox.checked &&
-        sectionsToAssign.push(Number(sectionCheckbox.value));
-    }
     for (let sectionToAssign of sectionsToAssign) {
       const { name, filePath, type, userId } = clickedFile;
       const data = {
@@ -33,43 +46,57 @@ const FileOptions = ({ handleClose, clickedFile }) => {
       dispatch(addFileAsync(data));
     }
 
-    for (let sectionCheckbox of sectionCheckboxes) {
-      sectionCheckbox.checked = false;
-    }
     handleClose();
   };
 
+  const handleDelete = (fileName) => {
+    dispatch(deleteFileAsync({ deleteParam: fileName, type: "byName" }));
+  };
+
   return (
-    <div>
-      <h1>{clickedFile.name}</h1>
+    <Box>
       <form onSubmit={handleSubmit}>
-        {sections.map((section) => (
-          <div key={section.id}>
-            <label htmlFor={"section " + section.sectionNumber}>
-              Section {section.sectionNumber}
-            </label>
-            <input
-              type="checkbox"
-              name="selectSections"
-              value={section.sectionNumber}
-              id={"section " + section.sectionNumber}
-              className="sectionCheckbox"
-            />
-          </div>
-        ))}
-        <Button type="submit">Assign to Section(s)</Button>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <h1>{clickedFile.name}</h1>
+          {sectionsCopy && sectionsCopy.length ? (
+            sectionsCopy.map((section) => (
+              <FormControlLabel
+                key={section.id}
+                control={<Checkbox />}
+                label={`Section ${section.sectionNumber}`}
+                name={String(section.sectionNumber)}
+                onChange={(_, value) =>
+                  handleCheckBox(section.sectionNumber, value)
+                }
+              />
+            ))
+          ) : (
+            <div>Cannot be assigned to any sections</div>
+          )}
+          <Button type="submit" sx={{ alignSelf: "flex-end" }}>
+            Assign to Section(s)
+          </Button>
+        </Box>
       </form>
-      <Button
-        type="button"
-        size="small"
-        onClick={() => {
-          handleDelete(clickedFile.name);
-          handleClose();
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row-reverse",
         }}
       >
-        Delete File
-      </Button>
-    </div>
+        <DeleteConfirmation
+          handleDelete={handleDelete}
+          deleteParam={clickedFile.name}
+          origin={"FileOptions"}
+        />
+      </Box>
+    </Box>
   );
 };
 

@@ -28,10 +28,7 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (userId) {
-      const fetchData = async () => {
-        await dispatch(fetchAllProjectsByUserIdAsync(userId));
-      };
-      fetchData();
+      dispatch(fetchAllProjectsByUserIdAsync(userId));
     }
   }, [dispatch, userId]);
 
