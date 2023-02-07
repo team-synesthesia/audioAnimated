@@ -116,6 +116,10 @@ export default function Record({ availableFiles, userId, projectId }) {
     setActiveStep(activeStep + 1);
   };
 
+  React.useEffect(() => {
+    if ((activeStep === 1) & recorded) setActiveStep(activeStep + 1);
+  }, [activeStep, recorded]);
+
   function disableButton() {
     if ((activeStep === 0) & error) return true;
     else if ((activeStep === 1) & ((newFileName === "") | (recorded === false)))
@@ -197,7 +201,7 @@ export default function Record({ availableFiles, userId, projectId }) {
                 sx={{ mt: 3, ml: 1 }}
                 disabled={disableButton()}
               >
-                {activeStep === steps.length - 1 ? "Done" : "Next"}
+                {activeStep === 0 ? "Next" : "Done"}
               </Button>
             </Box>
           </React.Fragment>
