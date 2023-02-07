@@ -12,10 +12,6 @@ const SingleProject = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    // const fetchData = async () => {
-    //   await dispatch(fetchSingleProjectAsync({ projectId }));
-    // };
-    // fetchData();
     dispatch(fetchSingleProjectAsync({ projectId }));
   }, [dispatch, projectId]);
 
@@ -23,12 +19,6 @@ const SingleProject = () => {
   const { availableFiles } = project;
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   if (Object.keys(availableFiles).length) {
-    //     await dispatch(getFilesAsync({ projectId, availableFiles }));
-    //   }
-    // };
-    // fetchData();
     if (Object.keys(availableFiles).length) {
       dispatch(getFilesAsync({ projectId, availableFiles }));
     }

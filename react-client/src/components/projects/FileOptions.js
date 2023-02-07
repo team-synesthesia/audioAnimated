@@ -9,9 +9,16 @@ const FileOptions = ({ handleClose, clickedFile }) => {
   const { sections, id } = useSelector((state) => state.singleProject);
 
   const dispatch = useDispatch();
-  const handleDelete = (fileName) => {
-    dispatch(deleteFileAsync({ deleteParam: fileName, type: "byName" }));
-  };
+
+  const sectionsCopy = [...sections];
+  for (let section of sectionsCopy) {
+    for (let file of section.files) {
+      if (file.name === clickedFile.name) {
+        const spliceIndex = section.files.indexOf(clickedFile);
+        sectionsCopy.splice(spliceIndex, 1);
+      }
+    }
+  }
 
   const sectionsToAssign = [];
   const handleCheckBox = (sectionNumber, checked) => {
@@ -42,14 +49,12 @@ const FileOptions = ({ handleClose, clickedFile }) => {
     handleClose();
   };
 
+  const handleDelete = (fileName) => {
+    dispatch(deleteFileAsync({ deleteParam: fileName, type: "byName" }));
+  };
+
   return (
     <Box>
-      <h1>{clickedFile.name}</h1>
-      <DeleteConfirmation
-        handleDelete={handleDelete}
-        deleteParam={clickedFile.name}
-        origin={"FileOptions"}
-      />
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -58,22 +63,39 @@ const FileOptions = ({ handleClose, clickedFile }) => {
             alignItems: "center",
           }}
         >
-          {sections.map((section) => (
-            <FormControlLabel
-              key={section.id}
-              control={<Checkbox />}
-              label={`Section ${section.sectionNumber}`}
-              name={String(section.sectionNumber)}
-              onChange={(_, value) =>
-                handleCheckBox(section.sectionNumber, value)
-              }
-            />
-          ))}
+          <h1>{clickedFile.name}</h1>
+          {sectionsCopy && sectionsCopy.length ? (
+            sectionsCopy.map((section) => (
+              <FormControlLabel
+                key={section.id}
+                control={<Checkbox />}
+                label={`Section ${section.sectionNumber}`}
+                name={String(section.sectionNumber)}
+                onChange={(_, value) =>
+                  handleCheckBox(section.sectionNumber, value)
+                }
+              />
+            ))
+          ) : (
+            <div>Cannot be assigned to any sections</div>
+          )}
           <Button type="submit" sx={{ alignSelf: "flex-end" }}>
             Assign to Section(s)
           </Button>
         </Box>
       </form>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row-reverse",
+        }}
+      >
+        <DeleteConfirmation
+          handleDelete={handleDelete}
+          deleteParam={clickedFile.name}
+          origin={"FileOptions"}
+        />
+      </Box>
     </Box>
   );
 };
