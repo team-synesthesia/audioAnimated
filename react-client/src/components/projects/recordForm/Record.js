@@ -17,7 +17,7 @@ import PlaybackForm from "./PlaybackForm";
 
 import { deleteFileAsync } from "../../../features";
 
-const steps = ["Select Tracks", "Record", "Listen Back"];
+const steps = ["Select Backing", "Record", "Listen Back"];
 
 function getStepContent(
   step,

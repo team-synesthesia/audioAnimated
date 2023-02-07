@@ -35,6 +35,10 @@ export default function MultiFilePlayer({
     (state) => state.singleProject.audioRawFiles
   );
 
+  const availableFiles = useSelector(
+    (state) => state.singleProject.availableFiles
+  );
+
   const { sectionToPlay, tryToStart } = useSelector((state) => state.playAll);
 
   const { sections } = useSelector((state) => state.singleProject);
@@ -43,6 +47,7 @@ export default function MultiFilePlayer({
   const [currentTime, setCurrentTime] = React.useState(0);
   const [timeSnapshot, setTimeSnapshot] = React.useState(0);
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const [isRecording, setIsRecording] = React.useState(false);
   const [intervalId, setIntervalId] = React.useState(0);
   const [ended, setEnded] = React.useState(0);
   const [restart, setRestart] = React.useState(false);
@@ -112,8 +117,8 @@ export default function MultiFilePlayer({
         userId: userId,
         projectId: projectId,
       };
-      await dispatch(addFileAsync(data));
       await dispatch(writeFileAsync({ projectId, filePath, file }));
+      await dispatch(addFileAsync(data));
       setRecorded(true);
     };
     if (
@@ -128,6 +133,14 @@ export default function MultiFilePlayer({
   React.useEffect(() => {
     if (!acPlusRef.current) acPlusRef.current = new AudioContextPlus();
   }, []);
+
+  // you dont need to wait for audio buffers if you have no files
+  // and you want to record
+  React.useEffect(() => {
+    if ((Object.keys(availableFiles).length === 0) & record) {
+      setDisabled(false);
+    }
+  }, [record, availableFiles]);
 
   React.useEffect(() => {
     const createBuffers = async () => {
@@ -169,9 +182,11 @@ export default function MultiFilePlayer({
       if (recorderRef.current.state === "recording") {
         recorderRef.current.stop();
         setMsgKey("stopped");
+        setIsRecording(false);
       } else if (["inactive", "paused"].includes(recorderRef.current.state)) {
         recorderRef.current.start();
         setMsgKey("recording");
+        setIsRecording(true);
       }
     }
   };
@@ -328,6 +343,8 @@ export default function MultiFilePlayer({
         loop={loop}
         toggleLoop={toggleLoop}
         record={record}
+        isRecording={isRecording}
+        availableFiles={availableFiles}
       />
       {smallPlayer === true ? (
         <Card>
