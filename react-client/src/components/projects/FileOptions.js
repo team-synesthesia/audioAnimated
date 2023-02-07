@@ -25,7 +25,7 @@ const FileOptions = ({ handleClose, clickedFile }) => {
     if (!sectionsToAssign.includes(sectionNumber) && checked) {
       sectionsToAssign.push(sectionNumber);
     } else {
-      const spliceIndex = sectionsToAssign.indexOf();
+      const spliceIndex = sectionsToAssign.indexOf(sectionNumber);
       sectionsToAssign.splice(spliceIndex, 1);
     }
   };
