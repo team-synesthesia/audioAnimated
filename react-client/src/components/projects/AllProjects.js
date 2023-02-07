@@ -121,6 +121,7 @@ export default function AllProjects() {
                       <DeleteConfirmation
                         handleDelete={handleDelete}
                         deleteParam={project.id}
+                        origin={"AllProjects"}
                       />
                     </CardActions>
                   </Card>

@@ -14,7 +14,7 @@ const style = {
   p: 4,
 };
 
-const DeleteConfirmation = ({ handleDelete, deleteParam }) => {
+const DeleteConfirmation = ({ handleDelete, deleteParam, origin }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -35,7 +35,11 @@ const DeleteConfirmation = ({ handleDelete, deleteParam }) => {
             Are you sure?
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            This () will be permanantly deleted
+            {origin === "AllProjects"
+              ? "This project will be permanantly deleted"
+              : origin === "FileOptions"
+              ? "This file will be permanantly deleted"
+              : null}
           </Typography>
           <Button
             onClick={() => {

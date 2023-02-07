@@ -61,19 +61,10 @@ const FileOptions = ({ handleClose, clickedFile }) => {
         ))}
         <Button type="submit">Assign to Section(s)</Button>
       </form>
-      {/* <Button
-        type="button"
-        size="small"
-        onClick={() => {
-          handleDelete(clickedFile.name);
-          handleClose();
-        }}
-      >
-        Delete File
-      </Button> */}
       <DeleteConfirmation
         handleDelete={handleDelete}
         deleteParam={clickedFile.name}
+        origin={"FileOptions"}
       />
     </div>
   );
