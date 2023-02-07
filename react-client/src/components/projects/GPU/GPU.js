@@ -33,18 +33,12 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     console.log('d1', sectionNumber )
 
-    const [windowSize,setWindowSize] = React.useState()
     const resizeRef = React.useRef(false)
  
     React.useEffect(() => {
         // Handler to call on window resize
         function handleResize() {
-          // Set window width/height to state
-          setWindowSize({
-            width: window.innerWidth,
-            height: window.innerHeight,
-          });
-          resizeRef.current = true
+          resizeRef.current = true  //the gpuDivRef will have the new dimensions
         }
         // Add event listener
         window.addEventListener("resize", handleResize);

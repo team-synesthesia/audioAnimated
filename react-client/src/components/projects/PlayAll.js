@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function PlayAll({closeModal}) {
 
-
-
     const dispatch = useDispatch()
 
     const sections = useSelector(state=>state.singleProject.sections)
@@ -17,6 +15,7 @@ export default function PlayAll({closeModal}) {
         if ( !started.current) {
             dispatch(setTryToStart(true))
             dispatch(setSectionToPlay(0))
+            //dispatch(setFinished(false))
             started.current = true
         }
     },[playAllStarted,dispatch,closeModal])
@@ -25,7 +24,7 @@ export default function PlayAll({closeModal}) {
         if (finished) {
             started.current = false;
             dispatch(setTryToStart(false))
-            dispatch(setFinished(false))
+            //dispatch(setFinished(false))
             dispatch(setSectionToPlay(-1))
         }
     },[finished, dispatch])

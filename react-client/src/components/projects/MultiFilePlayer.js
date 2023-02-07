@@ -12,7 +12,8 @@ import { addFileAsync, writeFileAsync } from "../../features";
 import {
   setSectionToPlay,
   setFinished,
-  setPlayAllCanvasCreated
+  setPlayAllCanvasCreated,
+  setTryToStart
 } from "../../features/projects/playAllSlice";
 
 import { GPU } from "./GPU/GPU"
@@ -42,7 +43,7 @@ export default function MultiFilePlayer({
   );
 
   const { sectionToPlay, tryToStart,
-    finished, playAllCanvasCreated } = useSelector((state) => state.playAll);
+    finished } = useSelector((state) => state.playAll);
 
   const { sections } = useSelector((state) => state.singleProject);
 
@@ -291,21 +292,27 @@ export default function MultiFilePlayer({
 
   if ( finished && playAllCanvasCreatedRef.current) {
     console.log('resetting canvas ref',sectionNumber)
-    playAllCanvasRef.current = false
+    playAllCanvasCreatedRef.current = false
     //only happens for 1st section
   }
 
-  if ( finished && finishedRef.current) {
-    finishedRef.current = false
-    //only happens for last section
-  }
+  React.useEffect(()=>{
+    console.log('finished',finished,sectionNumber)
+    if ( finished && finishedRef.current) {
+      finishedRef.current = false
+      console.log('finished',finished,sectionNumber)
+      dispatch(setFinished(false))
+    }
+  },[finished,sectionNumber,dispatch])
 
   const [canvasInitialized,setCanvasInitialized] = React.useState(false)
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
-      if (tryToStart && !finishedRef.current) {
 
+
+      if (tryToStart && !finishedRef.current ) {
+        console.log('zzzzzzzzzzz',sectionNumber, tryToStart, finishedRef.current)
         const sectionNum = sections[sectionToPlay].sectionNumber;
 
         if (sectionToPlay === 0 && 
@@ -349,6 +356,7 @@ export default function MultiFilePlayer({
         ) {
           const nextSection = sectionToPlay + 1;
           setSectionPlayed(-1);
+          finishedRef.current = true
           if (nextSection < sections.length) {
             //acPlusRef.current.close()
             dispatch(setSectionToPlay(nextSection));
@@ -361,11 +369,11 @@ export default function MultiFilePlayer({
               }
             )
             console.log('from player',sectionNumber)
-          } else {
-            finishedRef.current = true
+          } else if (!finished) {
+            //finishedRef.current = true
             dispatch(setFinished(true));
+            dispatch(setTryToStart(false))
             console.log('trying to remove it')
-            dispatch(setPlayAllCanvasCreated(false))
       
           }
         }
@@ -384,7 +392,8 @@ export default function MultiFilePlayer({
     playAllCanvasRef,
     acRefs,
     canvasInitialized,
-    setPlayAllGPUconfig
+    setPlayAllGPUconfig,
+    finished
   ]);
 
   return (

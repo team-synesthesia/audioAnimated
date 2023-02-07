@@ -27,7 +27,7 @@ export const playAllSlice = createSlice({
             state.finished = action.payload
         },
         setPlayAllCanvasCreated(state,action) {
-            state.finished = action.playload
+            state.playAllCanvasCreated = action.playload
         }
     }
 })
