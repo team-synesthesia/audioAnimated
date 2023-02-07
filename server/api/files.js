@@ -15,8 +15,6 @@ router.post("/", async (req, res, next) => {
     });
     if (!section) section = await Section.create({ projectId, sectionNumber });
 
-    console.log(section);
-
     const newFile = await File.create({
       name,
       filePath,

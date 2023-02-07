@@ -7,13 +7,11 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
   const { availableFiles, id } = useSelector((state) => state.singleProject);
   const fileNames = [];
 
+  console.log(availableFiles);
   const dispatch = useDispatch();
 
-  if (typeof section.files === "undefined") return;
+  section.files && section.files.forEach((file) => fileNames.push(file.name));
 
-  for (let file of section.files) {
-    fileNames.push(file.name);
-  }
   const unassignedFiles = Object.values(availableFiles).filter(
     (file) => !fileNames.includes(file.name)
   );
