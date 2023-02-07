@@ -10,8 +10,7 @@ const MESSAGES = {
   label: "Label, you're recording",
   begin: "Click on the microphone to begin recording",
   recording: "Click the Mic again to stop recording",
-  stopped:
-    "Recording saved. Hit the 'NEXT' button to listen back (or hit the mic to continue the recording)",
+  stopped: "Recording saved. Hit the 'NEXT' button to listen back",
 };
 
 export default function RecordForm({
@@ -21,6 +20,7 @@ export default function RecordForm({
   newFileName,
   setNewFileName,
   setRecorded,
+  displayRecorder,
 }) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
@@ -67,7 +67,7 @@ export default function RecordForm({
         </Box>
 
         <Box sx={{ margin: "10px" }}>
-          {newFileName && newFileName.length > 0 ? (
+          {displayRecorder ? (
             <MultiFilePlayer
               msgKey={msgKey}
               setMsgKey={setMsgKey}

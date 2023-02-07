@@ -28,7 +28,8 @@ function getStepContent(
   availableFiles,
   newFileName,
   setNewFileName,
-  setRecorded
+  setRecorded,
+  displayRecorder
 ) {
   switch (step) {
     case 0:
@@ -48,6 +49,7 @@ function getStepContent(
           newFileName={newFileName}
           setNewFileName={setNewFileName}
           setRecorded={setRecorded}
+          displayRecorder={displayRecorder}
         />
       );
     case 2:
@@ -59,6 +61,7 @@ function getStepContent(
 
 export default function Record({ availableFiles, userId, projectId }) {
   const [selectedFiles, setSelectedFiles] = React.useState({});
+  const [displayRecorder, setDisplayRecorder] = React.useState({});
 
   const dispatch = useDispatch();
 
@@ -82,6 +85,16 @@ export default function Record({ availableFiles, userId, projectId }) {
   const [newFileName, setNewFileName] = React.useState("");
   const [recorded, setRecorded] = React.useState(false);
   const [deleted, setDeleted] = React.useState(false);
+
+  React.useEffect(() => {
+    if (recorded) {
+      setDisplayRecorder(false);
+    } else if (newFileName && newFileName.length > 0) {
+      setDisplayRecorder(true);
+    } else {
+      setDisplayRecorder(false);
+    }
+  }, [newFileName, recorded]);
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -137,7 +150,8 @@ export default function Record({ availableFiles, userId, projectId }) {
               availableFiles,
               newFileName,
               setNewFileName,
-              setRecorded
+              setRecorded,
+              displayRecorder
             )}
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               {activeStep === steps.length - 1 ? (
