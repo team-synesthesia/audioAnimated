@@ -12,10 +12,12 @@ const FileOptions = ({ handleClose, clickedFile }) => {
 
   const sectionsCopy = [...sections];
   for (let section of sectionsCopy) {
-    for (let file of section.files) {
-      if (file.name === clickedFile.name) {
-        const spliceIndex = section.files.indexOf(clickedFile);
-        sectionsCopy.splice(spliceIndex, 1);
+    if (section.files && section.files.length) {
+      for (let file of section.files) {
+        if (file.name === clickedFile.name) {
+          const spliceIndex = section.files.indexOf(clickedFile);
+          sectionsCopy.splice(spliceIndex, 1);
+        }
       }
     }
   }
