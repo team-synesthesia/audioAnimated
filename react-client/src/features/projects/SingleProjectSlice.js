@@ -87,6 +87,16 @@ export const fetchSingleProjectAsync = createAsyncThunk(
   }
 );
 
+export const updateProject = createAsyncThunk(
+  "updateProject",
+  async ({ projectId, formData }) => {
+    try {
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
 export const createSectionAsync = createAsyncThunk(
   "createSection",
   async (payload) => {
@@ -118,13 +128,15 @@ export const singleProjectSlice = createSlice({
     name: null,
     type: null,
     sectionDuration: null,
+    graphicsFn: null,
     sections: [],
     availableFiles: {}, // de-duped, key is file.name
     audioRawFiles: {}, // de-duped, key is file.name
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSingleProjectAsync.fulfilled, (state, action) => {
-      const { id, name, type, sections, sectionDuration } = action.payload;
+      const { id, name, type, sections, sectionDuration, graphicsFn } =
+        action.payload;
 
       const availableFiles = {};
       sections.forEach((section) => {
@@ -143,6 +155,7 @@ export const singleProjectSlice = createSlice({
         .sort((a, b) => a.sectionNumber - b.sectionNumber);
       state.sectionDuration = sectionDuration;
       state.availableFiles = availableFiles;
+      state.graphicsFn = graphicsFn;
     });
     builder.addCase(getFilesAsync.fulfilled, (state, action) => {
       state.audioRawFiles = action.payload;
