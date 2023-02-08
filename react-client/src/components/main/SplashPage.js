@@ -1,6 +1,14 @@
 import React from "react";
-import { Box, Container, Grid, Button, Card, CardMedia, Typography } from "@mui/material";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import {
+  Box,
+  Container,
+  Grid,
+  Button,
+  Card,
+  CardMedia,
+  Typography,
+} from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 /**
  * COMPONENT
@@ -9,11 +17,8 @@ const SplashPage = (props) => {
   return (
     <Box sx={{ marginTop: "75px" }}>
       <Grid container>
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-          <h1>Audio Animated</h1>
-        </Grid>
         <Grid item sm={12} md={6} lg={8}>
-          <Card sx={{height: "70vh"}}>
+          <Card sx={{ height: "80vh" }}>
             <iframe
               width="100%"
               height="100%"
@@ -58,7 +63,17 @@ const SplashPage = (props) => {
             </p>
           </Container>
         </Grid>
-        <Grid item xs={12} sx={{display: "flex", flexDirection: "column", alignItems: "center", margin: "10px"}}>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "10vh",
+          }}
+        >
           <Typography variant="h6">Learn More</Typography>
           <KeyboardArrowDownIcon />
         </Grid>
