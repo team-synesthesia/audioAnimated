@@ -79,7 +79,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
+            <ListItemButton onClick={()=>handleOpen("changeGraphicsFn")}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <BubbleChartIcon />
               </ListItemIcon>

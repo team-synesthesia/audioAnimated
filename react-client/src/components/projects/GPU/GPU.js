@@ -3,11 +3,14 @@ import * as THREE from "three"
 import {createVertexModel,animateVertexModel,
         createShaderModel,animateShaderModel} from "./graphicsFunctions" 
 import { graphicsOptions } from "./graphicsOptions"
+import {useSelector} from "react-redux"
 
 //gpuDivRef was passed in as:  gpuDivRef.current in order to satisfy the dependencies array
 export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized} ) {
     
     //console.log('in gpu',gpuDivRef)
+
+    const {graphicFN} = useSelector(state=>state.playAll)
 
     const [GL, setGL] = React.useState({})
  
@@ -19,6 +22,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     const fpsInterval = 1000/fps
 
     const { isPlaying,acPlusRef,sectionNumber,graphicsFn } = GPUconfig
+    const [gnum,setGnum] = React.useState(0)
 
     const ACtoUse = React.useRef()
 
@@ -29,12 +33,20 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     else {
         ACtoUse.current = acPlusRef
     }
-    //console.log(sectionNumber,acPlusRef)
-
-    //console.log('d1', sectionNumber )
 
     const resizeRef = React.useRef(false)
- 
+    const [restart, setRestart] = React.useState(false)
+
+    const restartRef = React.useState(false)
+
+    React.useEffect(()=>{
+        if (gnum !== graphicFN) {
+            isPlayingRef.current = false
+            restartRef.current = true  //need a ref to interrupt the render loop
+            setRestart(true)
+        }
+    },[graphicFN, gnum, GL.renderer, restartRef])
+
     React.useEffect(() => {
         // Handler to call on window resize
         function handleResize() {
@@ -50,8 +62,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     React.useEffect(()=>{
 
-        console.log('d2', sectionNumber )
-
+        console.log('graphics',gnum, graphicFN)
         let canvas, canvasDim, hidden
         if ( gpuDivRef) {
             canvas = gpuDivRef
@@ -59,18 +70,28 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             hidden = (canvas.classList.value.includes('hidden') )
         }
 
-        if (gpuDivRef && !canvasInitialized 
-            && !hidden && typeof graphicsFn !== "undefined") {
+        const Restart = restart && gpuDivRef && !hidden
+
+        console.log('zzzzzzzzzz Restart', restart, Restart)
+        if ( (gpuDivRef && !canvasInitialized 
+            && !hidden && typeof graphicFN !== "undefined")
+            || Restart
+            ) {
 
             setCanvasInitialized(true)
-
+      
             const [width,height] = [canvasDim.width, canvasDim.height]
             //set canvas property so that we get WebGL2 ???
 
-            const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true})
+            if (restart && GL.renderer) GL.renderer.dispose()
+
+            console.log('zzzzzzzzzzzzzz creating renderer')
+            const renderer = GL.renderer ?? new THREE.WebGLRenderer({antialias:true, alpha:true})
             renderer.setSize(width, height,  false);  //get dimensions of gpuDivRef
             renderer.setClearColor("rgb(255,255,255)", 0);
-            canvas.appendChild(renderer.domElement);
+
+            if ( !GL.renderer ) canvas.appendChild(renderer.domElement);
+
             const aspect = width/height;
 
             const uniforms = {
@@ -85,12 +106,14 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
             let useShader = false
             let gfn=0
+            setGnum(graphicFN)
             try {
-                useShader = graphicsOptions[graphicsFn].type === "shader"
-                gfn = graphicsOptions[graphicsFn].fn
+                useShader = graphicsOptions[graphicFN].type === "shader"
+                gfn = graphicsOptions[graphicFN].fn
+                console.log('gfn',gfn,graphicFN)
             }
             catch {
-                console.log('graphics Function num out of bounds', graphicsFn)
+                console.log('graphics Function num out of bounds', graphicFN)
             }
         
             if (useShader) {
@@ -100,9 +123,12 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             }
             else {
                 const {camera,light2,cube} = createVertexModel(scene,aspect)
-                setGL({renderer,scene,camera,width,height,useShader,cube,light2}) 
+                setGL({renderer,scene,camera,width,height,useShader,cube,light2,uniforms}) 
                 renderer.render(scene,camera)
+
             }
+
+            setRestart(false)
 
         }
         
@@ -116,26 +142,24 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             if ( isPlaying && !isRendering.current ) {
                 requestAnimationFrame(render)
                 isRendering.current = true
-                console.log('xxx',ACtoUse.current)
             }
 
             function render(time) {
    
                 //console.log('section',sectionNumber)
 
-                if ( !isPlayingRef.current ) {
+                if ( !isPlayingRef.current || restartRef.current ) {
                     isRendering.current = false
                     cancelAnimationFrame(frameIdRef.current)
                     return
                 } 
 
                 if ( resizeRef.current) {
-                    console.log('xxxxxxxxxxxxx',gpuDivRef.getBoundingClientRect())
                     resizeRef.current = false
                     const newDim = gpuDivRef.getBoundingClientRect()
                     const {width,height} = newDim
-                    //camera.aspect = width/height
-                    //camera.updateProjectionMatrix()
+                    camera.aspect = width/height
+                    camera.updateProjectionMatrix()
                     uniforms.iResolution.value = new THREE.Vector3(width, height, 1.0)
                     renderer.setSize(width,height)
                 }
@@ -168,6 +192,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     },[gpuDivRef,canvasInitialized,GL,fpsInterval,
         setCanvasInitialized,isPlaying,acPlusRef,
-        sectionNumber,graphicsFn,GPUconfig])
+        sectionNumber,graphicsFn,GPUconfig,graphicFN,gnum,restart])
    
 }

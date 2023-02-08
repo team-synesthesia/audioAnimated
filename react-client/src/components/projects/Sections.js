@@ -10,6 +10,8 @@ import AddNewSection from "./AddNewSection";
 import { deleteSectionAsync } from "../../features";
 
 import {GPU} from "./GPU/GPU"
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from "@mui/icons-material/Close"
 
 export default function Sections({ sections, userId, projectId }) {
   const [singleSection, setSingleSection] = React.useState(false);
@@ -68,9 +70,19 @@ export default function Sections({ sections, userId, projectId }) {
       key="playAllCanvas"
       id="playAllCanvas"
       ref={playAllCanvasRef}
-      style={{position:"relative",left:"16vw"}}
+      style={{position:"relative",left:"max(14vw,155px)"}}
+      className="hidden"
     >
+      <IconButton 
+        sx={{position:"absolute",left:"0",color:"blue",backgroundColor:"white", 
+            "&:hover": { color: "white", backgroundColor:"rgb(50,50,100)" }}}
+        onClick={(ev)=>{playAllCanvasRef.current&& playAllCanvasRef.current.classList.add("hidden")}}
+      >
+        <CloseIcon />
+      </IconButton>
+    
     </div>,
+
     <div key="sectionContainer">
       {singleSectionRender ? (
         <SingleSectionView
@@ -121,7 +133,7 @@ function MultiSectionView({
   return (
     <Box
       sx={{
-        marginLeft: "max(16vw,152px)",
+        marginLeft: "max(14vw,152px)",
         display: "flex",
         flexDirection: "row",
         gap: "1vw",

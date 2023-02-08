@@ -33,7 +33,7 @@ export default function MultiFilePlayer({
   newFileName,
   playAllCanvasRef,
   acRefs,
-  setPlayAllGPUconfig
+  setPlayAllGPUconfig,
   useMetronome,
   metronomeTempo,
 }) {
@@ -150,13 +150,11 @@ export default function MultiFilePlayer({
   const acPlusRef = React.useRef();
   React.useEffect(() => {
     if (!acPlusRef.current) {
-      {
       acPlusRef.current = new AudioContextPlus();
-    }
     }
   }, []);
 
-  if ( acPlusRef && acPlusRef.current && acRefs &&
+  if (acPlusRef && acPlusRef.current && acRefs &&
       acRefs.current && !acRefs.current[sectionNumber]) {
     console.log('saving acPlus ref for section',sectionNumber)
     acRefs.current[sectionNumber] = acPlusRef.current
@@ -345,7 +343,8 @@ export default function MultiFilePlayer({
     try {
 
       if (tryToStart && !finishedRef.current ) {
-        console.log('zzzzzzzzzzz',sectionNumber, tryToStart, finishedRef.current)
+
+        //console.log('zzzzzzzzzzz',sectionNumber, tryToStart, finishedRef.current)
         const sectionNum = sections[sectionToPlay].sectionNumber;
 
         if (sectionToPlay === 0 && 
@@ -353,9 +352,10 @@ export default function MultiFilePlayer({
             !playAllCanvasCreatedRef.current ) {
           console.log('acRefs',acRefs.current.slice(0,5))
    
-          playAllCanvasRef.current.style.width = "82vw"
+          playAllCanvasRef.current.classList.remove("hidden")
+          playAllCanvasRef.current.style.width = "84vw"
           playAllCanvasRef.current.style.height = "82vh"
-          playAllCanvasRef.current.style.backgroundColor = "blue"
+          //playAllCanvasRef.current.style.backgroundColor = "blue"
           playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
           playAllCanvasCreatedRef.current = true
           finishedRef.current = false

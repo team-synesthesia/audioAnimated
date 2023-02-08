@@ -16,7 +16,7 @@ export default function PlayAll({closeModal}) {
 
         counter.current ++
         console.log("counter",playAllStarted)
-       // closeModal()
+        closeModal()
    
         if ( !started.current ) {
             dispatch(setTryToStart(true))

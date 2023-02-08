@@ -8,13 +8,14 @@ import FileUploadForm from "./FileUploadForm";
 import { FileOptions } from "../";
 import Record from "./recordForm/Record";
 import PlayAll from "./PlayAll";
+import GraphicsOptions from "./GPU/graphicsOptions"
 
 const style = {
   position: "absolute",
   top: "55%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "90vw",
+  width: "70vw",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -40,8 +41,9 @@ function SwitchComponent({
       );
 
     case "changeGraphicsFn":
-      return <div>Phil's graphics form component will go here</div>;
-
+      return (
+        <GraphicsOptions />
+      )
     case "fileOptions":
       return (
         <FileOptions handleClose={handleClose} clickedFile={clickedFile} />
@@ -57,7 +59,7 @@ function SwitchComponent({
       );
 
     case "playAll":
-      return <PlayAll closeModal={handleClose}/>;
+      return <PlayAll sx={{backgroundColor:"transparent"}} closeModal={handleClose}/>;
 
     default:
       return null;
