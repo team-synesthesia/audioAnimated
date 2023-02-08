@@ -12,7 +12,7 @@ export function createShaderModel(scene,uniforms,shaderFunc) {
     }
 
     const camera   = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );  //we just have a plane so no perspective required
-    const fragPlane = new THREE.PlaneBufferGeometry( 1.9, 1.9 );  //the plane that fills the whole screen
+    const fragPlane = new THREE.PlaneGeometry( 1.9, 1.9 );  //the plane that fills the whole screen
     const material = new THREE.ShaderMaterial({
         vertexShader: vertexShader,
         fragmentShader: fragmentShaders[sFunc],
@@ -71,4 +71,33 @@ export function animateVertexModel(GL,md) {
     GL.cube.position.z =  md.sum*1.3
 
     GL.light2.intensity = md.sum*md.sum*md.sum*1.7
+}
+
+export function d12Vertices() {
+
+    const t = (1 + Math.sqrt(5)) / 2;
+    const r = 1 / t;
+
+    const vertices = [
+
+        // (±1, ±1, ±1)
+        - 1, - 1, - 1, - 1, - 1, 1,
+        - 1, 1, - 1, - 1, 1, 1,
+        1, - 1, - 1, 1, - 1, 1,
+        1, 1, - 1, 1, 1, 1,
+
+        // (0, ±1/φ, ±φ)
+        0, - r, - t, 0, - r, t,
+        0, r, - t, 0, r, t,
+
+        // (±1/φ, ±φ, 0)
+        - r, - t, 0, - r, t, 0,
+        r, - t, 0, r, t, 0,
+
+        // (±φ, 0, ±1/φ)
+        - t, 0, - r, t, 0, - r,
+        - t, 0, r, t, 0, r
+    ];
+
+    return vertices;
 }

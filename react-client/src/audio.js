@@ -46,7 +46,6 @@ class AudioContextPlus {
     //once we connect an audio element to createMediaElementSource
     //it is stuck there forever, good news is that we can
     //create a different audio element to deal with it
-    //console.log('xxxxxxxxxxxx',this.AudioSource)
 
     if (this.canVisualize) {
       console.log(" connecting new audio ", audioHTML);
