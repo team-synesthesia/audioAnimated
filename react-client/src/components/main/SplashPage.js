@@ -104,7 +104,7 @@ const SplashPage = (props) => {
           <Card>
             <CardMedia
               component="img"
-              image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cute-cat-photos-1593441022.jpg"
+              image="https://images.unsplash.com/photo-1589903308904-1010c2294adc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
               sx={{ height: "100vh" }}
             />
           </Card>
@@ -136,7 +136,7 @@ const SplashPage = (props) => {
           <Card>
             <CardMedia
               component="img"
-              image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cute-cat-photos-1593441022.jpg"
+              image="g3.jpg"
               sx={{ height: "100vh" }}
             />
           </Card>
