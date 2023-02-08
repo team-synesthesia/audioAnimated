@@ -1,6 +1,14 @@
 import React from "react";
-import { Container, Grid, Button, Card, CardMedia } from "@mui/material";
-import Box from "@mui/material/Box";
+import {
+  Box,
+  Container,
+  Grid,
+  Button,
+  Card,
+  CardMedia,
+  Typography,
+} from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 /**
  * COMPONENT
@@ -9,14 +17,16 @@ const SplashPage = (props) => {
   return (
     <Box sx={{ marginTop: "75px" }}>
       <Grid container>
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-          <h1>Audio Animated</h1>
-        </Grid>
         <Grid item sm={12} md={6} lg={8}>
-          <Card>
-            <CardMedia
-              component="img"
-              image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cute-cat-photos-1593441022.jpg"
+          <Card sx={{ height: "80vh" }}>
+            <iframe
+              width="100%"
+              height="100%"
+              src={"https://www.youtube-nocookie.com/embed/nFD03q4_A58"}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title="Embedded youtube demo"
             />
           </Card>
         </Grid>
@@ -56,6 +66,20 @@ const SplashPage = (props) => {
         <Grid
           item
           xs={12}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "10vh",
+          }}
+        >
+          <Typography variant="h6">Learn More</Typography>
+          <KeyboardArrowDownIcon />
+        </Grid>
+        <Grid
+          item
+          xs={12}
           sm={6}
           sx={{
             display: { xs: "none", sm: "flex" },
@@ -80,7 +104,7 @@ const SplashPage = (props) => {
           <Card>
             <CardMedia
               component="img"
-              image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cute-cat-photos-1593441022.jpg"
+              image="https://images.unsplash.com/photo-1589903308904-1010c2294adc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
               sx={{ height: "100vh" }}
             />
           </Card>
@@ -112,7 +136,7 @@ const SplashPage = (props) => {
           <Card>
             <CardMedia
               component="img"
-              image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cute-cat-photos-1593441022.jpg"
+              image="g3.jpg"
               sx={{ height: "100vh" }}
             />
           </Card>
