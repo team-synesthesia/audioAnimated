@@ -53,6 +53,8 @@ const FileOptions = ({ handleClose, clickedFile }) => {
 
   const handleDelete = (fileName) => {
     dispatch(deleteFileAsync({ deleteParam: fileName, type: "byName" }));
+
+    handleClose();
   };
 
   return (
