@@ -38,7 +38,7 @@ router.post("/", async (req, res, next) => {
     }
 
     const project = await Project.create({ name });
-    const user_project = await user_projects.create({
+    await user_projects.create({
       userId,
       projectId: project.id,
     });
@@ -65,6 +65,29 @@ router.get("/:id", async (req, res, next) => {
     res.send(project);
   } catch (err) {
     console.error("error in Single Projects GET route");
+    next(err);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const projectId = req.params.id;
+    const projectToDelete = await Project.findByPk(projectId);
+    const sectionsToDelete = await Section.findAll({ where: { projectId } });
+
+    await projectToDelete.destroy();
+    for (let section of sectionsToDelete) {
+      const filesToDelete = await File.findAll({
+        where: { sectionId: section.id },
+      });
+      for (let file of filesToDelete) {
+        await file.destroy();
+      }
+      await section.destroy();
+    }
+    res.status(202).send(projectId);
+  } catch (err) {
+    console.error("error in delete project route");
     next(err);
   }
 });

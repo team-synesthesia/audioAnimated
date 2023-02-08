@@ -20,11 +20,14 @@ export {
   default as allProjectsReducer,
   createProjectAsync,
   fetchAllProjectsByUserIdAsync,
+  deleteProjectAsync,
 } from "./projects/AllProjectsSlice";
 
 export {
   default as playAllReducer,
-  setSectionToPlay, setTryToStart, setPlayAllStarted,
-  alreadyPlaying, setPlayAllCanvasCreated, setFinished
-} from "./projects/playAllSlice"
-
+  setSectionToPlay,
+  setTryToStart,
+  setPlayAllStarted,
+  alreadyPlaying,
+  setFinished,
+} from "./projects/playAllSlice";

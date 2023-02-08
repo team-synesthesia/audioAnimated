@@ -11,26 +11,23 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
-import { createProjectAsync } from "../../features";
+import { AddNewProject, DeleteConfirmation } from "../";
+import { deleteProjectAsync } from "../../features";
 
 export default function AllProjects() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userId = useSelector((state) => state.auth.me.id);
-
   const projects = useSelector((state) => state.allProjects);
 
-  const addNewProject = async () => {
-    // This will be updated to use a form in the future where
-    // the user will choose a project name
-    const name = `Project ${projects.length + 1}`;
-    ///
-    ///
-    const { payload } = await dispatch(createProjectAsync({ userId, name }));
-    navigate(`${payload.id}`);
+  const [toggleNewProjectForm, setToggleNewProjectForm] = React.useState(false);
+
+  const dispatch = useDispatch();
+  const handleDelete = (id) => {
+    dispatch(deleteProjectAsync(id));
+
+    navigate("/projects");
   };
 
   return (
@@ -68,9 +65,18 @@ export default function AllProjects() {
             spacing={2}
             justifyContent="center"
           >
-            <Button variant="contained" onClick={addNewProject}>
-              Create New Project
-            </Button>
+            {toggleNewProjectForm ? (
+              <AddNewProject
+                setToggleNewProjectForm={setToggleNewProjectForm}
+              />
+            ) : (
+              <Button
+                variant="contained"
+                onClick={() => setToggleNewProjectForm(true)}
+              >
+                Create New Project
+              </Button>
+            )}
           </Stack>
         </Container>
       </Box>
@@ -114,6 +120,11 @@ export default function AllProjects() {
                       >
                         Edit
                       </Button>
+                      <DeleteConfirmation
+                        handleDelete={handleDelete}
+                        deleteParam={project.id}
+                        origin={"AllProjects"}
+                      />
                     </CardActions>
                   </Card>
                 </Grid>

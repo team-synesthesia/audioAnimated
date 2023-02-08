@@ -2,6 +2,7 @@ import * as React from "react";
 import { Card, Box, CardContent } from "@mui/material";
 
 import AudioContextPlus from "../../audio";
+import Metronome from "../../metronome";
 import { useDispatch, useSelector } from "react-redux";
 
 import FileCard from "./FileCard";
@@ -33,11 +34,17 @@ export default function MultiFilePlayer({
   playAllCanvasRef,
   acRefs,
   setPlayAllGPUconfig
+  useMetronome,
+  metronomeTempo,
 }) {
   const dispatch = useDispatch();
 
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
+  );
+
+  const availableFiles = useSelector(
+    (state) => state.singleProject.availableFiles
   );
 
   const { sectionToPlay, tryToStart,
@@ -49,6 +56,7 @@ export default function MultiFilePlayer({
   const [currentTime, setCurrentTime] = React.useState(0);
   const [timeSnapshot, setTimeSnapshot] = React.useState(0);
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const [isRecording, setIsRecording] = React.useState(false);
   const [intervalId, setIntervalId] = React.useState(0);
   const [ended, setEnded] = React.useState(0);
   const [restart, setRestart] = React.useState(false);
@@ -60,6 +68,7 @@ export default function MultiFilePlayer({
 
   const recorderRef = React.useRef();
   const recordStreamRef = React.useRef();
+  const metrnomeRef = React.useRef();
 
   if (record && !recordStreamRef.current) {
     getRecordingPermission();
@@ -118,8 +127,8 @@ export default function MultiFilePlayer({
         userId: userId,
         projectId: projectId,
       };
-      await dispatch(addFileAsync(data));
       await dispatch(writeFileAsync({ projectId, filePath, file }));
+      await dispatch(addFileAsync(data));
       setRecorded(true);
     };
     if (
@@ -128,12 +137,22 @@ export default function MultiFilePlayer({
     ) {
       fnSaveRecording();
     }
-  }, [dispatch, recordedChunks, saveRecording, userId, projectId, newFileName]);
+  }, [
+    dispatch,
+    recordedChunks,
+    saveRecording,
+    userId,
+    projectId,
+    newFileName,
+    setRecorded,
+  ]);
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
     if (!acPlusRef.current) {
+      {
       acPlusRef.current = new AudioContextPlus();
+    }
     }
   }, []);
 
@@ -142,6 +161,20 @@ export default function MultiFilePlayer({
     console.log('saving acPlus ref for section',sectionNumber)
     acRefs.current[sectionNumber] = acPlusRef.current
   }
+
+  React.useEffect(() => {
+    if (useMetronome && metronomeTempo && !metrnomeRef.current) {
+      metrnomeRef.current = new Metronome(metronomeTempo);
+    }
+  }, [useMetronome, metronomeTempo]);
+
+  // you dont need to wait for audio buffers if you have no files
+  // and you want to record
+  React.useEffect(() => {
+    if ((Object.keys(availableFiles).length === 0) & record) {
+      setDisabled(false);
+    }
+  }, [record, availableFiles]);
 
   React.useEffect(() => {
     const createBuffers = async () => {
@@ -183,9 +216,13 @@ export default function MultiFilePlayer({
       if (recorderRef.current.state === "recording") {
         recorderRef.current.stop();
         setMsgKey("stopped");
+        setIsRecording(false);
+        if (metrnomeRef.current) metrnomeRef.current.stop();
       } else if (["inactive", "paused"].includes(recorderRef.current.state)) {
         recorderRef.current.start();
         setMsgKey("recording");
+        setIsRecording(true);
+        if (metrnomeRef.current) metrnomeRef.current.start();
       }
     }
   };
@@ -405,6 +442,8 @@ export default function MultiFilePlayer({
         loop={loop}
         toggleLoop={toggleLoop}
         record={record}
+        isRecording={isRecording}
+        availableFiles={availableFiles}
       />
       {smallPlayer === true ? (
         <Card>
