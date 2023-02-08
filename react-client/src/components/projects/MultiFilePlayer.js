@@ -13,6 +13,8 @@ import { addFileAsync, writeFileAsync } from "../../features";
 import {
   setSectionToPlay,
   setFinished,
+  setTryToStart,
+  setPlayAllStarted
 } from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
@@ -29,6 +31,9 @@ export default function MultiFilePlayer({
   smallPlayer,
   setRecorded,
   newFileName,
+  playAllCanvasRef,
+  acRefs,
+  setPlayAllGPUconfig,
   useMetronome,
   metronomeTempo,
 }) {
@@ -42,7 +47,8 @@ export default function MultiFilePlayer({
     (state) => state.singleProject.availableFiles
   );
 
-  const { sectionToPlay, tryToStart } = useSelector((state) => state.playAll);
+  const { sectionToPlay, tryToStart,
+    finished } = useSelector((state) => state.playAll);
 
   const { sections } = useSelector((state) => state.singleProject);
 
@@ -147,6 +153,11 @@ export default function MultiFilePlayer({
       acPlusRef.current = new AudioContextPlus();
     }
   }, []);
+
+  if (acPlusRef && acPlusRef.current && acRefs &&
+      acRefs.current && !acRefs.current[sectionNumber]) {
+    acRefs.current[sectionNumber] = acPlusRef.current
+  }
 
   React.useEffect(() => {
     if (useMetronome && metronomeTempo && !metrnomeRef.current) {
@@ -308,11 +319,52 @@ export default function MultiFilePlayer({
     }
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
+  const playAllCanvasCreatedRef = React.useRef(false)
+  const finishedRef = React.useRef(false)
+
+  if ( finished && playAllCanvasCreatedRef.current) {
+    playAllCanvasCreatedRef.current = false
+    //only happens for 1st section
+  }
+
+  React.useEffect(()=>{
+    if ( finished && finishedRef.current) {
+      finishedRef.current = false
+      dispatch(setFinished(false))
+    }
+  },[finished,sectionNumber,dispatch])
+
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
-      if (tryToStart) {
+
+      if (tryToStart && !finishedRef.current ) {
+
         const sectionNum = sections[sectionToPlay].sectionNumber;
+
+        if (sectionToPlay === 0 && 
+            sectionNumber === sectionNum &&
+            !playAllCanvasCreatedRef.current ) {
+   
+          playAllCanvasRef.current.classList.remove("hidden")
+          playAllCanvasRef.current.style.width = "84vw"
+          playAllCanvasRef.current.style.height = "82vh"
+          //playAllCanvasRef.current.style.backgroundColor = "blue"
+          playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
+          playAllCanvasCreatedRef.current = true
+          finishedRef.current = false
+          dispatch(setPlayAllStarted(true))
+          setPlayAllGPUconfig(
+            {isPlaying:true,
+              acPlusRef:acPlusRef.current,
+              sectionNumber,
+              graphicsFn:0,
+              acRefs:acRefs
+            }
+          )
+
+        }
+
         //I found that the only consistent way to get playAll moving was to track
         //these 4 states (sectionNum,sectionNumber,sectionPlayed,isPlaying)
         //and check for certain conditions, keying it off of
@@ -331,10 +383,24 @@ export default function MultiFilePlayer({
         ) {
           const nextSection = sectionToPlay + 1;
           setSectionPlayed(-1);
+          finishedRef.current = true
           if (nextSection < sections.length) {
+            //acPlusRef.current.close()
             dispatch(setSectionToPlay(nextSection));
-          } else {
+            setPlayAllGPUconfig(
+              {isPlaying:true,
+                acPlusRef:acPlusRef.current,
+                sectionNumber:sections[nextSection].sectionNumber,
+                graphicsFn:0,
+                acRefs:acRefs
+              }
+            )
+  
+          } else if (!finished) {
+            //finishedRef.current = true
             dispatch(setFinished(true));
+            dispatch(setTryToStart(false))
+      
           }
         }
       }
@@ -349,6 +415,10 @@ export default function MultiFilePlayer({
     dispatch,
     isPlaying,
     tryToStart,
+    playAllCanvasRef,
+    acRefs,
+    setPlayAllGPUconfig,
+    finished
   ]);
 
   return (

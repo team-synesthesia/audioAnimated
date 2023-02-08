@@ -9,6 +9,10 @@ import AddNewSection from "./AddNewSection";
 
 import { deleteSectionAsync } from "../../features";
 
+import {GPU} from "./GPU/GPU"
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from "@mui/icons-material/Close"
+
 export default function Sections({ sections, userId, projectId }) {
   const [singleSection, setSingleSection] = React.useState(false);
   const [singleSectionRender, setSingleSectionRender] = React.useState(false);
@@ -50,8 +54,36 @@ export default function Sections({ sections, userId, projectId }) {
     }
   };
 
-  return (
-    <div>
+  const [canvasInitialized,setCanvasInitialized] = React.useState(false)
+  const [playAllGPUconfig,setPlayAllGPUconfig] = React.useState({})
+  const playAllCanvasRef = React.useRef()
+  const acRefs = React.useRef(Array(25).fill(null))
+  GPU({
+    GPUconfig:playAllGPUconfig,
+    gpuDivRef:playAllCanvasRef.current,
+    canvasInitialized,
+    setCanvasInitialized
+  })
+
+  return ([
+    <div
+      key="playAllCanvas"
+      id="playAllCanvas"
+      ref={playAllCanvasRef}
+      style={{position:"relative",left:"max(14vw,155px)"}}
+      className="hidden"
+    >
+      <IconButton 
+        sx={{position:"absolute",left:"0",color:"blue",backgroundColor:"white", 
+            "&:hover": { color: "white", backgroundColor:"rgb(50,50,100)" }}}
+        onClick={(ev)=>{playAllCanvasRef.current&& playAllCanvasRef.current.classList.add("hidden")}}
+      >
+        <CloseIcon />
+      </IconButton>
+    
+    </div>,
+
+    <div key="sectionContainer">
       {singleSectionRender ? (
         <SingleSectionView
           singleSection={singleSection}
@@ -66,6 +98,7 @@ export default function Sections({ sections, userId, projectId }) {
           setSelectedSectionId={setSelectedSectionId}
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
+
         />
       ) : (
         <MultiSectionView
@@ -76,10 +109,13 @@ export default function Sections({ sections, userId, projectId }) {
           setAssignSectionFormActive={setAssignSectionFormActive}
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
+          playAllCanvasRef={playAllCanvasRef}
+          acRefs={acRefs}
+          setPlayAllGPUconfig={setPlayAllGPUconfig}
         />
       )}
     </div>
-  );
+  ]);
 }
 
 function MultiSectionView({
@@ -90,11 +126,14 @@ function MultiSectionView({
   setAssignSectionFormActive,
   togglePreviewOnClick,
   handleDeleteSection,
+  playAllCanvasRef,
+  acRefs,
+  setPlayAllGPUconfig
 }) {
   return (
     <Box
       sx={{
-        marginLeft: "max(16vw,152px)",
+        marginLeft: "max(14vw,152px)",
         display: "flex",
         flexDirection: "row",
         gap: "1vw",
@@ -113,6 +152,9 @@ function MultiSectionView({
                 setAssignSectionFormActive={setAssignSectionFormActive}
                 togglePreviewOnClick={togglePreviewOnClick}
                 handleDeleteSection={handleDeleteSection}
+                playAllCanvasRef={playAllCanvasRef}
+                acRefs={acRefs}
+                setPlayAllGPUconfig={setPlayAllGPUconfig}
               />
             </Box>
           ))

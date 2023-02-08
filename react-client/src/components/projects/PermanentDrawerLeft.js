@@ -66,7 +66,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           availableFiles={availableFiles}
         />
         <List>
-          <ListItem disablePadding>
+          <ListItem disablePadding sx={{minWidth:"0"}}>
             <ListItemButton>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <DriveFileRenameOutlineIcon />
@@ -79,7 +79,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
+            <ListItemButton onClick={()=>handleOpen("changeGraphicsFn")}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <BubbleChartIcon />
               </ListItemIcon>
@@ -91,7 +91,8 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton onClick={() => handleOpen("playAll")}>
+            <ListItemButton 
+                onClick={() => handleOpen("playAll")}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <VideoLibraryIcon />
               </ListItemIcon>

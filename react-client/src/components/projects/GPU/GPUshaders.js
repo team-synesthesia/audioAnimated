@@ -98,10 +98,10 @@ export  const fragmentShaders = [
         O=vec4(0.,0.,0.,1.);
         vec3 r=iResolution,c=vec3(0),
         d = normalize(vec3(C-.5*r.xy,r.y))*4.;
-        float s,e,g=0.,t=1. + iTime - iMusic.x/5.;
+        float s,e,g=0.,t=1. + mod(iTime,500.)/5.;
         for(float i=0.;i<115.;i++){
             vec4 p=vec4(g*d,0.);
-            p.xyz=R(p.xyz+vec3(0.,0.,-2.5),normalize(H(t*.05)),t);
+            p.xyz=R(p.xyz+vec3(5.*cos(iTime/5.),0.,-6.+7.*sin(iTime/5.)),normalize(H(t*.05)),t);
             s=1.;
             for(float j=0.;j<7.;j++) {  
                 p= abs(p)*.621;
@@ -268,7 +268,7 @@ export  const fragmentShaders = [
         float stepsize = .01;
         float totdist = stepsize;
       
-        vec3 spherepos = ro - 2.5*rot[2] * (1. - (iMusic.x)/15.) ;
+        vec3 spherepos = ro - 1.5*rot[2] * (1. - (iMusic.x)/15.) ;
         //spherepos.y += (iMusic.y-50.)/200.;
         spherepos.x += .1 + (iMusic.z-100.)/200.; // * rot[0];
     
