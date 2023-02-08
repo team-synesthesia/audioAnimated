@@ -20,9 +20,36 @@ a {
   display: none;
 }
 
-#graphicsOptions {position:absolute; left:0%;top:2px; height:80px; display:flex; flex-direction:row; justify-content: flex-start}
-#graphicsOptions img:hover {position:relative; transform: scale(1.8); z-Index:100; opacity: 1}
-#graphicsOptions img:active {position:relative; transform: scale(2.5); z-Index:100; opacity: 1}
+#graphicsOptions {
+  position: absolute;
+  left: 0%;
+  top: 2px;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+#graphicsOptions img:hover {
+  position: relative;
+  transform: scale(1.8);
+  z-index: 100;
+  opacity: 1;
+}
+#graphicsOptions img:active {
+  position: relative;
+  transform: scale(2.5);
+  z-index: 100;
+  opacity: 1;
+}
 #graphicsOptions img {
- border:2px groove black ; width:120px; height:60px; z-Index:0; opacity:.5; border-radius:20px; margin-left:5px}
-#graphicChosen { margin-left:1vw}
+  border: 2px groove black;
+  width: 120px;
+  height: 60px;
+  z-index: 0;
+  opacity: 0.5;
+  border-radius: 20px;
+  margin-left: 5px;
+}
+#graphicChosen {
+  margin-left: 1vw;
+}

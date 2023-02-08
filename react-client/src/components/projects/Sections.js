@@ -80,7 +80,6 @@ export default function Sections({ sections, userId, projectId }) {
       >
         <CloseIcon />
       </IconButton>
-    
     </div>,
 
     <div key="sectionContainer">
@@ -98,7 +97,6 @@ export default function Sections({ sections, userId, projectId }) {
           setSelectedSectionId={setSelectedSectionId}
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
-
         />
       ) : (
         <MultiSectionView
