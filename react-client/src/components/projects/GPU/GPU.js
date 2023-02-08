@@ -5,11 +5,11 @@ import {createVertexModel,animateVertexModel,
 import { graphicsOptions } from "./graphicsOptions"
 import {useSelector} from "react-redux"
 
+import { grInit, renderGR} from "./d12GodRays"
+
 //gpuDivRef was passed in as:  gpuDivRef.current in order to satisfy the dependencies array
 export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized} ) {
     
-    //console.log('in gpu',gpuDivRef)
-
     const {graphicFN} = useSelector(state=>state.playAll)
 
     const [GL, setGL] = React.useState({})
@@ -27,7 +27,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     const ACtoUse = React.useRef()
 
     if (GPUconfig.acRefs) {
-        //console.log('acrefs',GPUconfig.acRefs)
         ACtoUse.current = GPUconfig.acRefs.current[sectionNumber]
     }
     else {
@@ -62,7 +61,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     React.useEffect(()=>{
 
-        console.log('graphics',gnum, graphicFN)
         let canvas, canvasDim, hidden
         if ( gpuDivRef) {
             canvas = gpuDivRef
@@ -72,7 +70,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
         const Restart = restart && gpuDivRef && !hidden
 
-        console.log('zzzzzzzzzz Restart', restart, Restart)
         if ( (gpuDivRef && !canvasInitialized 
             && !hidden && typeof graphicFN !== "undefined")
             || Restart
@@ -85,14 +82,11 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
             if (restart && GL.renderer) GL.renderer.dispose()
 
-            console.log('zzzzzzzzzzzzzz creating renderer')
             const renderer = GL.renderer ?? new THREE.WebGLRenderer({antialias:true, alpha:true})
             renderer.setSize(width, height,  false);  //get dimensions of gpuDivRef
             renderer.setClearColor("rgb(255,255,255)", 0);
 
             if ( !GL.renderer ) canvas.appendChild(renderer.domElement);
-
-            const aspect = width/height;
 
             const uniforms = {
                 iTime: { value: 0 },
@@ -110,7 +104,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             try {
                 useShader = graphicsOptions[graphicFN].type === "shader"
                 gfn = graphicsOptions[graphicFN].fn
-                console.log('gfn',gfn,graphicFN)
             }
             catch {
                 console.log('graphics Function num out of bounds', graphicFN)
@@ -122,9 +115,15 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                 renderer.render(scene,camera)
             }
             else {
-                const {camera,light2,cube} = createVertexModel(scene,aspect)
-                setGL({renderer,scene,camera,width,height,useShader,cube,light2,uniforms}) 
-                renderer.render(scene,camera)
+                
+                //const {camera,light2,cube} = createVertexModel(scene,aspect)
+                //setGL({renderer,scene,camera,width,height,useShader,cube,light2,uniforms}) 
+                //renderer.render(scene,camera)
+
+                const grConfig = grInit( {rendererIn:renderer, canvas,width,height})
+                const { camera, scene} = grConfig
+                renderer.render( scene, camera)
+                setGL( grConfig,renderer,camera,scene,uniforms)
 
             }
 
@@ -145,8 +144,6 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             }
 
             function render(time) {
-   
-                //console.log('section',sectionNumber)
 
                 if ( !isPlayingRef.current || restartRef.current ) {
                     isRendering.current = false
@@ -160,7 +157,8 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                     const {width,height} = newDim
                     camera.aspect = width/height
                     camera.updateProjectionMatrix()
-                    uniforms.iResolution.value = new THREE.Vector3(width, height, 1.0)
+
+                    if (uniforms) uniforms.iResolution.value = new THREE.Vector3(width, height, 1.0)
                     renderer.setSize(width,height)
                 }
 
@@ -180,18 +178,21 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
                 if ( useShader ) {
                     animateShaderModel(GL,md, time)
+                    renderer.render(scene,camera)
                 }
                 else {
-                    animateVertexModel(GL,md)
-                }
 
-                renderer.render(scene,camera)
+                    renderGR(md)
+                    //animateVertexModel(GL,md)
+                }
 
             }
         }
 
+        //React is wrong about missing dependencies here:
     },[gpuDivRef,canvasInitialized,GL,fpsInterval,
         setCanvasInitialized,isPlaying,acPlusRef,
-        sectionNumber,graphicsFn,GPUconfig,graphicFN,gnum,restart])
+        sectionNumber,graphicsFn,GPUconfig,
+        graphicFN,gnum,restart])
    
 }

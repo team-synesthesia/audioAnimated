@@ -156,7 +156,6 @@ export default function MultiFilePlayer({
 
   if (acPlusRef && acPlusRef.current && acRefs &&
       acRefs.current && !acRefs.current[sectionNumber]) {
-    console.log('saving acPlus ref for section',sectionNumber)
     acRefs.current[sectionNumber] = acPlusRef.current
   }
 
@@ -324,16 +323,13 @@ export default function MultiFilePlayer({
   const finishedRef = React.useRef(false)
 
   if ( finished && playAllCanvasCreatedRef.current) {
-    console.log('resetting canvas ref',sectionNumber)
     playAllCanvasCreatedRef.current = false
     //only happens for 1st section
   }
 
   React.useEffect(()=>{
-    console.log('finished',finished,sectionNumber)
     if ( finished && finishedRef.current) {
       finishedRef.current = false
-      console.log('finished',finished,sectionNumber)
       dispatch(setFinished(false))
     }
   },[finished,sectionNumber,dispatch])
@@ -344,13 +340,11 @@ export default function MultiFilePlayer({
 
       if (tryToStart && !finishedRef.current ) {
 
-        //console.log('zzzzzzzzzzz',sectionNumber, tryToStart, finishedRef.current)
         const sectionNum = sections[sectionToPlay].sectionNumber;
 
         if (sectionToPlay === 0 && 
             sectionNumber === sectionNum &&
             !playAllCanvasCreatedRef.current ) {
-          console.log('acRefs',acRefs.current.slice(0,5))
    
           playAllCanvasRef.current.classList.remove("hidden")
           playAllCanvasRef.current.style.width = "84vw"
@@ -401,12 +395,11 @@ export default function MultiFilePlayer({
                 acRefs:acRefs
               }
             )
-            console.log('from player',sectionNumber)
+  
           } else if (!finished) {
             //finishedRef.current = true
             dispatch(setFinished(true));
             dispatch(setTryToStart(false))
-            console.log('trying to remove it')
       
           }
         }

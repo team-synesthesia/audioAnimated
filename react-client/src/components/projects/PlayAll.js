@@ -10,12 +10,8 @@ export default function PlayAll({closeModal}) {
     const { playAllStarted, finished} = useSelector( state=>state.playAll)
     const started = React.useRef(false)
 
-    const counter = React.useRef(0)
-
     React.useEffect(()=>{
 
-        counter.current ++
-        console.log("counter",playAllStarted)
         closeModal()
    
         if ( !started.current ) {
