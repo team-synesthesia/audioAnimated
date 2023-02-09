@@ -87,10 +87,12 @@ export const fetchSingleProjectAsync = createAsyncThunk(
   }
 );
 
-export const updateProject = createAsyncThunk(
+export const updateProjectAsync = createAsyncThunk(
   "updateProject",
-  async ({ projectId, formData }) => {
+  async (projectId, formData) => {
     try {
+      const { data } = await axios.put(`/api/projects/${projectId}`, formData);
+      return data;
     } catch (error) {
       console.error(error);
     }
@@ -206,6 +208,16 @@ export const singleProjectSlice = createSlice({
           state.sections.splice(i, 1);
           break;
         }
+      }
+    });
+    builder.addCase(updateProjectAsync.fulfilled, (state, action) => {
+      // test if this works!!
+      const { name, graphicsFn } = action.payload;
+      if (name !== state.name) {
+        state.name = name;
+      }
+      if (graphicsFn !== state.graphicsFn) {
+        state.graphicsFn = graphicsFn;
       }
     });
   },
