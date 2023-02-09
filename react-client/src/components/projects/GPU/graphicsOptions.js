@@ -26,8 +26,7 @@ export default function GraphicsOptions({ handleClose }) {
 
   function SetGO(index) {
     dispatch(setGraphicFN(index));
-
-    // change this to some kind of submission system, so that it does not flood our routes
+    
     const projectId = id;
     const updateData = { graphicsFn: index };
     dispatch(updateProjectAsync({ projectId, updateData }));
