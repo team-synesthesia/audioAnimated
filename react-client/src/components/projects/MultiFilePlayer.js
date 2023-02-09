@@ -8,13 +8,15 @@ import { useDispatch, useSelector } from "react-redux";
 import FileCard from "./FileCard";
 import Player from "./Player";
 
+import processData from "../../recorder";
+
 import { addFileAsync, writeFileAsync } from "../../features";
 
 import {
   setSectionToPlay,
   setFinished,
   setTryToStart,
-  setPlayAllStarted
+  setPlayAllStarted,
 } from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
@@ -47,8 +49,9 @@ export default function MultiFilePlayer({
     (state) => state.singleProject.availableFiles
   );
 
-  const { sectionToPlay, tryToStart,
-    finished } = useSelector((state) => state.playAll);
+  const { sectionToPlay, tryToStart, finished } = useSelector(
+    (state) => state.playAll
+  );
 
   const { sections } = useSelector((state) => state.singleProject);
 
@@ -62,7 +65,7 @@ export default function MultiFilePlayer({
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
-  const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
+  // const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
   const [recordedChunks, setRecordedChunks] = React.useState([]);
   const [saveRecording, setSaveRecording] = React.useState(false);
 
@@ -70,6 +73,12 @@ export default function MultiFilePlayer({
   const recordStreamRef = React.useRef();
   const metrnomeRef = React.useRef();
 
+  const acPlusRef = React.useRef();
+  React.useEffect(() => {
+    if (!acPlusRef.current) {
+      acPlusRef.current = new AudioContextPlus();
+    }
+  }, []);
   if (record && !recordStreamRef.current) {
     getRecordingPermission();
   }
@@ -91,46 +100,78 @@ export default function MultiFilePlayer({
     }
   }
 
-  if (recordStreamRef.current && !recorderRef.current) {
-    recorderRef.current = new MediaRecorder(recordStreamRef.current);
-
-    recorderRef.current.ondataavailable = function (e) {
-      setRecordedChunk(e.data);
-    };
-
-    recorderRef.current.onstop = async function () {
-      setSaveRecording(true);
-    };
+  const context = React.useRef();
+  if (!context.current) {
+    context.current = new AudioContext({
+      latencyHint: "interactive",
+      sampleRate: 16000,
+    });
   }
+  console.log("context", context);
+  const startRecording = async () => {
+    // const source = acPlusRef.current.AC.createMediaStreamSource(
+    const source = context.current.createMediaStreamSource(
+      recordStreamRef.current
+    );
 
-  React.useEffect(() => {
-    if (recordedChunk.size > 0) {
-      const newChunks = recordedChunks.concat(recordedChunk);
-      setRecordedChunks(newChunks);
-    }
-    // intentionally leaving out 'recordedChunks' to avoid
-    // infinite loop
-  }, [recordedChunk]);
+    // NEW A: Loading the worklet processor
+    await context.current.audioWorklet.addModule("/recorder.worklet.js");
+
+    // Create the recorder worklet
+    const recorder = new AudioWorkletNode(context.current, "recorder.worklet");
+
+    context.current.resume();
+
+    source.connect(recorder).connect(context.current.destination);
+
+    let count = 0;
+    let saveBuffers = [];
+
+    recorder.port.onmessage = (e) => {
+      saveBuffers.push(e.data);
+      count++;
+      console.log("count", count);
+      if (count > 10) {
+        source.disconnect();
+        setRecordedChunks(saveBuffers);
+        setSaveRecording(true);
+      }
+    };
+  };
+
+  // if (recordStreamRef.current && acPlusRef.current && !recorderRef.current) {
+  //   recorderRef.current = "not needed yet";
+
+  //   // recorderRef.current.onstop = async function () {
+  //   //   setSaveRecording(true);
+  //   // };
+  // }
 
   React.useEffect(() => {
     const fnSaveRecording = async () => {
-      const filePath = `${newFileName}.ogg`;
+      console.log("recorded Chunks ready to write", recordedChunks);
+      processData(context.current, recordedChunks);
+      // const filePath = `${newFileName}.ogg`;
+      // console.log("recordedChunks: ", recordedChunks);
+      // const file = new Blob(recordedChunks, {
+      //   type: "audio/ogg; codecs=opus",
+      // });
 
-      const file = new Blob(recordedChunks, {
-        type: "audio/ogg; codecs=opus",
-      });
-
-      const data = {
-        name: newFileName,
-        filePath,
-        type: "ogg",
-        userId: userId,
-        projectId: projectId,
-      };
-      await dispatch(writeFileAsync({ projectId, filePath, file }));
-      await dispatch(addFileAsync(data));
-      setRecorded(true);
+      // const data = {
+      //   name: newFileName,
+      //   filePath,
+      //   type: "ogg",
+      //   userId: userId,
+      //   projectId: projectId,
+      // };
+      // await dispatch(writeFileAsync({ projectId, filePath, file }));
+      // await dispatch(addFileAsync(data));
+      // setRecorded(true);
     };
+    console.log("check these to save");
+    console.log("saveRecording", saveRecording);
+    console.log("recordedChunks", recordedChunks);
+    console.log("newFileName", newFileName);
     if (
       saveRecording &&
       (recordedChunks.length > 0) & (newFileName && newFileName.length > 0)
@@ -147,16 +188,14 @@ export default function MultiFilePlayer({
     setRecorded,
   ]);
 
-  const acPlusRef = React.useRef();
-  React.useEffect(() => {
-    if (!acPlusRef.current) {
-      acPlusRef.current = new AudioContextPlus();
-    }
-  }, []);
-
-  if (acPlusRef && acPlusRef.current && acRefs &&
-      acRefs.current && !acRefs.current[sectionNumber]) {
-    acRefs.current[sectionNumber] = acPlusRef.current
+  if (
+    acPlusRef &&
+    acPlusRef.current &&
+    acRefs &&
+    acRefs.current &&
+    !acRefs.current[sectionNumber]
+  ) {
+    acRefs.current[sectionNumber] = acPlusRef.current;
   }
 
   React.useEffect(() => {
@@ -209,18 +248,17 @@ export default function MultiFilePlayer({
   const [sectionPlayed, setSectionPlayed] = React.useState(-1);
 
   const recordStartStop = async () => {
-    if (recorderRef.current) {
-      if (recorderRef.current.state === "recording") {
-        recorderRef.current.stop();
-        setMsgKey("stopped");
-        setIsRecording(false);
-        if (metrnomeRef.current) metrnomeRef.current.stop();
-      } else if (["inactive", "paused"].includes(recorderRef.current.state)) {
-        recorderRef.current.start();
-        setMsgKey("recording");
-        setIsRecording(true);
-        if (metrnomeRef.current) metrnomeRef.current.start();
-      }
+    if (isRecording) {
+      // stop logic will go here
+
+      setMsgKey("stopped");
+      setIsRecording(false);
+      if (metrnomeRef.current) metrnomeRef.current.stop();
+    } else {
+      await startRecording();
+      setMsgKey("recording");
+      setIsRecording(true);
+      if (metrnomeRef.current) metrnomeRef.current.start();
     }
   };
 
@@ -319,50 +357,47 @@ export default function MultiFilePlayer({
     }
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
-  const playAllCanvasCreatedRef = React.useRef(false)
-  const finishedRef = React.useRef(false)
+  const playAllCanvasCreatedRef = React.useRef(false);
+  const finishedRef = React.useRef(false);
 
-  if ( finished && playAllCanvasCreatedRef.current) {
-    playAllCanvasCreatedRef.current = false
+  if (finished && playAllCanvasCreatedRef.current) {
+    playAllCanvasCreatedRef.current = false;
     //only happens for 1st section
   }
 
-  React.useEffect(()=>{
-    if ( finished && finishedRef.current) {
-      finishedRef.current = false
-      dispatch(setFinished(false))
+  React.useEffect(() => {
+    if (finished && finishedRef.current) {
+      finishedRef.current = false;
+      dispatch(setFinished(false));
     }
-  },[finished,sectionNumber,dispatch])
+  }, [finished, sectionNumber, dispatch]);
 
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
-
-      if (tryToStart && !finishedRef.current ) {
-
+      if (tryToStart && !finishedRef.current) {
         const sectionNum = sections[sectionToPlay].sectionNumber;
 
-        if (sectionToPlay === 0 && 
-            sectionNumber === sectionNum &&
-            !playAllCanvasCreatedRef.current ) {
-   
-          playAllCanvasRef.current.classList.remove("hidden")
-          playAllCanvasRef.current.style.width = "84vw"
-          playAllCanvasRef.current.style.height = "82vh"
+        if (
+          sectionToPlay === 0 &&
+          sectionNumber === sectionNum &&
+          !playAllCanvasCreatedRef.current
+        ) {
+          playAllCanvasRef.current.classList.remove("hidden");
+          playAllCanvasRef.current.style.width = "84vw";
+          playAllCanvasRef.current.style.height = "82vh";
           //playAllCanvasRef.current.style.backgroundColor = "blue"
-          playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
-          playAllCanvasCreatedRef.current = true
-          finishedRef.current = false
-          dispatch(setPlayAllStarted(true))
-          setPlayAllGPUconfig(
-            {isPlaying:true,
-              acPlusRef:acPlusRef.current,
-              sectionNumber,
-              graphicsFn:0,
-              acRefs:acRefs
-            }
-          )
-
+          playAllCanvasRef.current.style.transform = "translate(0,-5vh)";
+          playAllCanvasCreatedRef.current = true;
+          finishedRef.current = false;
+          dispatch(setPlayAllStarted(true));
+          setPlayAllGPUconfig({
+            isPlaying: true,
+            acPlusRef: acPlusRef.current,
+            sectionNumber,
+            graphicsFn: 0,
+            acRefs: acRefs,
+          });
         }
 
         //I found that the only consistent way to get playAll moving was to track
@@ -383,24 +418,21 @@ export default function MultiFilePlayer({
         ) {
           const nextSection = sectionToPlay + 1;
           setSectionPlayed(-1);
-          finishedRef.current = true
+          finishedRef.current = true;
           if (nextSection < sections.length) {
             //acPlusRef.current.close()
             dispatch(setSectionToPlay(nextSection));
-            setPlayAllGPUconfig(
-              {isPlaying:true,
-                acPlusRef:acPlusRef.current,
-                sectionNumber:sections[nextSection].sectionNumber,
-                graphicsFn:0,
-                acRefs:acRefs
-              }
-            )
-  
+            setPlayAllGPUconfig({
+              isPlaying: true,
+              acPlusRef: acPlusRef.current,
+              sectionNumber: sections[nextSection].sectionNumber,
+              graphicsFn: 0,
+              acRefs: acRefs,
+            });
           } else if (!finished) {
             //finishedRef.current = true
             dispatch(setFinished(true));
-            dispatch(setTryToStart(false))
-      
+            dispatch(setTryToStart(false));
           }
         }
       }
@@ -418,7 +450,7 @@ export default function MultiFilePlayer({
     playAllCanvasRef,
     acRefs,
     setPlayAllGPUconfig,
-    finished
+    finished,
   ]);
 
   return (
