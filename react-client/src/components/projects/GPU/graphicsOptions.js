@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { updateProjectAsync } from "../../features";
+import { updateProjectAsync } from "../../../features";
 
 export const graphicsOptions = [
   { type: "shader", fn: 3, name: "Luminescent Tiles", imgUrl: "g2.jpg" },
@@ -26,7 +26,11 @@ export default function GraphicsOptions({ handleClose }) {
 
   function SetGO(index) {
     dispatch(setGraphicFN(index));
-    dispatch(updateProjectAsync(id, { graphicFn: index }));
+
+    // change this to some kind of submission system, so that it does not flood our routes
+    const projectId = id;
+    const updateData = { graphicsFn: index };
+    dispatch(updateProjectAsync({ projectId, updateData }));
   }
 
   return (

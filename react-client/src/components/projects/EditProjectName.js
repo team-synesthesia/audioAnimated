@@ -2,21 +2,25 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Box, Card, Input } from "@mui/material";
-import CloseIcon from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { updateProjectAsync } from "../../features";
 
 const EditProjectName = ({ handleClose }) => {
-  const { id } = useSelector((state) => state.singleProject);
-  const [name, setName] = useState("");
+  const { name, id } = useSelector((state) => state.singleProject);
+  const [newName, setNewName] = useState(name);
 
   const dispatch = useDispatch();
-  const handleSubmit = () => {
-    dispatch(updateProjectAsync(id, { name }));
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const projectId = id;
+    const updateData = { name: newName };
+    dispatch(updateProjectAsync({ projectId, updateData }));
+    handleClose();
   };
 
   return (
-    <Card variant="outlined" sx={{ display: "flex", flexDirection: "column" }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Button
         color="error"
         size="small"
@@ -28,12 +32,12 @@ const EditProjectName = ({ handleClose }) => {
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: "flex", flexDirection: "column", margin: "10px" }}>
           <div>
-            <label htmlFor="projectName">Project Name: </label>
+            <label htmlFor="projectName">Edit Project Name: </label>
             <Input
               name="projectName"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
             />
           </div>
           <Button
@@ -42,11 +46,11 @@ const EditProjectName = ({ handleClose }) => {
             type="submit"
             sx={{ alignSelf: "flex-end", marginTop: "10px" }}
           >
-            Create Project
+            Submit
           </Button>
         </Box>
       </form>
-    </Card>
+    </Box>
   );
 };
 
