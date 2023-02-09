@@ -69,6 +69,19 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+router.put("/:id", async (req, res, next) => {
+  try {
+    const projectId = req.params.id;
+    const projectToUpdate = await Project.findByPk(projectId);
+    const updatedProject = await projectToUpdate.update(req.body);
+
+    res.send(updatedProject);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 router.delete("/:id", async (req, res, next) => {
   try {
     const projectId = req.params.id;

@@ -15,6 +15,7 @@ export {
   addFileAsync,
   deleteFileAsync,
   writeFileAsync,
+  updateProjectAsync
 } from "./projects/SingleProjectSlice";
 
 export {
