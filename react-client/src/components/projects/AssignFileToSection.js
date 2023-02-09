@@ -1,6 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Button, Checkbox, FormControlLabel } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+} from "@mui/material";
+
 import { addFileAsync } from "../../features";
 
 const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
@@ -46,7 +53,15 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
 
   return unassignedFiles && unassignedFiles.length ? (
     <form onSubmit={handleSubmit}>
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: "10px",
+        }}
+      >
+        <Typography variant="h6">Select file(s) to add</Typography>
         {unassignedFiles.map(
           (file) =>
             !fileNames.includes(file.name) && (
@@ -59,7 +74,9 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
               />
             )
         )}
-        <Button type="submit">Submit</Button>
+        <Button type="submit" size="small" variant="contained">
+          Add File(s)
+        </Button>
       </Box>
     </form>
   ) : (

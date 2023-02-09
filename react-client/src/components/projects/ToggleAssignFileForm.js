@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Card } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { AssignFileToSection } from "../";
 
@@ -14,25 +15,44 @@ export function ToggleAssignFileForm({
     else setAssignSectionFormActive(false);
   };
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       {assignSectionFormActive === sectionId ? (
-        <Box>
+        <Card
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Button
             size="small"
             color="error"
             onClick={() => toggle(false, sectionId)}
+            sx={{ alignSelf: "flex-end" }}
           >
-            X
+            <CloseIcon />
           </Button>
           <AssignFileToSection
             section={section}
             setAssignSectionFormActive={setAssignSectionFormActive}
           />
-        </Box>
+        </Card>
       ) : (
-        <Button type="button" onClick={() => toggle(true, sectionId)}>
-          Add a file
-        </Button>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button type="button" onClick={() => toggle(true, sectionId)}>
+            Add a file
+          </Button>
+        </Box>
       )}
     </Box>
   );

@@ -35,26 +35,33 @@ export default function GraphicsOptions({ handleClose }) {
   }
 
   return (
-    <Box key="graphicsOptions" id="graphicsOptions" sx={{ display: "flex" }}>
-      {graphicsOptions.map((option, index) => (
-        <div
-          key={"div" + option.name}
-          onClick={(ev) => {
-            SetGO(index);
-          }}
-        >
-          <img
-            key={option.name}
-            style={{ opacity: index === graphicFN ? "1" : null }}
-            src={dev ? devServer + option.imgUrl : option.imgUrl}
-            alt={option.name}
-          ></img>
-        </div>
-      ))}
-      <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
-      <Button onClick={handleClose}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Button
+        size="small"
+        color="error"
+        onClick={handleClose}
+        sx={{ alignSelf: "flex-end" }}
+      >
         <CloseIcon />
       </Button>
+      <Box key="graphicsOptions" id="graphicsOptions" sx={{ display: "flex" }}>
+        {graphicsOptions.map((option, index) => (
+          <div
+            key={"div" + option.name}
+            onClick={(ev) => {
+              SetGO(index);
+            }}
+          >
+            <img
+              key={option.name}
+              style={{ opacity: index === graphicFN ? "1" : null }}
+              src={dev ? devServer + option.imgUrl : option.imgUrl}
+              alt={option.name}
+            ></img>
+          </div>
+        ))}
+        <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
+      </Box>
     </Box>
   );
 }

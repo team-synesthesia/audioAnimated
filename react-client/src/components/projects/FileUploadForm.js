@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { Button, Box, Input, Typography } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { addFileAsync, writeFileAsync, getFileAsync } from "../../features";
 
@@ -43,6 +44,14 @@ const FileUploadForm = (props) => {
           alignItems: "center",
         }}
       >
+        <Button
+          size="small"
+          color="error"
+          onClick={handleClose}
+          sx={{ alignSelf: "flex-end", marginBottom: "5px" }}
+        >
+          <CloseIcon />
+        </Button>
         <Box>
           <label htmlFor="name">File Label: </label>
           <Input
