@@ -5,10 +5,10 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 
 import FileUploadForm from "./FileUploadForm";
-import { FileOptions } from "../";
+import { FileOptions, EditProjectName } from "../";
 import Record from "./recordForm/Record";
 import PlayAll from "./PlayAll";
-import GraphicsOptions from "./GPU/graphicsOptions"
+import GraphicsOptions from "./GPU/graphicsOptions";
 
 const style = {
   position: "absolute",
@@ -41,9 +41,8 @@ function SwitchComponent({
       );
 
     case "changeGraphicsFn":
-      return (
-        <GraphicsOptions />
-      )
+      return <GraphicsOptions handleClose={handleClose} />;
+
     case "fileOptions":
       return (
         <FileOptions handleClose={handleClose} clickedFile={clickedFile} />
@@ -59,7 +58,15 @@ function SwitchComponent({
       );
 
     case "playAll":
-      return <PlayAll sx={{backgroundColor:"transparent"}} closeModal={handleClose}/>;
+      return (
+        <PlayAll
+          sx={{ backgroundColor: "transparent" }}
+          closeModal={handleClose}
+        />
+      );
+
+    case "editProjectName":
+      return <EditProjectName handleClose={handleClose} />;
 
     default:
       return null;
