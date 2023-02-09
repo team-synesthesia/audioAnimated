@@ -19,6 +19,9 @@ import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 
 import TransitionsModal from "./TransitionsModal";
 
+import { useDispatch } from "react-redux"
+import { setPlayAllStarted } from "../../features";
+
 const drawerWidth = "12vw";
 const minWidth = 150;
 
@@ -37,6 +40,8 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
 
   const { availableFiles } = useSelector((state) => state.singleProject);
   const availableFilesValues = Object.values(availableFiles);
+  const {playAllStarted} = useSelector(state=>state.playAll)
+  const dispatch = useDispatch()
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -92,7 +97,8 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
 
           <ListItem disablePadding>
             <ListItemButton 
-                onClick={() => handleOpen("playAll")}>
+                /* onClick={() => handleOpen("playAll")} */
+                onClick={()=>dispatch(setPlayAllStarted(true))}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <VideoLibraryIcon />
               </ListItemIcon>

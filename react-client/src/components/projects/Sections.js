@@ -9,6 +9,7 @@ import AddNewSection from "./AddNewSection";
 
 import { deleteSectionAsync } from "../../features";
 
+import PlayAll from "./PlayAll"
 import {GPU} from "./GPU/GPU"
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from "@mui/icons-material/Close"
@@ -65,6 +66,8 @@ export default function Sections({ sections, userId, projectId }) {
     setCanvasInitialized
   })
 
+  PlayAll()
+  
   return ([
     <div
       key="playAllCanvas"
