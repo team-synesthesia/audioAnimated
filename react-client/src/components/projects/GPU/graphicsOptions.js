@@ -11,6 +11,8 @@ export const graphicsOptions = [
     {type:"vertex", fn:0, name:"Dodeca-God Rays", imgUrl:"g0.jpg"}
 ]
 
+let displayedLog = false
+
 export default function GraphicsOptions() {
 
     const dispatch = useDispatch()
@@ -18,8 +20,13 @@ export default function GraphicsOptions() {
     //defaults to 0
     const {graphicFN} = useSelector(state=>state.playAll) 
     
-    //need to define dev based on .env for when we got to render.com
-    const dev=true
+    //our dev server is always on port 3000
+    const dev = window.location.port === "3000"
+
+    if (!displayedLog) {
+        console.log('dev',dev,window.location)
+        displayedLog = true
+    }
     const devServer="http://localhost:8080/"
 
     function SetGO (index) {
@@ -35,7 +42,7 @@ export default function GraphicsOptions() {
                 >
                     <img key={option.name} 
                         style={{opacity: (index===graphicFN)?"1":null}} 
-                        src={dev? (devServer+option.imgUrl): option.imgUrl} alt={option.name}>
+                        src={dev? (devServer+option.imgUrl): (window.location.origin + "/" + option.imgUrl)} alt={option.name}>
                     </img>
                 </div> 
             )}
