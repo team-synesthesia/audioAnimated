@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 import { AssignFileToSection } from "../";
 
@@ -14,9 +14,9 @@ export function ToggleAssignFileForm({
     else setAssignSectionFormActive(false);
   };
   return (
-    <div>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
       {assignSectionFormActive === sectionId ? (
-        <div>
+        <Box>
           <Button
             size="small"
             color="error"
@@ -24,17 +24,16 @@ export function ToggleAssignFileForm({
           >
             X
           </Button>
-
           <AssignFileToSection
             section={section}
             setAssignSectionFormActive={setAssignSectionFormActive}
           />
-        </div>
+        </Box>
       ) : (
         <Button type="button" onClick={() => toggle(true, sectionId)}>
           Add a file
         </Button>
       )}
-    </div>
+    </Box>
   );
 }

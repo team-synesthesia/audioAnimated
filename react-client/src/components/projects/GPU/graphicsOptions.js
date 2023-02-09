@@ -2,6 +2,8 @@ import * as React from "react"
 import {setGraphicFN} from "../../../features/projects/playAllSlice"
 import {useDispatch,useSelector} from "react-redux"
 
+import {Box} from "@mui/material"
+
 export const graphicsOptions = [
     {type:"shader", fn:3, name:"Luminescent Tiles", imgUrl:"g2.jpg"},
     {type:"shader", fn:2, name:"Gaz Inspired", imgUrl:"g1.jpg"},
@@ -24,8 +26,7 @@ export default function GraphicsOptions() {
     }
 
     return (
-         
-        <div key="graphicsOptions" id="graphicsOptions">
+        <Box key="graphicsOptions" id="graphicsOptions" sx={{display: "flex"}}>
             {graphicsOptions.map( (option, index) =>
                 <div key={"div"+option.name} 
                     onClick={ev=>{SetGO(index)}}
@@ -37,6 +38,6 @@ export default function GraphicsOptions() {
                 </div> 
             )}
             <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
-        </div>
+        </Box>
     )
 }
