@@ -95,6 +95,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
             </ListItemButton>
           </ListItem>
 
+          {!playAllStarted &&
           <ListItem disablePadding>
             <ListItemButton 
                 /* onClick={() => handleOpen("playAll")} */
@@ -107,7 +108,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
                 primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
               />
             </ListItemButton>
-          </ListItem>
+          </ListItem>}
 
           <Divider />
           <ListItem disablePadding>
