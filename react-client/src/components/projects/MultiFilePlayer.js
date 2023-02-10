@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FileCard from "./FileCard";
 import Player from "./Player";
 
-import processData from "../../recorder";
+import convertChunksToWavBlob from "../../recorder";
 
 import { addFileAsync, writeFileAsync } from "../../features";
 
@@ -65,13 +65,14 @@ export default function MultiFilePlayer({
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
-  // const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
   const [recordedChunks, setRecordedChunks] = React.useState([]);
   const [saveRecording, setSaveRecording] = React.useState(false);
 
-  const recorderRef = React.useRef();
   const recordStreamRef = React.useRef();
   const metrnomeRef = React.useRef();
+
+  const recordingMessages = React.useRef();
+  const sourceForMicophone = React.useRef();
 
   const acPlusRef = React.useRef();
   React.useEffect(() => {
@@ -107,10 +108,18 @@ export default function MultiFilePlayer({
       sampleRate: 16000,
     });
   }
-  console.log("context", context);
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
   const startRecording = async () => {
-    // const source = acPlusRef.current.AC.createMediaStreamSource(
-    const source = context.current.createMediaStreamSource(
+    let seconds = 0;
+    const maxWait = 10;
+    while (!recordStreamRef.current) {
+      await delay(1000);
+      seconds++;
+      if (seconds === maxWait) break;
+    }
+
+    sourceForMicophone.current = context.current.createMediaStreamSource(
       recordStreamRef.current
     );
 
@@ -122,65 +131,47 @@ export default function MultiFilePlayer({
 
     context.current.resume();
 
-    source.connect(recorder).connect(context.current.destination);
+    sourceForMicophone.current
+      .connect(recorder)
+      .connect(context.current.destination);
 
-    let count = 0;
     let saveBuffers = [];
-
+    if (!recordingMessages.current) recordingMessages.current = [];
     recorder.port.onmessage = (e) => {
       saveBuffers.push(e.data);
-      count++;
-      console.log("count", count);
-      if (count > 10) {
-        source.disconnect();
-        setRecordedChunks(saveBuffers);
-        setSaveRecording(true);
-      }
+      recordingMessages.current = recordingMessages.current.concat([
+        saveBuffers,
+      ]);
     };
   };
-
-  // if (recordStreamRef.current && acPlusRef.current && !recorderRef.current) {
-  //   recorderRef.current = "not needed yet";
-
-  //   // recorderRef.current.onstop = async function () {
-  //   //   setSaveRecording(true);
-  //   // };
-  // }
-
   React.useEffect(() => {
     const fnSaveRecording = async () => {
-      console.log("recorded Chunks ready to write", recordedChunks);
-      processData(context.current, recordedChunks);
-      // const filePath = `${newFileName}.ogg`;
-      // console.log("recordedChunks: ", recordedChunks);
-      // const file = new Blob(recordedChunks, {
-      //   type: "audio/ogg; codecs=opus",
-      // });
-
-      // const data = {
-      //   name: newFileName,
-      //   filePath,
-      //   type: "ogg",
-      //   userId: userId,
-      //   projectId: projectId,
-      // };
-      // await dispatch(writeFileAsync({ projectId, filePath, file }));
-      // await dispatch(addFileAsync(data));
-      // setRecorded(true);
+      const file = convertChunksToWavBlob(
+        context.current,
+        recordingMessages.current
+      );
+      const filePath = `${newFileName}.wav`;
+      const data = {
+        name: newFileName,
+        filePath,
+        type: "wav",
+        userId: userId,
+        projectId: projectId,
+      };
+      await dispatch(writeFileAsync({ projectId, filePath, file }));
+      await dispatch(addFileAsync(data));
+      setRecorded(true);
     };
-    console.log("check these to save");
-    console.log("saveRecording", saveRecording);
-    console.log("recordedChunks", recordedChunks);
-    console.log("newFileName", newFileName);
     if (
       saveRecording &&
-      (recordedChunks.length > 0) & (newFileName && newFileName.length > 0)
+      (recordingMessages.current.length > 0) &
+        (newFileName && newFileName.length > 0)
     ) {
       fnSaveRecording();
     }
   }, [
     dispatch,
-    recordedChunks,
+    recordingMessages,
     saveRecording,
     userId,
     projectId,
@@ -249,10 +240,10 @@ export default function MultiFilePlayer({
 
   const recordStartStop = async () => {
     if (isRecording) {
-      // stop logic will go here
-
       setMsgKey("stopped");
       setIsRecording(false);
+      setSaveRecording(true);
+      sourceForMicophone.current.disconnect();
       if (metrnomeRef.current) metrnomeRef.current.stop();
     } else {
       await startRecording();
@@ -270,6 +261,7 @@ export default function MultiFilePlayer({
     const onEndCallback = () => {
       setEnded(true);
     };
+    acPlusRef.current.loadSources(files.map((x) => x.name));
     await acPlusRef.current.playNSongs(
       files.map((x) => x.name),
       onEndCallback

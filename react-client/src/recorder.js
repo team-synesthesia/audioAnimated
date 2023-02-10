@@ -1,4 +1,4 @@
-export default function processData(audioContext, saveBuffers) {
+export default function convertChunksToWavBlob(audioContext, saveBuffers) {
   console.log("save buffers ", saveBuffers);
 
   let buffer = Float32Concat(saveBuffers[0], saveBuffers[1]);
@@ -18,20 +18,24 @@ export default function processData(audioContext, saveBuffers) {
   // Try to create WAV file from data:
 
   const blob = bufferToWave(rb, buffer.length);
+  return blob;
+
+  // For testing download wav in browser:
 
   // Download the wav file to see if it worked:
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  document.body.appendChild(a);
-  a.href = url;
-  a.download = "abc.wav";
-  a.click();
+  // var url = URL.createObjectURL(blob);
+  // var a = document.createElement("a");
+  // document.body.appendChild(a);
+  // a.href = url;
+  // a.download = "abc.wav";
+  // a.click();
 
-  let result2 = audioContext.createBufferSource();
-  result2.buffer = rb;
-  result2.connect(audioContext.destination);
-  result2.start();
-  console.log(result2);
+  // play the sound in audio context:
+  // let result2 = audioContext.createBufferSource();
+  // result2.buffer = rb;
+  // result2.connect(audioContext.destination);
+  // result2.start();
+  // console.log(result2);
 }
 
 function Float32Concat(first, second) {
