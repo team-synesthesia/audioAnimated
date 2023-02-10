@@ -27,7 +27,7 @@ const Navbar = () => {
   }
 
   const homeTitle = "Audio Animated";
-  const settings = ["Profile", "Logout"];
+  const settings = ["Logout"];
 
   return (
     <div>
