@@ -37,7 +37,6 @@ const AppRoutes = () => {
       {isLoggedIn ? (
         <>
           <Route path="/" element={<SplashPage />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Navigate to="/projects" />} />
           <Route path="/signup" element={<Navigate to="/projects" />} />
           <Route path="/projects" element={<AllProjects />} />

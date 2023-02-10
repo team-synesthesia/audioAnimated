@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import {
   Box,
   Container,
@@ -14,6 +15,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
  * COMPONENT
  */
 const SplashPage = (props) => {
+  const isLoggedIn = useSelector((state) => !!state.auth.me.id);
+
   return (
     <Box sx={{ marginTop: "75px" }}>
       <Grid container>
@@ -41,26 +44,36 @@ const SplashPage = (props) => {
             justifyContent: "center",
           }}
         >
-          <Container sx={{ textAlign: "center" }}>
-            <h3>Your music, in the third dimension</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <Button variant="contained" href="/signup">
-              Get started for free
-            </Button>
-            <p>
-              Already have an account? Login
-              <Button variant="text" href="/login">
-                here
-              </Button>
-            </p>
+          <Container
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="h3">
+              Your music, in a whole new dimension
+            </Typography>
+            <br />
+            <Typography variant="h6">
+              Watch this demo to see what you can create with the Playr app!
+            </Typography>
+            <br />
+            {!isLoggedIn && (
+              <Box>
+                <Button variant="contained" href="/signup">
+                  Get started for free
+                </Button>
+                <p>
+                  Already have an account? Login
+                  <Button variant="text" href="/login">
+                    here
+                  </Button>
+                </p>
+              </Box>
+            )}
           </Container>
         </Grid>
         <Grid
@@ -88,16 +101,15 @@ const SplashPage = (props) => {
           }}
         >
           <Container sx={{ textAlign: "center" }}>
-            <h3>Audio Recording Description</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+            <Typography variant="h3">Get in the studio</Typography>
+            <br />
+            <Typography variant="h6">
+              Record with our in-app recording software, or upload existing
+              files into your project editor. Create music by layering and
+              connecting tracks together.
+            </Typography>
+            <br />
+            <KeyboardArrowDownIcon />
           </Container>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -120,23 +132,22 @@ const SplashPage = (props) => {
           }}
         >
           <Container sx={{ textAlign: "center" }}>
-            <h3>Audio Recording Description</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+            <Typography variant="h3">Get in the studio</Typography>
+            <br />
+            <Typography variant="h6">
+              Record with our in-app recording software, or upload existing
+              files into your project editor. Create music by layering and
+              connecting tracks together.
+            </Typography>
+            <br />
+            <KeyboardArrowDownIcon />
           </Container>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Card>
             <CardMedia
               component="img"
-              image="g3.jpg"
+              image="graphicsOptionsCollage.jpg"
               sx={{ height: "100vh" }}
             />
           </Card>
@@ -152,16 +163,13 @@ const SplashPage = (props) => {
           }}
         >
           <Container sx={{ textAlign: "center" }}>
-            <h3>Animation Description</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+            <Typography variant="h3">Watch your music come to life</Typography>
+            <br />
+            <Typography variant="h6">
+              Choose a base graphic for your project, and watch the animation
+              move and breathe with your song. Share your project with others
+              with the generated shareable link.
+            </Typography>
           </Container>
         </Grid>
       </Grid>
