@@ -239,6 +239,7 @@ export default function MultiFilePlayer({
       onEndCallback
     );
 
+    console.log('in playSection', acPlusRef.current.isPlaying, sectionNumber)
     setIsPlaying(acPlusRef.current.isPlaying);
 
   }, [ended, files]);
@@ -338,13 +339,16 @@ export default function MultiFilePlayer({
     }
   },[finished,sectionNumber,dispatch])
 
+  const toggle = React.useRef(false)
   React.useEffect(()=>{
     if (playAllActuallyStarted) {
       const sectionNum = sections[sectionToPlay].sectionNumber
       if (sectionNum === sectionNumber ) {
-        if ( isPlaying !== playAllPlayPause && !ended && isPlaying ) {
+        if ( isPlaying !== playAllPlayPause && !ended && isPlaying && !toggle.current) {
           console.log('adfaishdfi',sectionNumber,isPlaying,playAllPlayPause)
           //playSection()
+          acPlusRef.current.AC.suspend()
+          toggle.current = true
         }
       }
     }
