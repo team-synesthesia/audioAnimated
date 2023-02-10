@@ -14,7 +14,7 @@ import {
   setSectionToPlay,
   setFinished,
   setTryToStart,
-  setPlayAllStarted
+  setPlayAllStarted,
 } from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
@@ -48,7 +48,7 @@ export default function MultiFilePlayer({
   );
 
   const { sectionToPlay, tryToStart,
-    finished } = useSelector((state) => state.playAll);
+    finished, playAllPlayPause, playAllStarted } = useSelector((state) => state.playAll);
 
   const { sections } = useSelector((state) => state.singleProject);
 
@@ -225,6 +225,8 @@ export default function MultiFilePlayer({
   };
 
   const playSection = React.useCallback(async () => {
+
+    console.log('in playsection', ended)
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
@@ -238,8 +240,10 @@ export default function MultiFilePlayer({
     );
 
     setIsPlaying(acPlusRef.current.isPlaying);
+
   }, [ended, files]);
 
+  
   React.useEffect(() => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
@@ -349,7 +353,6 @@ export default function MultiFilePlayer({
           playAllCanvasRef.current.classList.remove("hidden")
           playAllCanvasRef.current.style.width = "84vw"
           playAllCanvasRef.current.style.height = "82vh"
-          //playAllCanvasRef.current.style.backgroundColor = "blue"
           playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
           playAllCanvasCreatedRef.current = true
           finishedRef.current = false
@@ -385,7 +388,6 @@ export default function MultiFilePlayer({
           setSectionPlayed(-1);
           finishedRef.current = true
           if (nextSection < sections.length) {
-            //acPlusRef.current.close()
             dispatch(setSectionToPlay(nextSection));
             setPlayAllGPUconfig(
               {isPlaying:true,
@@ -397,7 +399,6 @@ export default function MultiFilePlayer({
             )
   
           } else if (!finished) {
-            //finishedRef.current = true
             dispatch(setFinished(true));
             dispatch(setTryToStart(false))
       
@@ -430,7 +431,7 @@ export default function MultiFilePlayer({
         playOnClick={playSection}
         recordStartStop={recordStartStop}
         restartOnClick={restartOnClick}
-        disabled={disabled}
+        disabled={disabled || playAllStarted}
         duration={duration}
         loop={loop}
         toggleLoop={toggleLoop}
