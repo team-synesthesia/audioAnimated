@@ -37,8 +37,9 @@ export default function Player({
   loop,
   record,
   isRecording,
-  availableFiles,
+  availableFiles
 }) {
+
   const play = async () => {
     if (Object.keys(availableFiles).length) {
       await playOnClick();

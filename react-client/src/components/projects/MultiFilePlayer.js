@@ -14,7 +14,7 @@ import {
   setSectionToPlay,
   setFinished,
   setTryToStart,
-  setPlayAllStarted,
+  setPlayAllActuallyStarted
 } from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
@@ -48,7 +48,8 @@ export default function MultiFilePlayer({
   );
 
   const { sectionToPlay, tryToStart,
-    finished, playAllPlayPause, playAllStarted } = useSelector((state) => state.playAll);
+    finished, playAllPlayPause,
+    playAllStarted, playAllActuallyStarted } = useSelector((state) => state.playAll);
 
   const { sections } = useSelector((state) => state.singleProject);
 
@@ -226,7 +227,6 @@ export default function MultiFilePlayer({
 
   const playSection = React.useCallback(async () => {
 
-    console.log('in playsection', ended)
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
@@ -243,7 +243,7 @@ export default function MultiFilePlayer({
 
   }, [ended, files]);
 
-  
+
   React.useEffect(() => {
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
@@ -338,6 +338,19 @@ export default function MultiFilePlayer({
     }
   },[finished,sectionNumber,dispatch])
 
+  React.useEffect(()=>{
+    if (playAllActuallyStarted) {
+      const sectionNum = sections[sectionToPlay].sectionNumber
+      if (sectionNum === sectionNumber ) {
+        if ( isPlaying !== playAllPlayPause && !ended && isPlaying ) {
+          console.log('adfaishdfi',sectionNumber,isPlaying,playAllPlayPause)
+          //playSection()
+        }
+      }
+    }
+  },[playAllActuallyStarted,isPlaying,playAllPlayPause,
+    sectionNumber,sectionToPlay,sections,ended,playSection])
+
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
@@ -356,7 +369,7 @@ export default function MultiFilePlayer({
           playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
           playAllCanvasCreatedRef.current = true
           finishedRef.current = false
-          dispatch(setPlayAllStarted(true))
+          //dispatch(setPlayAllStarted(true))
           setPlayAllGPUconfig(
             {isPlaying:true,
               acPlusRef:acPlusRef.current,
@@ -378,6 +391,9 @@ export default function MultiFilePlayer({
           (sectionPlayed === -1)
         ) {
           playSection();
+          if (sectionToPlay === 0) {
+            dispatch(setPlayAllActuallyStarted(true))
+          }
           setSectionPlayed(sectionNum);
         } else if (
           !isPlaying &
@@ -401,9 +417,11 @@ export default function MultiFilePlayer({
           } else if (!finished) {
             dispatch(setFinished(true));
             dispatch(setTryToStart(false))
+            dispatch(setPlayAllActuallyStarted(false))
       
           }
         }
+
       }
     } catch (err) {}
   }, [
@@ -419,7 +437,7 @@ export default function MultiFilePlayer({
     playAllCanvasRef,
     acRefs,
     setPlayAllGPUconfig,
-    finished
+    finished,
   ]);
 
   return (

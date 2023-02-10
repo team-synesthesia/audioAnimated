@@ -10,7 +10,8 @@ export const playAllSlice = createSlice({
         finished: false,
         playAllCanvasCreated: false,
         graphicFN: 0,
-        playAllPlayPause: false
+        playAllPlayPause: false,
+        playAllActuallyStarted: false,
     },
     reducers: {
         setSectionToPlay(state,action) {
@@ -36,6 +37,9 @@ export const playAllSlice = createSlice({
         },
         setPlayAllPlayPause(state,action) {
             state.playAllPlayPause = action.payload       
+        },
+        setPlayAllActuallyStarted(state,action) {
+            state.playAllActuallyStarted = action.payload
         }
     }
 })
@@ -43,7 +47,7 @@ export const playAllSlice = createSlice({
 export const {setSectionToPlay,setTryToStart,
     setPlayAllStarted, alreadyPlaying, 
     setPlayAllCanvasCreated, setFinished,
-    setGraphicFN, setPlayAllPlayPause } = playAllSlice.actions
+    setGraphicFN, setPlayAllPlayPause, setPlayAllActuallyStarted } = playAllSlice.actions
 
 export default playAllSlice.reducer
 
