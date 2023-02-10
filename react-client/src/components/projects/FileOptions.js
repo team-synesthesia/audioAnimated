@@ -1,6 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Button, Checkbox, FormControlLabel } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { DeleteConfirmation } from "../";
 import { deleteFileAsync, addFileAsync } from "../../features";
@@ -67,7 +74,18 @@ const FileOptions = ({ handleClose, clickedFile }) => {
             alignItems: "center",
           }}
         >
-          <h1>{clickedFile.name}</h1>
+          <Button
+            size="small"
+            color="error"
+            onClick={handleClose}
+            sx={{ alignSelf: "flex-end" }}
+          >
+            <CloseIcon />
+          </Button>
+          <Typography variant="h3" sx={{ marginBottom: "10px" }}>
+            {clickedFile.name}
+          </Typography>
+          <Typography variant="h6">Select section(s)</Typography>
           {sectionsCopy && sectionsCopy.length ? (
             sectionsCopy.map((section) => (
               <FormControlLabel
@@ -83,7 +101,11 @@ const FileOptions = ({ handleClose, clickedFile }) => {
           ) : (
             <div>Cannot be assigned to any sections</div>
           )}
-          <Button type="submit" sx={{ alignSelf: "flex-end" }}>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ alignSelf: "flex-end" }}
+          >
             Assign to Section(s)
           </Button>
         </Box>
@@ -91,9 +113,12 @@ const FileOptions = ({ handleClose, clickedFile }) => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row-reverse",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          marginTop: "10px",
         }}
       >
+        <Typography>Delete File</Typography>
         <DeleteConfirmation
           handleDelete={handleDelete}
           deleteParam={clickedFile.name}

@@ -1,6 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+} from "@mui/material";
+
 import { addFileAsync } from "../../features";
 
 const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
@@ -15,14 +22,19 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
     (file) => !fileNames.includes(file.name)
   );
 
+  const filesToAssign = [];
+  const handleCheckBox = (fileName, checked) => {
+    if (!filesToAssign.includes(fileName) && checked) {
+      filesToAssign.push(fileName);
+    } else {
+      const spliceIndex = filesToAssign.indexOf(fileName);
+      filesToAssign.splice(spliceIndex, 1);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const fileCheckboxes = document.querySelectorAll(".fileCheckbox");
-    const filesToAssign = [];
-    for (let fileCheckbox of fileCheckboxes) {
-      fileCheckbox.checked && filesToAssign.push(fileCheckbox.value);
-    }
     for (let fileName of filesToAssign) {
       const { name, filePath, type, userId } = availableFiles[fileName];
       const data = {
@@ -36,30 +48,36 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
       dispatch(addFileAsync(data));
     }
 
-    for (let fileCheckbox of fileCheckboxes) {
-      fileCheckbox.checked = false;
-    }
     setAssignSectionFormActive(null);
   };
 
   return unassignedFiles && unassignedFiles.length ? (
     <form onSubmit={handleSubmit}>
-      {unassignedFiles.map(
-        (file) =>
-          !fileNames.includes(file.name) && (
-            <div key={file.id}>
-              <label htmlFor={file.name}>{file.name}</label>
-              <input
-                type="checkbox"
-                name="selectFile"
-                value={file.name}
-                id={file.name}
-                className="fileCheckbox"
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: "10px",
+        }}
+      >
+        <Typography variant="h6">Select file(s) to add</Typography>
+        {unassignedFiles.map(
+          (file) =>
+            !fileNames.includes(file.name) && (
+              <FormControlLabel
+                key={file.id}
+                control={<Checkbox />}
+                label={file.name}
+                name={file.name}
+                onChange={(_, value) => handleCheckBox(file.name, value)}
               />
-            </div>
-          )
-      )}
-      <Button type="submit">Submit</Button>
+            )
+        )}
+        <Button type="submit" size="small" variant="contained">
+          Add File(s)
+        </Button>
+      </Box>
     </form>
   ) : (
     <div>No files to add</div>

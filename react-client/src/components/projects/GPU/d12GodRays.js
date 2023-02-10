@@ -103,7 +103,7 @@ export function grInit({rendererIn,canvas,width,height}) {
     //
 
     stats = new Stats();
-    canvas.appendChild(stats.dom);
+    //canvas.appendChild(stats.dom);
 
     //window listener would go here
 

@@ -3,6 +3,7 @@ export {
   me,
   authenticate,
   logout,
+  setGlobalGraphics,
 } from "./auth/authSlice";
 
 export {
@@ -10,10 +11,12 @@ export {
   createSectionAsync,
   deleteSectionAsync,
   getFilesAsync,
+  getFileAsync,
   fetchSingleProjectAsync,
   addFileAsync,
   deleteFileAsync,
   writeFileAsync,
+  updateProjectAsync,
 } from "./projects/SingleProjectSlice";
 
 export {
@@ -30,5 +33,5 @@ export {
   setPlayAllStarted,
   alreadyPlaying,
   setFinished,
-  setGraphicFN
+  setGraphicFN,
 } from "./projects/playAllSlice";
