@@ -18,7 +18,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     const isRendering = React.useRef(false)
     const isPlayingRef = React.useRef()
 
-    const fps = 30
+    const fps = 60   //changed from 30 to 60 for demos
     const fpsInterval = 1000/fps
 
     const { isPlaying,acPlusRef,sectionNumber,graphicsFn } = GPUconfig
