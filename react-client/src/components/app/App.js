@@ -6,7 +6,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 const primaryColors = {
   0: "#4516BA",
   1: "#0D6056",
-  // 2: "#FBD9E9",
   2: "#FE00FF",
   3: "#6D029D",
   4: "#F17803",
