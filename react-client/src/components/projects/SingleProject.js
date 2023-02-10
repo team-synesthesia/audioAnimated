@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import PermanentDrawerLeft from "./PermanentDrawerLeft";
 
+import { Box } from "@mui/material";
+
 import { fetchSingleProjectAsync, getFilesAsync } from "../../features/";
 import LooperProject from "./LooperProject";
 
@@ -25,7 +27,7 @@ const SingleProject = () => {
   }, [dispatch, projectId, availableFiles]);
 
   return (
-    <div>
+    <Box sx={{ minHeight: "100vh" }}>
       <PermanentDrawerLeft projectId={project.id} userId={userId} />
       {project.type === "looper" ? (
         <LooperProject
@@ -36,7 +38,7 @@ const SingleProject = () => {
       ) : (
         <h1>Single Project</h1>
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -32,7 +32,7 @@ export default function AllProjects() {
   };
 
   return (
-    <Container sx={{ marginTop: "30px" }}>
+    <Container sx={{ marginTop: "30px", minHeight: "100vh" }}>
       <CssBaseline />
       {/* Hero unit */}
       <Box
@@ -81,7 +81,7 @@ export default function AllProjects() {
           </Stack>
         </Container>
       </Box>
-      <Container sx={{ py: 8 }} maxWidth="md">
+      <Box sx={{ py: 8 }} maxWidth="md">
         {/* End hero unit */}
         <Grid container spacing={4}>
           {projects && projects.length
@@ -132,7 +132,7 @@ export default function AllProjects() {
               ))
             : null}
         </Grid>
-      </Container>
+      </Box>
     </Container>
   );
 }

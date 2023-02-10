@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import {
   Box,
   Container,
@@ -14,6 +15,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
  * COMPONENT
  */
 const SplashPage = (props) => {
+  const isLoggedIn = useSelector((state) => !!state.auth.me.id);
+
   return (
     <Box sx={{ marginTop: "75px" }}>
       <Grid container>
@@ -52,15 +55,19 @@ const SplashPage = (props) => {
               nulla pariatur. Excepteur sint occaecat cupidatat non proident,
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
-            <Button variant="contained" href="/signup">
-              Get started for free
-            </Button>
-            <p>
-              Already have an account? Login
-              <Button variant="text" href="/login">
-                here
-              </Button>
-            </p>
+            {!isLoggedIn && (
+              <div>
+                <Button variant="contained" href="/signup">
+                  Get started for free
+                </Button>
+                <p>
+                  Already have an account? Login
+                  <Button variant="text" href="/login">
+                    here
+                  </Button>
+                </p>
+              </div>
+            )}
           </Container>
         </Grid>
         <Grid

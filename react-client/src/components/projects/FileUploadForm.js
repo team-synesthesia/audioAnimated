@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { Button, Box, Input, Typography } from "@mui/material";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
+import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { addFileAsync, writeFileAsync, getFileAsync } from "../../features";
@@ -48,10 +48,11 @@ const FileUploadForm = (props) => {
           size="small"
           color="error"
           onClick={handleClose}
-          sx={{ alignSelf: "flex-end", marginBottom: "5px" }}
+          sx={{ alignSelf: "flex-end" }}
         >
           <CloseIcon />
         </Button>
+        <div>Choose a file and give it a label</div>
         <Box>
           <label htmlFor="name">File Label: </label>
           <Input
@@ -62,13 +63,18 @@ const FileUploadForm = (props) => {
             required
           />
           <Button
-            color={file && file.name ? "primary" : "error"}
+            color={file && file.name ? "success" : "error"}
             sx={{ margin: "5px" }}
           >
             <label htmlFor="filePath">
-              {file && file.name ? `${file.name}` : <FileUploadIcon />}
+              <DriveFolderUploadIcon fontSize="large" />
             </label>
           </Button>
+          {file && file.name ? (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              {file.name}
+            </Box>
+          ) : null}
           <Input
             id="filePath"
             type="file"
