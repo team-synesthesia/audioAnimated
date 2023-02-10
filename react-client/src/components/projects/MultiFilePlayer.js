@@ -102,10 +102,7 @@ export default function MultiFilePlayer({
 
   const context = React.useRef();
   if (!context.current) {
-    context.current = new AudioContext({
-      latencyHint: "interactive",
-      sampleRate: 16000,
-    });
+    context.current = new AudioContext();
   }
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
