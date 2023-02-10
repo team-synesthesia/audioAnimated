@@ -65,7 +65,6 @@ export default function MultiFilePlayer({
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
-  const [recordedChunks, setRecordedChunks] = React.useState([]);
   const [saveRecording, setSaveRecording] = React.useState(false);
 
   const recordStreamRef = React.useRef();
@@ -135,13 +134,9 @@ export default function MultiFilePlayer({
       .connect(recorder)
       .connect(context.current.destination);
 
-    let saveBuffers = [];
     if (!recordingMessages.current) recordingMessages.current = [];
     recorder.port.onmessage = (e) => {
-      saveBuffers.push(e.data);
-      recordingMessages.current = recordingMessages.current.concat([
-        saveBuffers,
-      ]);
+      recordingMessages.current = recordingMessages.current.concat([e.data]);
     };
   };
   React.useEffect(() => {
