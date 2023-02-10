@@ -232,7 +232,7 @@ export default function MultiFilePlayer({
       setDisabled(false);
     };
     createBuffers();
-  }, [files, audioRawFiles]);
+  }, [record, files, audioRawFiles]);
 
   React.useEffect(() => {
     const getDuration = () => {
