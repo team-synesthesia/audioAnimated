@@ -26,7 +26,7 @@ const Navbar = () => {
     pageLabels = [];
   }
 
-  const homeTitle = "Audio Animated";
+  const homeTitle = "Playr";
   const settings = ["Logout"];
 
   return (
