@@ -10,32 +10,35 @@ import { updateProjectAsync } from "../../../features";
 import { Box } from "@mui/material";
 
 export const graphicsOptions = [
-    {type:"shader", fn:3, name:"Luminescent Tiles", imgUrl:"g2.jpg"},
-    {type:"shader", fn:2, name:"Gaz Inspired", imgUrl:"g1.jpg"},
-    {type:"shader", fn:1, name:"Ode To Julia", imgUrl:"g3.jpg"},
-    {type:"shader", fn:4, name:"D20 Bubbles", imgUrl:"g4.jpg"},
-    {type:"shader", fn:5, name:"Mandel Exp", imgUrl:"g5.jpg" },
-    {type:"shader", fn:6, name:"Color Companions", imgUrl:"g6.jpg"},
-    {type:"vertex", fn:0, name:"Dodeca-God Rays", imgUrl:"g0.jpg"}
-]
+  { type: "shader", fn: 3, name: "Luminescent Tiles", imgUrl: "g2.jpg" },
+  { type: "shader", fn: 2, name: "Gaz Inspired", imgUrl: "g1.jpg" },
+  { type: "shader", fn: 1, name: "Ode To Julia", imgUrl: "g3.jpg" },
+  { type: "shader", fn: 4, name: "D20 Bubbles", imgUrl: "g4.jpg" },
+  { type: "shader", fn: 5, name: "Mandel Exp", imgUrl: "g5.jpg" },
+  { type: "shader", fn: 6, name: "Color Companions", imgUrl: "g6.jpg" },
+  { type: "vertex", fn: 0, name: "Dodeca-God Rays", imgUrl: "g0.jpg" },
+];
 
-let displayedLog = false
+let displayedLog = false;
 
 export default function GraphicsOptions({ handleClose }) {
   const dispatch = useDispatch();
 
-    //defaults to 0
-    const {graphicFN} = useSelector(state=>state.playAll) 
-    const { id } = useSelector((state) => state.singleProject);
+  //defaults to 0
+  const { graphicFN } = useSelector((state) => state.playAll);
+  const { id } = useSelector((state) => state.singleProject);
 
-    //our dev server is always on port 3000
-    const dev = window.location.port === "3000"
+  //our dev server is always on port 3000
+  const dev = window.location.port === "3000";
 
-    if (!displayedLog) {
-        console.log('dev',dev,window.location)
-        displayedLog = true
-    }
-    const devServer="http://localhost:8080/"
+  if (!displayedLog) {
+    console.log("dev", dev, window.location);
+    displayedLog = true;
+  }
+  const devServer = "http://localhost:8080/";
+  const prodUrl = window.origin + "/"
+
+  console.log('prod origin',prodUrl)
 
   function SetGO(index) {
     dispatch(setGraphicFN(index));
@@ -66,7 +69,7 @@ export default function GraphicsOptions({ handleClose }) {
             <img
               key={option.name}
               style={{ opacity: index === graphicFN ? "1" : null }}
-              src={dev ? devServer + option.imgUrl : option.imgUrl}
+              src={dev ? devServer + option.imgUrl : prodUrl + option.imgUrl}
               alt={option.name}
             ></img>
           </div>
