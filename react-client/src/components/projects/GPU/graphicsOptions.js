@@ -9,33 +9,35 @@ import { updateProjectAsync } from "../../../features";
 
 import { Box } from "@mui/material";
 
-export const graphicsOptions = [
-    {type:"shader", fn:3, name:"Luminescent Tiles", imgUrl:"g2.jpg"},
-    {type:"shader", fn:2, name:"Gaz Inspired", imgUrl:"g1.jpg"},
-    {type:"shader", fn:1, name:"Ode To Julia", imgUrl:"g3.jpg"},
-    {type:"shader", fn:4, name:"D20 Bubbles", imgUrl:"g4.jpg"},
-    {type:"shader", fn:5, name:"Mandel Exp", imgUrl:"g5.jpg" },
-    {type:"shader", fn:6, name:"Color Companions", imgUrl:"g6.jpg"},
-    {type:"vertex", fn:0, name:"Dodeca-God Rays", imgUrl:"g0.jpg"}
-]
+import { setGlobalGraphics } from "../../../features";
 
-let displayedLog = false
+export const graphicsOptions = [
+  { type: "shader", fn: 3, name: "Luminescent Tiles", imgUrl: "g2.jpg" },
+  { type: "shader", fn: 2, name: "Gaz Inspired", imgUrl: "g1.jpg" },
+  { type: "shader", fn: 1, name: "Ode To Julia", imgUrl: "g3.jpg" },
+  { type: "shader", fn: 4, name: "D20 Bubbles", imgUrl: "g4.jpg" },
+  { type: "shader", fn: 5, name: "Mandel Exp", imgUrl: "g5.jpg" },
+  { type: "shader", fn: 6, name: "Color Companions", imgUrl: "g6.jpg" },
+  { type: "vertex", fn: 0, name: "Dodeca-God Rays", imgUrl: "g0.jpg" },
+];
+
+let displayedLog = false;
 
 export default function GraphicsOptions({ handleClose }) {
   const dispatch = useDispatch();
 
-    //defaults to 0
-    const {graphicFN} = useSelector(state=>state.playAll) 
-    const { id } = useSelector((state) => state.singleProject);
+  //defaults to 0
+  const { graphicFN } = useSelector((state) => state.playAll);
+  const { id } = useSelector((state) => state.singleProject);
 
-    //our dev server is always on port 3000
-    const dev = window.location.port === "3000"
+  //our dev server is always on port 3000
+  const dev = window.location.port === "3000";
 
-    if (!displayedLog) {
-        console.log('dev',dev,window.location)
-        displayedLog = true
-    }
-    const devServer="http://localhost:8080/"
+  if (!displayedLog) {
+    console.log("dev", dev, window.location);
+    displayedLog = true;
+  }
+  const devServer = "http://localhost:8080/";
 
   function SetGO(index) {
     dispatch(setGraphicFN(index));
@@ -43,6 +45,7 @@ export default function GraphicsOptions({ handleClose }) {
     const projectId = id;
     const updateData = { graphicsFn: index };
     dispatch(updateProjectAsync({ projectId, updateData }));
+    dispatch(setGlobalGraphics(index));
   }
 
   return (
