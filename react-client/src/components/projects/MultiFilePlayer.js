@@ -461,6 +461,7 @@ export default function MultiFilePlayer({
         record={record}
         isRecording={isRecording}
         availableFiles={availableFiles}
+        files={files}
       />
       {smallPlayer === true ? (
         <Card>
