@@ -358,9 +358,9 @@ int max_iter = 2;
 vec3 ifs_color;
 float ifs_scale = 4.;
 
-vec3 ambientL  = vec3(.2,.1,.5);
+vec3 ambientL  = vec3(.2,.1,.7);
 vec3 diffuseL  = vec3(.5,0.,.6);
-vec3 specularL = vec3(.7,.1,0.);
+vec3 specularL = vec3(.8,.2,0.);
 vec3 ambdir    = normalize(vec3(1.,0.,1.));
 
 struct RAYMARCH_RESULT {
@@ -378,7 +378,7 @@ float sphere_sdf( vec3 pos, float r ) {
 }
 
 mat3 rot_xz(float an) {
-    an += iMusic.x/50.;
+    //an += iMusic.x/20.;
     float cc = cos(an), ss=sin(an);
     return mat3(cc,0.,ss,0.,1.,0.,-ss,0.,cc);
 
@@ -432,7 +432,6 @@ vec2 dist_func01(vec3 z) {
     //scene_dist = max( scene_dist, -(length(orig_z-ro)-.81) ); //looks cool with this but don't use for now
     return vec2( scene_dist, objid );
 }
-
 
 vec3 estimate_normal_vec( vec3 pos, float neps ) {
 
@@ -496,26 +495,29 @@ vec3  main_loop( vec3 ro, vec3 rd ) {
     
     vec3 color = vec3(0.);
     
+    float myTime = iTime ;
+
     if (prime_ray.object_id > -1. ) { 
     
         vec3 nn = estimate_normal_vec( prime_ray.raypos, .01 );
         
-        vec3 lt_pos = light_pos + vec3( 6.*cos(iTime/3.), .5*sin(iTime/5.) , 6.*sin(iTime/2.) );  
-        float spec_pow = 16.; 
+        vec3 lt_pos = light_pos + vec3( 6.*cos(myTime/3.), .5*sin(myTime/5.) , 6.*sin(myTime/2.) );  
+
+        float spec_pow = 17.; 
         float spec_amp = 1.;
         
         vec3 light_dir=normalize(lt_pos-prime_ray.raypos); 
         float diffuse_light = clamp(dot(light_dir, -nn), 0., 1.);
-        float ambient_light = 0.5 * dot(nn, ambdir);
+        float ambient_light = (1.+iMusic.x) * 0.5 * dot(nn, normalize(1.+iMusic.xyz) ); //ambdir );
        
         vec3 view_dir= rd;      
         vec3 refl = reflect(-view_dir,nn);      
-        float specular_light=pow(max(dot(refl,light_dir),0.0),spec_pow);
+        float specular_light=pow(max(dot(refl,light_dir),0.0),spec_pow  );
         
 
         color = ambient_light  * ambientL + 
                 diffuse_light  * diffuseL +
-                spec_amp*specular_light * specularL;
+                spec_amp*specular_light * specularL ;
              
         color *= exp(-prime_ray.dist_from_origin/20.);
         
@@ -538,11 +540,11 @@ vec3  main_loop( vec3 ro, vec3 rd ) {
             vec3 refl2=reflect(-view_dir2,nn);
             float specular_light2 = pow(max(dot(refl2,light_dir2),0.0),spec_pow);
         
-            vec3 reflect_color = ambient_light2 * ambientL +
+            vec3 reflect_color = ambient_light2 * ambientL  +
                                  diffuse_light2 * diffuseL +
-                                 spec_amp*specular_light2 * specularL; 
+                                 spec_amp*specular_light2 * specularL ; 
                                  
-            float color_fac = 1.;
+            float color_fac = 1.2;
             
             reflect_color *= exp(-reflection.dist_from_origin/30.);
 
@@ -563,7 +565,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     //myMouse = (iMouse.xy*2.0 - iResolution.xy) / iResolution.y;
     
     ifs_scale = 4. - 2.*abs(sin(iTime/60.));
-    max_iter = 5 - int(4.*abs(sin(myTime/2.)));
+    max_iter = 6 - int(4.*abs(sin(myTime/2.))) ;
     ro = vec3(0.,0.,-1.4 + max(-.9,min(1.1,1.5*(sin(myTime-PI/2.)))) );  //ray origin
     rd = normalize( vec3(uv, 1.8) );  //ray direction
     
@@ -610,12 +612,13 @@ void mainImage0( out vec4 fragColor, in vec2 fragCoord )
     
     vec2 final_uv = uv * width + center ; 
     
-    float max_iter=1100., mix_factor=.711, infinity=1.e9;
-    vec3  julia_freq = vec3(  9.5 + sin(myTime),
+    float max_iter=1100.-iMusic.x*150., mix_factor=.711 , infinity=1.e9;
+    vec3  julia_freq = vec3(  9.5  , //+ sin(myTime),
                               10. ,
-                              50. );// + 10.*sin(myTime/5.) ) ;
+                              50. ); // + 10.*sin(myTime/5.) ) ;
 
-                         
+    julia_freq += (iMusic.zyx - 20.)/5. ;
+
     vec4 qq = vec4(0.); //counts orbit in 4 quadrants
     
     //mix_factor += .02 * sin(myTime/5.);
