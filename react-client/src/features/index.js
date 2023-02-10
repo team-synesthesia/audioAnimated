@@ -3,6 +3,7 @@ export {
   me,
   authenticate,
   logout,
+  setGlobalGraphics,
 } from "./auth/authSlice";
 
 export {
@@ -15,7 +16,7 @@ export {
   addFileAsync,
   deleteFileAsync,
   writeFileAsync,
-  updateProjectAsync
+  updateProjectAsync,
 } from "./projects/SingleProjectSlice";
 
 export {

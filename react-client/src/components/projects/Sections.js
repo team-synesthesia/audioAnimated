@@ -9,11 +9,11 @@ import AddNewSection from "./AddNewSection";
 
 import { deleteSectionAsync } from "../../features";
 
-import {GPU} from "./GPU/GPU"
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from "@mui/icons-material/Close"
+import { GPU } from "./GPU/GPU";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
-export default function Sections({ sections, userId, projectId }) {
+export default function Sections({ sections, userId, projectId, graphicsFn }) {
   const [singleSection, setSingleSection] = React.useState(false);
   const [singleSectionRender, setSingleSectionRender] = React.useState(false);
   const [selectedSectionId, setSelectedSectionId] = React.useState(1);
@@ -54,29 +54,37 @@ export default function Sections({ sections, userId, projectId }) {
     }
   };
 
-  const [canvasInitialized,setCanvasInitialized] = React.useState(false)
-  const [playAllGPUconfig,setPlayAllGPUconfig] = React.useState({})
-  const playAllCanvasRef = React.useRef()
-  const acRefs = React.useRef(Array(25).fill(null))
+  const [canvasInitialized, setCanvasInitialized] = React.useState(false);
+  const [playAllGPUconfig, setPlayAllGPUconfig] = React.useState({});
+  const playAllCanvasRef = React.useRef();
+  const acRefs = React.useRef(Array(25).fill(null));
   GPU({
-    GPUconfig:playAllGPUconfig,
-    gpuDivRef:playAllCanvasRef.current,
+    GPUconfig: playAllGPUconfig,
+    gpuDivRef: playAllCanvasRef.current,
     canvasInitialized,
-    setCanvasInitialized
-  })
+    setCanvasInitialized,
+  });
 
-  return ([
+  return [
     <div
       key="playAllCanvas"
       id="playAllCanvas"
       ref={playAllCanvasRef}
-      style={{position:"relative",left:"max(14vw,155px)"}}
+      style={{ position: "relative", left: "max(14vw,155px)" }}
       className="hidden"
     >
-      <IconButton 
-        sx={{position:"absolute",left:"0",color:"blue",backgroundColor:"white", 
-            "&:hover": { color: "white", backgroundColor:"rgb(50,50,100)" }}}
-        onClick={(ev)=>{playAllCanvasRef.current&& playAllCanvasRef.current.classList.add("hidden")}}
+      <IconButton
+        sx={{
+          position: "absolute",
+          left: "0",
+          color: "blue",
+          backgroundColor: "white",
+          "&:hover": { color: "white", backgroundColor: "rgb(50,50,100)" },
+        }}
+        onClick={(ev) => {
+          playAllCanvasRef.current &&
+            playAllCanvasRef.current.classList.add("hidden");
+        }}
       >
         <CloseIcon />
       </IconButton>
@@ -97,6 +105,7 @@ export default function Sections({ sections, userId, projectId }) {
           setSelectedSectionId={setSelectedSectionId}
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
+          graphicsFn={graphicsFn}
         />
       ) : (
         <MultiSectionView
@@ -112,8 +121,8 @@ export default function Sections({ sections, userId, projectId }) {
           setPlayAllGPUconfig={setPlayAllGPUconfig}
         />
       )}
-    </div>
-  ]);
+    </div>,
+  ];
 }
 
 function MultiSectionView({
@@ -126,7 +135,7 @@ function MultiSectionView({
   handleDeleteSection,
   playAllCanvasRef,
   acRefs,
-  setPlayAllGPUconfig
+  setPlayAllGPUconfig,
 }) {
   return (
     <Box
