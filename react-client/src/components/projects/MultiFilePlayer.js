@@ -326,6 +326,7 @@ export default function MultiFilePlayer({
 
   const playAllCanvasCreatedRef = React.useRef(false)
   const finishedRef = React.useRef(false)
+  const startedRef = React.useRef(false)
 
   if ( finished && playAllCanvasCreatedRef.current) {
     playAllCanvasCreatedRef.current = false
@@ -339,17 +340,25 @@ export default function MultiFilePlayer({
     }
   },[finished,sectionNumber,dispatch])
 
-  const toggle = React.useRef(false)
   React.useEffect(()=>{
     if (playAllActuallyStarted) {
-      const sectionNum = sections[sectionToPlay].sectionNumber
+      const sectionNum = (sections && sections[sectionToPlay] && sections[sectionToPlay].sectionNumber) ?? -10
       if (sectionNum === sectionNumber ) {
-        if ( isPlaying !== playAllPlayPause && !ended && isPlaying && !toggle.current) {
-          console.log('adfaishdfi',sectionNumber,isPlaying,playAllPlayPause)
-          //playSection()
+/*         if ( isPlaying !== playAllPlayPause && !ended && isPlaying && !toggle.current) {
+          console.log('playAll Info',sectionNumber,isPlaying,playAllPlayPause)
           acPlusRef.current.AC.suspend()
+          setIsPlaying(false)
           toggle.current = true
+        } */
+
+        console.log('use effect playAllPlayPause')
+        if ( !playAllPlayPause ) {
+            acPlusRef.current.AC.suspend().then(val=>{console.log('suspended')})
         }
+        else if ( playAllPlayPause ) {
+            acPlusRef.current.AC.resume().then(val=>{console.log('resumed')})
+        }
+
       }
     }
   },[playAllActuallyStarted,isPlaying,playAllPlayPause,
@@ -358,6 +367,8 @@ export default function MultiFilePlayer({
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
+
+      console.log( 'in big iff before first if', sectionNumber)
 
       if (tryToStart && !finishedRef.current ) {
 
@@ -392,8 +403,10 @@ export default function MultiFilePlayer({
         if (
           !isPlaying &
           (sectionNum === sectionNumber) &
-          (sectionPlayed === -1)
+          (sectionPlayed === -1) &
+          !startedRef.current
         ) {
+          console.log('in big iff', sectionNumber)
           playSection();
           if (sectionToPlay === 0) {
             dispatch(setPlayAllActuallyStarted(true))
@@ -453,7 +466,7 @@ export default function MultiFilePlayer({
         playOnClick={playSection}
         recordStartStop={recordStartStop}
         restartOnClick={restartOnClick}
-        disabled={disabled || playAllStarted}
+        disabled={disabled || (playAllStarted && !finished)}
         duration={duration}
         loop={loop}
         toggleLoop={toggleLoop}

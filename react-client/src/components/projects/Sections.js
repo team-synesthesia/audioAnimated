@@ -14,6 +14,8 @@ import {GPU} from "./GPU/GPU"
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from "@mui/icons-material/Close"
 
+import {setFinished} from  "../../features/projects/playAllSlice"
+
 export default function Sections({ sections, userId, projectId }) {
   const [singleSection, setSingleSection] = React.useState(false);
   const [singleSectionRender, setSingleSectionRender] = React.useState(false);
@@ -59,6 +61,8 @@ export default function Sections({ sections, userId, projectId }) {
   const [playAllGPUconfig,setPlayAllGPUconfig] = React.useState({})
   const playAllCanvasRef = React.useRef()
   const acRefs = React.useRef(Array(25).fill(null))
+
+  /* GPU() and PlayAll() are React hooks for managing Graphics */
   GPU({
     GPUconfig:playAllGPUconfig,
     gpuDivRef:playAllCanvasRef.current,
@@ -79,7 +83,10 @@ export default function Sections({ sections, userId, projectId }) {
       <IconButton 
         sx={{position:"absolute",left:"0",color:"blue",backgroundColor:"white", 
             "&:hover": { color: "white", backgroundColor:"rgb(50,50,100)" }}}
-        onClick={(ev)=>{playAllCanvasRef.current&& playAllCanvasRef.current.classList.add("hidden")}}
+        onClick={(ev)=>{playAllCanvasRef.current&& 
+          playAllCanvasRef.current.classList.add("hidden")
+          dispatch(setFinished(true))
+        }}
       >
         <CloseIcon />
       </IconButton>
