@@ -7,6 +7,16 @@ import { ToggleAssignFileForm } from "./ToggleAssignFileForm";
 
 import { GPU } from "./GPU/GPU";
 
+const primaryColors = {
+  0: "#4516BA",
+  1: "#0D6056",
+  2: "#FE00FF",
+  3: "#6D029D",
+  4: "#F17803",
+  5: "#C5A5F0",
+  6: "#B1A8C5",
+};
+
 export default function SingleSectionView({
   singleSection,
   section,
@@ -17,6 +27,7 @@ export default function SingleSectionView({
   setAssignSectionFormActive,
   togglePreviewOnClick,
   handleDeleteSection,
+  graphicsFn,
 }) {
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
@@ -39,7 +50,9 @@ export default function SingleSectionView({
         gap: "1vw",
       }}
     >
-      <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", gap: "1vh", flex: 4 }}
+      >
         <SectionButtons
           singleSection={singleSection}
           togglePreviewOnClick={togglePreviewOnClick}
@@ -62,18 +75,20 @@ export default function SingleSectionView({
           setAssignSectionFormActive={setAssignSectionFormActive}
         />
       </Box>
-      <div
-        id="sectionAnimation"
-        ref={sectionAnimationRef}
-        style={{
-          marginTop: "36px",
-          marginRight: "4vw",
-          flexShrink: "0",
-          width: 640,
-          height: 480,
-          backgroundColor: "blue",
-        }}
-      ></div>
+      <Box sx={{ flex: 5 }}>
+        <div
+          id="sectionAnimation"
+          ref={sectionAnimationRef}
+          style={{
+            // marginTop: "36px",
+            // marginRight: "4vw",
+            // flexShrink: "0",
+            width: 640,
+            height: 480,
+            backgroundColor: primaryColors[graphicsFn],
+          }}
+        ></div>
+      </Box>
     </Box>
   );
 }

@@ -9,6 +9,8 @@ import { updateProjectAsync } from "../../../features";
 
 import { Box } from "@mui/material";
 
+import { setGlobalGraphics } from "../../../features";
+
 export const graphicsOptions = [
   { type: "shader", fn: 3, name: "\"Luminescent Tiles\"", imgUrl: "g2.jpg" },
   { type: "shader", fn: 2, name: "\"Gaz Inspired\"", imgUrl: "g1.jpg" },
@@ -37,7 +39,6 @@ export default function GraphicsOptions({ handleClose }) {
   }
   const devServer = "http://localhost:8080/";
   const prodUrl = window.origin + "/"
-
   console.log('prod origin',prodUrl)
 
   function SetGO(index) {
@@ -46,6 +47,7 @@ export default function GraphicsOptions({ handleClose }) {
     const projectId = id;
     const updateData = { graphicsFn: index };
     dispatch(updateProjectAsync({ projectId, updateData }));
+    dispatch(setGlobalGraphics(index));
   }
 
   return (
