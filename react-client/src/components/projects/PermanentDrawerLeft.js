@@ -38,7 +38,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
 
   const handleClose = () => setOpen(false);
 
-  const { availableFiles } = useSelector((state) => state.singleProject);
+  const { availableFiles, name } = useSelector((state) => state.singleProject);
   const availableFilesValues = Object.values(availableFiles);
   const {playAllStarted} = useSelector(state=>state.playAll)
   const dispatch = useDispatch()
@@ -71,20 +71,20 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           availableFiles={availableFiles}
         />
         <List>
-          <ListItem disablePadding sx={{minWidth:"0"}}>
-            <ListItemButton>
+          <ListItem disablePadding sx={{ minWidth: "0" }}>
+            <ListItemButton onClick={() => handleOpen("editProjectName")}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <DriveFileRenameOutlineIcon />
               </ListItemIcon>
               <ListItemText
-                primary={"Edit Project Name"}
+                primary={name}
                 primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
               />
             </ListItemButton>
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton onClick={()=>handleOpen("changeGraphicsFn")}>
+            <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <BubbleChartIcon />
               </ListItemIcon>
