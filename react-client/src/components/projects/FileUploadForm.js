@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import { Button } from "@mui/material";
+import { Button, Box, Input, Typography } from "@mui/material";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import CloseIcon from "@mui/icons-material/Close";
 
-import { addFileAsync, writeFileAsync, getFilesAsync } from "../../features";
+import { addFileAsync, writeFileAsync, getFileAsync } from "../../features";
 
 const FileUploadForm = (props) => {
   const { projectId, userId, handleClose } = props;
-  const { availableFiles } = useSelector((state) => state.singleProject);
 
   const [name, setName] = useState("");
   const [file, setFile] = useState({});
@@ -27,37 +28,66 @@ const FileUploadForm = (props) => {
 
     dispatch(addFileAsync(formData));
     dispatch(writeFileAsync({ projectId, filePath: file.name, file }));
-    dispatch(getFilesAsync({ projectId, availableFiles }));
+    dispatch(getFileAsync({ fileLabel: name, projectId, filePath: file.name }));
 
-    const fileInput = document.querySelector("#fileInput");
-    fileInput.value = "";
     setName("");
     setFile({});
     handleClose();
   };
 
   return (
-    <div>
-      <form onSubmit={handleFormSubmit}>
-        <label htmlFor="name">File Label: </label>
-        <input
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <label htmlFor="filePath">File: </label>
-        <input
-          id="fileInput"
-          type="file"
-          accept=".ogg, .mp3"
-          name="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          required
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </div>
+    <form onSubmit={handleFormSubmit}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          size="small"
+          color="error"
+          onClick={handleClose}
+          sx={{ alignSelf: "flex-end", marginBottom: "5px" }}
+        >
+          <CloseIcon />
+        </Button>
+        <Box>
+          <label htmlFor="name">File Label: </label>
+          <Input
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <Button
+            color={file && file.name ? "primary" : "error"}
+            sx={{ margin: "5px" }}
+          >
+            <label htmlFor="filePath">
+              {file && file.name ? `${file.name}` : <FileUploadIcon />}
+            </label>
+          </Button>
+          <Input
+            id="filePath"
+            type="file"
+            accept=".ogg, .mp3"
+            name="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            required
+            sx={{ display: "none" }}
+          />
+        </Box>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ alignSelf: "flex-end" }}
+        >
+          <Typography>Submit</Typography>
+        </Button>
+      </Box>
+    </form>
   );
 };
 

@@ -1,6 +1,13 @@
-import * as React from "react"
-import {setGraphicFN} from "../../../features/projects/playAllSlice"
-import {useDispatch,useSelector} from "react-redux"
+import * as React from "react";
+import { setGraphicFN } from "../../../features/projects/playAllSlice";
+import { useDispatch, useSelector } from "react-redux";
+
+import { Button } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+import { updateProjectAsync } from "../../../features";
+
+import { Box } from "@mui/material";
 
 export const graphicsOptions = [
     {type:"shader", fn:3, name:"Luminescent Tiles", imgUrl:"g2.jpg"},
@@ -14,9 +21,8 @@ export const graphicsOptions = [
 
 let displayedLog = false
 
-export default function GraphicsOptions() {
-
-    const dispatch = useDispatch()
+export default function GraphicsOptions({ handleClose }) {
+  const dispatch = useDispatch();
 
     //defaults to 0
     const {graphicFN} = useSelector(state=>state.playAll) 
@@ -30,24 +36,39 @@ export default function GraphicsOptions() {
     }
     const devServer="http://localhost:8080/"
 
-    function SetGO (index) {
-        dispatch(setGraphicFN(index))
-    }
+    const projectId = id;
+    const updateData = { graphicsFn: index };
+    dispatch(updateProjectAsync({ projectId, updateData }));
+  }
 
-    return (
-         
-        <div key="graphicsOptions" id="graphicsOptions">
-            {graphicsOptions.map( (option, index) =>
-                <div key={"div"+option.name} 
-                    onClick={ev=>{SetGO(index)}}
-                >
-                    <img key={option.name} 
-                        style={{opacity: (index===graphicFN)?"1":null}} 
-                        src={dev? (devServer+option.imgUrl): (window.location.origin + "/" + option.imgUrl)} alt={option.name}>
-                    </img>
-                </div> 
-            )}
-            <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
-        </div>
-    )
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Button
+        size="small"
+        color="error"
+        onClick={handleClose}
+        sx={{ alignSelf: "flex-end" }}
+      >
+        <CloseIcon />
+      </Button>
+      <Box key="graphicsOptions" id="graphicsOptions" sx={{ display: "flex" }}>
+        {graphicsOptions.map((option, index) => (
+          <div
+            key={"div" + option.name}
+            onClick={(ev) => {
+              SetGO(index);
+            }}
+          >
+            <img
+              key={option.name}
+              style={{ opacity: index === graphicFN ? "1" : null }}
+              src={dev ? devServer + option.imgUrl : option.imgUrl}
+              alt={option.name}
+            ></img>
+          </div>
+        ))}
+        <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
+      </Box>
+    </Box>
+  );
 }
