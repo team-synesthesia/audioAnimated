@@ -22,8 +22,6 @@ export default function AllProjects() {
   const navigate = useNavigate();
   const projects = useSelector((state) => state.allProjects);
 
-  const [toggleNewProjectForm, setToggleNewProjectForm] = React.useState(false);
-
   const dispatch = useDispatch();
   const handleDelete = (id) => {
     dispatch(deleteProjectAsync(id));
@@ -58,7 +56,7 @@ export default function AllProjects() {
             color="text.secondary"
             paragraph
           >
-            Some inspiring writing here about what they can create...
+            Start here and watch your music come to life!
           </Typography>
           <Stack
             sx={{ pt: 4 }}
@@ -66,18 +64,7 @@ export default function AllProjects() {
             spacing={2}
             justifyContent="center"
           >
-            {toggleNewProjectForm ? (
-              <AddNewProject
-                setToggleNewProjectForm={setToggleNewProjectForm}
-              />
-            ) : (
-              <Button
-                variant="contained"
-                onClick={() => setToggleNewProjectForm(true)}
-              >
-                Create New Project
-              </Button>
-            )}
+            <AddNewProject />
           </Stack>
         </Container>
       </Box>
@@ -104,14 +91,17 @@ export default function AllProjects() {
                       alt="random"
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="h2">
+                      <Typography
+                        variant="h5"
+                        component="h2"
+                        sx={{ textAlign: "center" }}
+                      >
                         {project.name}
                       </Typography>
-                      <Typography>No. of contrbutors: 1 </Typography>
-                      <Typography>{`No. of Sample Files: ${5}`}</Typography>
-                      <Typography>Project Duration: 3 mins</Typography>
                     </CardContent>
-                    <CardActions>
+                    <CardActions
+                      sx={{ display: "flex", justifyContent: "space-evenly" }}
+                    >
                       <Button size="small">View Final</Button>
                       <Button
                         size="small"

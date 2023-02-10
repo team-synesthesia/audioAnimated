@@ -2,19 +2,9 @@ import React, { useState } from "react";
 
 import { Button, Modal, Box, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+import { style } from "./TransitionsModal";
 
 const DeleteConfirmation = ({ handleDelete, deleteParam, origin }) => {
   const [open, setOpen] = useState(false);
@@ -23,7 +13,7 @@ const DeleteConfirmation = ({ handleDelete, deleteParam, origin }) => {
 
   return (
     <div>
-      <Button color="error" onClick={handleOpen}>
+      <Button color="error" size="small" onClick={handleOpen}>
         <DeleteIcon />
       </Button>
       <Modal
