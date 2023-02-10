@@ -193,9 +193,19 @@ export default function MultiFilePlayer({
   // you dont need to wait for audio buffers if you have no files
   // and you want to record
   React.useEffect(() => {
-    if ((Object.keys(availableFiles).length === 0) & record) {
-      setDisabled(false);
-    }
+    const wait = async () => {
+      if ((Object.keys(availableFiles).length === 0) & record) {
+        let seconds = 0;
+        const maxWait = 10;
+        while (!recordStreamRef.current) {
+          await delay(1000);
+          seconds++;
+          if (seconds === maxWait) break;
+        }
+      }
+    };
+    wait();
+    setDisabled(false);
   }, [record, availableFiles]);
 
   React.useEffect(() => {
@@ -211,6 +221,16 @@ export default function MultiFilePlayer({
 
         const audio = undefined;
         await acPlusRef.current.createAudioBuffers(raw, audio, fileName);
+      }
+
+      if (record) {
+        let seconds = 0;
+        const maxWait = 10;
+        while (!recordStreamRef.current) {
+          await delay(1000);
+          seconds++;
+          if (seconds === maxWait) break;
+        }
       }
       setDisabled(false);
     };
