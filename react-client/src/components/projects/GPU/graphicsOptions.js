@@ -9,14 +9,16 @@ import { updateProjectAsync } from "../../../features";
 
 import { Box } from "@mui/material";
 
+import { setGlobalGraphics } from "../../../features";
+
 export const graphicsOptions = [
-  { type: "shader", fn: 3, name: "Luminescent Tiles", imgUrl: "g2.jpg" },
-  { type: "shader", fn: 2, name: "Gaz Inspired", imgUrl: "g1.jpg" },
-  { type: "shader", fn: 1, name: "Ode To Julia", imgUrl: "g3.jpg" },
-  { type: "shader", fn: 4, name: "D20 Bubbles", imgUrl: "g4.jpg" },
-  { type: "shader", fn: 5, name: "Mandel Exp", imgUrl: "g5.jpg" },
-  { type: "shader", fn: 6, name: "Color Companions", imgUrl: "g6.jpg" },
-  { type: "vertex", fn: 0, name: "Dodeca-God Rays", imgUrl: "g0.jpg" },
+  { type: "shader", fn: 3, name: "\"Luminescent Tiles\"", imgUrl: "g2.jpg" },
+  { type: "shader", fn: 2, name: "\"Gaz Inspired\"", imgUrl: "g1.jpg" },
+  { type: "shader", fn: 1, name: "\"Ode To Julia\"", imgUrl: "g3.jpg" },
+  { type: "shader", fn: 4, name: "\"D20 Bubbles\"", imgUrl: "g4.jpg" },
+  { type: "shader", fn: 5, name: "\"Mandel Exp\"", imgUrl: "g5.jpg" },
+  { type: "shader", fn: 6, name: "\"Color Companions\"", imgUrl: "g6.jpg" },
+  { type: "vertex", fn: 0, name: "\"Dodeca-God Rays\"", imgUrl: "g0.jpg" },
 ];
 
 let displayedLog = false;
@@ -37,7 +39,6 @@ export default function GraphicsOptions({ handleClose }) {
   }
   const devServer = "http://localhost:8080/";
   const prodUrl = window.origin + "/"
-
   console.log('prod origin',prodUrl)
 
   function SetGO(index) {
@@ -46,6 +47,7 @@ export default function GraphicsOptions({ handleClose }) {
     const projectId = id;
     const updateData = { graphicsFn: index };
     dispatch(updateProjectAsync({ projectId, updateData }));
+    dispatch(setGlobalGraphics(index));
   }
 
   return (
@@ -74,7 +76,7 @@ export default function GraphicsOptions({ handleClose }) {
             ></img>
           </div>
         ))}
-        <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
+        <div id="graphicChosen">{graphicsOptions[graphicFN].name} selected</div>
       </Box>
     </Box>
   );

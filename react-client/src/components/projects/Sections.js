@@ -16,7 +16,7 @@ import CloseIcon from "@mui/icons-material/Close"
 
 import {setFinished} from  "../../features/projects/playAllSlice"
 
-export default function Sections({ sections, userId, projectId }) {
+export default function Sections({ sections, userId, projectId, graphicsFn }) {
   const [singleSection, setSingleSection] = React.useState(false);
   const [singleSectionRender, setSingleSectionRender] = React.useState(false);
   const [selectedSectionId, setSelectedSectionId] = React.useState(1);
@@ -64,20 +64,18 @@ export default function Sections({ sections, userId, projectId }) {
 
   /* GPU() and PlayAll() are React hooks for managing Graphics */
   GPU({
-    GPUconfig:playAllGPUconfig,
-    gpuDivRef:playAllCanvasRef.current,
+    GPUconfig: playAllGPUconfig,
+    gpuDivRef: playAllCanvasRef.current,
     canvasInitialized,
-    setCanvasInitialized
-  })
+    setCanvasInitialized,
+  });
 
-  PlayAll()
-  
-  return ([
+  return [
     <div
       key="playAllCanvas"
       id="playAllCanvas"
       ref={playAllCanvasRef}
-      style={{position:"relative",left:"max(14vw,155px)"}}
+      style={{ position: "relative", left: "max(14vw,155px)" }}
       className="hidden"
     >
       <IconButton 
@@ -107,6 +105,7 @@ export default function Sections({ sections, userId, projectId }) {
           setSelectedSectionId={setSelectedSectionId}
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
+          graphicsFn={graphicsFn}
         />
       ) : (
         <MultiSectionView
@@ -122,8 +121,8 @@ export default function Sections({ sections, userId, projectId }) {
           setPlayAllGPUconfig={setPlayAllGPUconfig}
         />
       )}
-    </div>
-  ]);
+    </div>,
+  ];
 }
 
 function MultiSectionView({
@@ -136,7 +135,7 @@ function MultiSectionView({
   handleDeleteSection,
   playAllCanvasRef,
   acRefs,
-  setPlayAllGPUconfig
+  setPlayAllGPUconfig,
 }) {
   return (
     <Box
