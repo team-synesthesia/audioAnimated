@@ -26,7 +26,8 @@ export default function GraphicsOptions({ handleClose }) {
 
     //defaults to 0
     const {graphicFN} = useSelector(state=>state.playAll) 
-    
+    const { id } = useSelector((state) => state.singleProject);
+
     //our dev server is always on port 3000
     const dev = window.location.port === "3000"
 
@@ -35,6 +36,9 @@ export default function GraphicsOptions({ handleClose }) {
         displayedLog = true
     }
     const devServer="http://localhost:8080/"
+
+  function SetGO(index) {
+    dispatch(setGraphicFN(index));
 
     const projectId = id;
     const updateData = { graphicsFn: index };

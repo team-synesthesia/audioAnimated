@@ -384,7 +384,7 @@ float sphere_sdf( vec3 pos, float r ) {
 }
 
 mat3 rot_xz(float an) {
-    //an += iMusic.x/20.;
+    an -= iMusic.z/50.;
     float cc = cos(an), ss=sin(an);
     return mat3(cc,0.,ss,0.,1.,0.,-ss,0.,cc);
 
@@ -550,7 +550,7 @@ vec3  main_loop( vec3 ro, vec3 rd ) {
                                  diffuse_light2 * diffuseL +
                                  spec_amp*specular_light2 * specularL ; 
                                  
-            float color_fac = 1.2;
+            float color_fac = .8;
             
             reflect_color *= exp(-reflection.dist_from_origin/30.);
 
@@ -708,7 +708,7 @@ void main() {
 uniform vec3 iResolution;
 uniform float iTime;
 uniform vec4 iMusic;
-
+#define brighter 1
 varying vec2 vUv;
 
 float numOct  = 6. ;  //number of fbm octaves
