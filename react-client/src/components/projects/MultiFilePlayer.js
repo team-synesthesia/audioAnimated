@@ -349,7 +349,6 @@ export default function MultiFilePlayer({
           playAllCanvasRef.current.classList.remove("hidden")
           playAllCanvasRef.current.style.width = "84vw"
           playAllCanvasRef.current.style.height = "82vh"
-          //playAllCanvasRef.current.style.backgroundColor = "blue"
           playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
           playAllCanvasCreatedRef.current = true
           finishedRef.current = false
