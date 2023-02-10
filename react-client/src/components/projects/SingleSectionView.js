@@ -85,7 +85,7 @@ export default function SingleSectionView({
             // flexShrink: "0",
             width: 640,
             height: 480,
-            backgroundColor: primaryColors[graphicsFn],
+            backgroundColor: primaryColors[graphicsFn]
           }}
         ></div>
       </Box>

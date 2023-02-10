@@ -70,6 +70,8 @@ export default function Sections({ sections, userId, projectId, graphicsFn }) {
     setCanvasInitialized,
   });
 
+  PlayAll()
+
   return [
     <div
       key="playAllCanvas"
