@@ -10,6 +10,7 @@ export {
   createSectionAsync,
   deleteSectionAsync,
   getFilesAsync,
+  getFileAsync,
   fetchSingleProjectAsync,
   addFileAsync,
   deleteFileAsync,
@@ -31,5 +32,5 @@ export {
   setPlayAllStarted,
   alreadyPlaying,
   setFinished,
-  setGraphicFN
+  setGraphicFN,
 } from "./projects/playAllSlice";

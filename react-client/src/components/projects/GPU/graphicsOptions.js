@@ -7,6 +7,8 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { updateProjectAsync } from "../../../features";
 
+import { Box } from "@mui/material";
+
 export const graphicsOptions = [
   { type: "shader", fn: 3, name: "Luminescent Tiles", imgUrl: "g2.jpg" },
   { type: "shader", fn: 2, name: "Gaz Inspired", imgUrl: "g1.jpg" },
@@ -26,33 +28,40 @@ export default function GraphicsOptions({ handleClose }) {
 
   function SetGO(index) {
     dispatch(setGraphicFN(index));
-    
+
     const projectId = id;
     const updateData = { graphicsFn: index };
     dispatch(updateProjectAsync({ projectId, updateData }));
   }
 
   return (
-    <div key="graphicsOptions" id="graphicsOptions">
-      {graphicsOptions.map((option, index) => (
-        <div
-          key={"div" + option.name}
-          onClick={(ev) => {
-            SetGO(index);
-          }}
-        >
-          <img
-            key={option.name}
-            style={{ opacity: index === graphicFN ? "1" : null }}
-            src={dev ? devServer + option.imgUrl : option.imgUrl}
-            alt={option.name}
-          ></img>
-        </div>
-      ))}
-      <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
-      <Button onClick={handleClose}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Button
+        size="small"
+        color="error"
+        onClick={handleClose}
+        sx={{ alignSelf: "flex-end" }}
+      >
         <CloseIcon />
       </Button>
-    </div>
+      <Box key="graphicsOptions" id="graphicsOptions" sx={{ display: "flex" }}>
+        {graphicsOptions.map((option, index) => (
+          <div
+            key={"div" + option.name}
+            onClick={(ev) => {
+              SetGO(index);
+            }}
+          >
+            <img
+              key={option.name}
+              style={{ opacity: index === graphicFN ? "1" : null }}
+              src={dev ? devServer + option.imgUrl : option.imgUrl}
+              alt={option.name}
+            ></img>
+          </div>
+        ))}
+        <div id="graphicChosen">{graphicsOptions[graphicFN].name} chosen</div>
+      </Box>
+    </Box>
   );
 }
