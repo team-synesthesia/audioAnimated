@@ -10,6 +10,7 @@ export {
   createSectionAsync,
   deleteSectionAsync,
   getFilesAsync,
+  getFileAsync,
   fetchSingleProjectAsync,
   addFileAsync,
   deleteFileAsync,

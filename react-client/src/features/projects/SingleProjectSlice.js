@@ -23,12 +23,12 @@ export const getFilesAsync = createAsyncThunk(
 
 export const getFileAsync = createAsyncThunk(
   "getFile",
-  async ({ projectId, filePath }) => {
+  async ({ fileLabel, projectId, filePath }) => {
     try {
       const { data } = await axios.get("/api/audiofiles/", {
         params: { projectId, filePath },
       });
-      return data;
+      return [fileLabel, data];
     } catch (error) {
       console.log(error);
     }
@@ -164,6 +164,9 @@ export const singleProjectSlice = createSlice({
     });
     builder.addCase(getFilesAsync.fulfilled, (state, action) => {
       state.audioRawFiles = action.payload;
+    });
+    builder.addCase(getFileAsync.fulfilled, (state, action) => {
+      state.audioRawFiles[action.payload[0]] = action.payload[1];
     });
     builder.addCase(createSectionAsync.fulfilled, (state, action) => {
       state.sections.push(action.payload);
