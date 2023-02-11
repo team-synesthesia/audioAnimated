@@ -1,5 +1,6 @@
 //audio is the html audio component that
 //has been loaded
+const FUDGE = 0.45;
 
 class AudioContextPlus {
   //we really only want to
@@ -87,9 +88,8 @@ class AudioContextPlus {
   }
 
   async createAudioBuffers(data, audio, filename) {
-
     //this is called sometimes when data is undefined
-    if ( typeof data==="undefined") return
+    if (typeof data === "undefined") return;
 
     //atob is base64 string to binary
     //formData PUT with an audio file runs btoa at some point
@@ -124,12 +124,13 @@ class AudioContextPlus {
   addGainNode() {
     const gainNode = this.AC.createGain();
     //all audio source/effect/control nodes connect to Analyser before speakers
-    gainNode.connect(this.AA)
+    gainNode.connect(this.AA);
     this.gainNodes.push(gainNode);
   }
   playSound(source, gainNode, time, fudge) {
     // connect to gainNodes to control relative volume
     source.connect(gainNode);
+    console.log(this.currentPlayPosition + fudge);
     source.start(time, Math.max(this.currentPlayPosition + fudge, 0));
   }
   loadSources(fileNames) {
@@ -141,7 +142,7 @@ class AudioContextPlus {
       this.addGainNode();
     });
   }
-  async playNSongs(fileNames, onEndCallback) {
+  async playNSongs(fileNames, recordedArray, onEndCallback) {
     if (this.isPlaying) {
       this.isPlaying = false;
       await this.AC.suspend();
@@ -155,8 +156,18 @@ class AudioContextPlus {
       this.loadSources(fileNames);
 
       this.sources.forEach((source, i) => {
+        let fudge;
+
+        if (fileNames[i] === "mic2") fudge = FUDGE * 2;
+        else if (fileNames[i] === "final") fudge = FUDGE * 2;
+        else if (fileNames[i] === "mic") fudge = FUDGE;
+        else fudge = 0;
+
+        // if (recordedArray[i]) fudge = FUDGE;
+        // else fudge = 0;
+
         const gainNode = this.gainNodes[i];
-        this.playSound(source, gainNode, startTime, 0);
+        this.playSound(source, gainNode, startTime, fudge);
       });
       this.started = true;
 

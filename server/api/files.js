@@ -6,7 +6,8 @@ module.exports = router;
 
 router.post("/", async (req, res, next) => {
   try {
-    let { projectId, sectionNumber, filePath, name, type, userId } = req.body;
+    let { projectId, sectionNumber, filePath, name, type, recorded, userId } =
+      req.body;
     if (typeof sectionNumber === "undefined") {
       sectionNumber = 0;
     }
@@ -21,6 +22,7 @@ router.post("/", async (req, res, next) => {
       type,
       sectionId: section.id,
       userId,
+      recorded,
     });
     res.status(201).send(newFile);
   } catch (err) {

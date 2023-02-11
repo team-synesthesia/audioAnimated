@@ -36,10 +36,12 @@ const AssignFileToSection = ({ setAssignSectionFormActive, section }) => {
     e.preventDefault();
 
     for (let fileName of filesToAssign) {
-      const { name, filePath, type, userId } = availableFiles[fileName];
+      const { name, filePath, recorded, type, userId } =
+        availableFiles[fileName];
       const data = {
         name,
         filePath,
+        recorded,
         type,
         userId,
         sectionNumber: section.sectionNumber,

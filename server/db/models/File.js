@@ -16,6 +16,9 @@ const File = db.define("file", {
   duration: {
     type: Sequelize.FLOAT,
   },
+  recorded: {
+    type: Sequelize.BOOLEAN,
+  },
 });
 
 // how to connnect files to users?

@@ -66,6 +66,15 @@ export default function MultiFilePlayer({
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
   const [saveRecording, setSaveRecording] = React.useState(false);
+  const [sources, setSources] = React.useState([]);
+  const [recordedYnArray, setRecordedYnArray] = React.useState([]);
+
+  React.useEffect(() => {
+    if (files && files.length) {
+      setSources(files.map((x) => x.name));
+      setRecordedYnArray(files.map((x) => x.recorded));
+    }
+  }, [files]);
 
   const recordStreamRef = React.useRef();
   const metrnomeRef = React.useRef();
@@ -147,6 +156,7 @@ export default function MultiFilePlayer({
         name: newFileName,
         filePath,
         type: "wav",
+        recorded: true,
         userId: userId,
         projectId: projectId,
       };
@@ -273,14 +283,12 @@ export default function MultiFilePlayer({
     const onEndCallback = () => {
       setEnded(true);
     };
-    acPlusRef.current.loadSources(files.map((x) => x.name));
-    await acPlusRef.current.playNSongs(
-      files.map((x) => x.name),
-      onEndCallback
-    );
+    acPlusRef.current.loadSources(sources);
+
+    await acPlusRef.current.playNSongs(sources, recordedYnArray, onEndCallback);
 
     setIsPlaying(acPlusRef.current.isPlaying);
-  }, [ended, files]);
+  }, [ended, sources, recordedYnArray]);
 
   React.useEffect(() => {
     if (ended) {
@@ -344,7 +352,7 @@ export default function MultiFilePlayer({
 
   const changeVolume = (value, fileName) => {
     if (!acPlusRef.current.started) {
-      acPlusRef.current.loadSources(files.map((x) => x.name));
+      acPlusRef.current.loadSources(sources);
     }
     const fileIndex = files.map((x) => x.name === fileName).indexOf(true);
     acPlusRef.current.setGain(value, fileIndex);
