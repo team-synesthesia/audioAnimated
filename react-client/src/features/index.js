@@ -34,4 +34,6 @@ export {
   alreadyPlaying,
   setFinished,
   setGraphicFN,
+  setPlayAllPlayPause,
+  setPlayAllActuallyStarted
 } from "./projects/playAllSlice";

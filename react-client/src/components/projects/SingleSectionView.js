@@ -13,8 +13,9 @@ const primaryColors = {
   2: "#FE00FF",
   3: "#6D029D",
   4: "#F17803",
-  5: "#C5A5F0",
+  5: "#702020",
   6: "#B1A8C5",
+  7: "#B1A8F5",
 };
 
 export default function SingleSectionView({
@@ -85,7 +86,7 @@ export default function SingleSectionView({
             // flexShrink: "0",
             width: 640,
             height: 480,
-            backgroundColor: primaryColors[graphicsFn],
+            backgroundColor: primaryColors[graphicsFn]
           }}
         ></div>
       </Box>

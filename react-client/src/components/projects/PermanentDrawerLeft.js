@@ -16,8 +16,12 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import MicIcon from "@mui/icons-material/Mic";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import PauseIcon from "@mui/icons-material/Pause";
 
 import TransitionsModal from "./TransitionsModal";
+
+import { useDispatch } from "react-redux"
+import { setPlayAllStarted, setPlayAllPlayPause } from "../../features";
 
 const drawerWidth = "12vw";
 const minWidth = 150;
@@ -37,6 +41,8 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
 
   const { availableFiles, name } = useSelector((state) => state.singleProject);
   const availableFilesValues = Object.values(availableFiles);
+  const {playAllStarted, playAllPlayPause} = useSelector(state=>state.playAll)
+  const dispatch = useDispatch()
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -91,9 +97,27 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton onClick={() => handleOpen("playAll")}>
+            <ListItemButton 
+                /* onClick={() => handleOpen("playAll")} */
+                  onClick={()=> {
+                    if (!playAllStarted) {
+                      dispatch(setPlayAllStarted(true))
+                      dispatch(setPlayAllPlayPause(true))
+                    }
+                    else if (playAllPlayPause) {
+                      dispatch(setPlayAllPlayPause(false))
+                    }
+                    else {
+                      dispatch(setPlayAllPlayPause(true))
+                    }
+                  }
+                } 
+              > 
               <ListItemIcon sx={{ minWidth: "40px" }}>
-                <VideoLibraryIcon />
+                { (!playAllStarted || (playAllStarted && !playAllPlayPause) ) ?
+                (<VideoLibraryIcon />):
+                (<PauseIcon />)
+              }
               </ListItemIcon>
               <ListItemText
                 primary={"Play  All"}

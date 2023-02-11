@@ -16,7 +16,7 @@ import {
   setSectionToPlay,
   setFinished,
   setTryToStart,
-  setPlayAllStarted,
+  setPlayAllActuallyStarted
 } from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
@@ -49,9 +49,9 @@ export default function MultiFilePlayer({
     (state) => state.singleProject.availableFiles
   );
 
-  const { sectionToPlay, tryToStart, finished } = useSelector(
-    (state) => state.playAll
-  );
+  const { sectionToPlay, tryToStart,
+    finished, playAllPlayPause,
+    playAllStarted, playAllActuallyStarted } = useSelector((state) => state.playAll);
 
   const { sections } = useSelector((state) => state.singleProject);
 
@@ -266,6 +266,7 @@ export default function MultiFilePlayer({
   };
 
   const playSection = React.useCallback(async () => {
+
     if (ended) {
       setTimeSnapshot(acPlusRef.current.AC.currentTime);
       setEnded(false);
@@ -280,7 +281,9 @@ export default function MultiFilePlayer({
     );
 
     setIsPlaying(acPlusRef.current.isPlaying);
+
   }, [ended, files]);
+
 
   React.useEffect(() => {
     if (ended) {
@@ -361,8 +364,9 @@ export default function MultiFilePlayer({
     }
   }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
 
-  const playAllCanvasCreatedRef = React.useRef(false);
-  const finishedRef = React.useRef(false);
+  const playAllCanvasCreatedRef = React.useRef(false)
+  const finishedRef = React.useRef(false)
+  const startedRef = React.useRef(false)
 
   if (finished && playAllCanvasCreatedRef.current) {
     playAllCanvasCreatedRef.current = false;
@@ -374,7 +378,45 @@ export default function MultiFilePlayer({
       finishedRef.current = false;
       dispatch(setFinished(false));
     }
-  }, [finished, sectionNumber, dispatch]);
+  }, [finished, sectionNumber, dispatch]); 
+
+  React.useEffect(()=>{
+    if (playAllActuallyStarted) {
+      const sectionNum = (sections && sections[sectionToPlay] && sections[sectionToPlay].sectionNumber) ?? -10
+      if (sectionNum === sectionNumber ) {
+
+        if ( !playAllPlayPause ) {
+          if (acPlusRef.current.AC.state === "running")
+            acPlusRef.current.AC.suspend().then(val=>{console.log('suspended',sectionNumber)})
+        }
+        else if ( playAllPlayPause ) {
+          if ("suspended interrupted".includes(acPlusRef.current.AC.state))
+            acPlusRef.current.AC.resume().then(val=>{console.log('resumed',sectionNumber)})
+        }
+
+      }
+    }
+  },[playAllActuallyStarted,isPlaying,playAllPlayPause,
+    sectionNumber,sectionToPlay,sections,ended,playSection])
+
+  React.useEffect(()=>{
+    if (playAllActuallyStarted) {
+      const sectionNum = (sections && sections[sectionToPlay] && sections[sectionToPlay].sectionNumber) ?? -10
+      if (sectionNum === sectionNumber ) {
+
+        if ( !playAllPlayPause ) {
+          if (acPlusRef.current.AC.state === "running")
+            acPlusRef.current.AC.suspend().then(val=>{console.log('suspended',sectionNumber)})
+        }
+        else if ( playAllPlayPause ) {
+          if ("suspended interrupted".includes(acPlusRef.current.AC.state))
+            acPlusRef.current.AC.resume().then(val=>{console.log('resumed',sectionNumber)})
+        }
+
+      }
+    }
+  },[playAllActuallyStarted,isPlaying,playAllPlayPause,
+    sectionNumber,sectionToPlay,sections,ended,playSection]) 
 
   React.useEffect(() => {
     //loop  through  the sections array in index order
@@ -382,25 +424,25 @@ export default function MultiFilePlayer({
       if (tryToStart && !finishedRef.current) {
         const sectionNum = sections[sectionToPlay].sectionNumber;
 
-        if (
-          sectionToPlay === 0 &&
-          sectionNumber === sectionNum &&
-          !playAllCanvasCreatedRef.current
-        ) {
-          playAllCanvasRef.current.classList.remove("hidden");
-          playAllCanvasRef.current.style.width = "84vw";
-          playAllCanvasRef.current.style.height = "82vh";
-          playAllCanvasRef.current.style.transform = "translate(0,-5vh)";
-          playAllCanvasCreatedRef.current = true;
-          finishedRef.current = false;
-          dispatch(setPlayAllStarted(true));
-          setPlayAllGPUconfig({
-            isPlaying: true,
-            acPlusRef: acPlusRef.current,
-            sectionNumber,
-            graphicsFn: 0,
-            acRefs: acRefs,
-          });
+        if (sectionToPlay === 0 && 
+            sectionNumber === sectionNum &&
+            !playAllCanvasCreatedRef.current ) {
+   
+          playAllCanvasRef.current.classList.remove("hidden")
+          playAllCanvasRef.current.style.width = "84vw"
+          playAllCanvasRef.current.style.height = "82vh"
+          playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
+          playAllCanvasCreatedRef.current = true
+          finishedRef.current = false
+          setPlayAllGPUconfig(
+            {isPlaying:true,
+              acPlusRef:acPlusRef.current,
+              sectionNumber,
+              graphicsFn:0,
+              acRefs:acRefs
+            }
+          )
+
         }
 
         //I found that the only consistent way to get playAll moving was to track
@@ -410,9 +452,14 @@ export default function MultiFilePlayer({
         if (
           !isPlaying &
           (sectionNum === sectionNumber) &
-          (sectionPlayed === -1)
+          (sectionPlayed === -1) &
+          !startedRef.current
         ) {
+
           playSection();
+          if (sectionToPlay === 0) {
+            dispatch(setPlayAllActuallyStarted(true))
+          }
           setSectionPlayed(sectionNum);
         } else if (
           !isPlaying &
@@ -423,7 +470,6 @@ export default function MultiFilePlayer({
           setSectionPlayed(-1);
           finishedRef.current = true;
           if (nextSection < sections.length) {
-            //acPlusRef.current.close()
             dispatch(setSectionToPlay(nextSection));
             setPlayAllGPUconfig({
               isPlaying: true,
@@ -433,11 +479,13 @@ export default function MultiFilePlayer({
               acRefs: acRefs,
             });
           } else if (!finished) {
-            //finishedRef.current = true
             dispatch(setFinished(true));
-            dispatch(setTryToStart(false));
+            dispatch(setTryToStart(false))
+            dispatch(setPlayAllActuallyStarted(false))
+      
           }
         }
+
       }
     } catch (err) {}
   }, [
@@ -456,6 +504,7 @@ export default function MultiFilePlayer({
     finished,
   ]);
 
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
       <Player
@@ -465,7 +514,7 @@ export default function MultiFilePlayer({
         playOnClick={playSection}
         recordStartStop={recordStartStop}
         restartOnClick={restartOnClick}
-        disabled={disabled}
+        disabled={disabled  || (playAllActuallyStarted && !finished)} 
         duration={duration}
         loop={loop}
         toggleLoop={toggleLoop}

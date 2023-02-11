@@ -9,8 +9,9 @@ const primaryColors = {
   2: "#FE00FF",
   3: "#6D029D",
   4: "#F17803",
-  5: "#C5A5F0",
+  5: "#702020",
   6: "#B1A8C5",
+  7: "#B1A8F5",
 };
 
 const SecondaryColors = {
@@ -21,6 +22,7 @@ const SecondaryColors = {
   4: "#83B022",
   5: "#8BFFFE",
   6: "#FFFEDF",
+  7: "#FFFEDF",
 };
 
 function getCustomTheme(index) {
@@ -41,9 +43,9 @@ function getCustomTheme(index) {
 const App = ({ theme }) => {
   const [liveTheme, setLiveTheme] = useState(theme);
   const globalGraphicsFn = useSelector((state) => state.auth.globalGraphicsFn);
-  console.log("here it is", globalGraphicsFn);
+  
   useEffect(() => {
-    console.log(globalGraphicsFn);
+    
     if (globalGraphicsFn !== null) {
       const customTheme = getCustomTheme(globalGraphicsFn);
       if (customTheme) {

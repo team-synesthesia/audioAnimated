@@ -40,6 +40,7 @@ export default function Player({
   availableFiles,
   files,
 }) {
+
   const play = async () => {
     if ((Object.keys(availableFiles).length > 0) & (files.length > 0)) {
       await playOnClick();

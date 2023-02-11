@@ -120,7 +120,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                 //setGL({renderer,scene,camera,width,height,useShader,cube,light2,uniforms}) 
                 //renderer.render(scene,camera)
 
-                const grConfig = grInit( {rendererIn:renderer, canvas,width,height})
+                const grConfig = grInit( {rendererIn:renderer, canvas,width,height,version:gfn})
                 const { camera, scene} = grConfig
                 renderer.render( scene, camera)
                 setGL( grConfig,renderer,camera,scene,uniforms)
