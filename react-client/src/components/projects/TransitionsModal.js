@@ -10,7 +10,7 @@ import Record from "./recordForm/Record";
 import PlayAll from "./PlayAll";
 import GraphicsOptions from "./GPU/graphicsOptions";
 
-const style = {
+export const style = {
   position: "absolute",
   top: "55%",
   left: "50%",

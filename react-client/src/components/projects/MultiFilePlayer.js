@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import FileCard from "./FileCard";
 import Player from "./Player";
 
+import convertChunksToWavBlob from "../../recorder";
+
 import { addFileAsync, writeFileAsync } from "../../features";
 
 import {
@@ -63,14 +65,20 @@ export default function MultiFilePlayer({
   const [restart, setRestart] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
-  const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
-  const [recordedChunks, setRecordedChunks] = React.useState([]);
   const [saveRecording, setSaveRecording] = React.useState(false);
 
-  const recorderRef = React.useRef();
   const recordStreamRef = React.useRef();
   const metrnomeRef = React.useRef();
 
+  const recordingMessages = React.useRef();
+  const sourceForMicophone = React.useRef();
+
+  const acPlusRef = React.useRef();
+  React.useEffect(() => {
+    if (!acPlusRef.current) {
+      acPlusRef.current = new AudioContextPlus();
+    }
+  }, []);
   if (record && !recordStreamRef.current) {
     getRecordingPermission();
   }
@@ -92,39 +100,53 @@ export default function MultiFilePlayer({
     }
   }
 
-  if (recordStreamRef.current && !recorderRef.current) {
-    recorderRef.current = new MediaRecorder(recordStreamRef.current);
-
-    recorderRef.current.ondataavailable = function (e) {
-      setRecordedChunk(e.data);
-    };
-
-    recorderRef.current.onstop = async function () {
-      setSaveRecording(true);
-    };
+  const context = React.useRef();
+  if (!context.current) {
+    context.current = new AudioContext();
   }
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  React.useEffect(() => {
-    if (recordedChunk.size > 0) {
-      const newChunks = recordedChunks.concat(recordedChunk);
-      setRecordedChunks(newChunks);
+  const startRecording = async () => {
+    let seconds = 0;
+    const maxWait = 10;
+    while (!recordStreamRef.current) {
+      await delay(1000);
+      seconds++;
+      if (seconds === maxWait) break;
     }
-    // intentionally leaving out 'recordedChunks' to avoid
-    // infinite loop
-  }, [recordedChunk]);
 
+    sourceForMicophone.current = context.current.createMediaStreamSource(
+      recordStreamRef.current
+    );
+
+    // NEW A: Loading the worklet processor
+    await context.current.audioWorklet.addModule("/recorder.worklet.js");
+
+    // Create the recorder worklet
+    const recorder = new AudioWorkletNode(context.current, "recorder.worklet");
+
+    context.current.resume();
+
+    sourceForMicophone.current
+      .connect(recorder)
+      .connect(context.current.destination);
+
+    if (!recordingMessages.current) recordingMessages.current = [];
+    recorder.port.onmessage = (e) => {
+      recordingMessages.current = recordingMessages.current.concat([e.data]);
+    };
+  };
   React.useEffect(() => {
     const fnSaveRecording = async () => {
-      const filePath = `${newFileName}.ogg`;
-
-      const file = new Blob(recordedChunks, {
-        type: "audio/ogg; codecs=opus",
-      });
-
+      const file = convertChunksToWavBlob(
+        context.current,
+        recordingMessages.current
+      );
+      const filePath = `${newFileName}.wav`;
       const data = {
         name: newFileName,
         filePath,
-        type: "ogg",
+        type: "wav",
         userId: userId,
         projectId: projectId,
       };
@@ -134,13 +156,14 @@ export default function MultiFilePlayer({
     };
     if (
       saveRecording &&
-      (recordedChunks.length > 0) & (newFileName && newFileName.length > 0)
+      (recordingMessages.current.length > 0) &
+        (newFileName && newFileName.length > 0)
     ) {
       fnSaveRecording();
     }
   }, [
     dispatch,
-    recordedChunks,
+    recordingMessages,
     saveRecording,
     userId,
     projectId,
@@ -148,16 +171,14 @@ export default function MultiFilePlayer({
     setRecorded,
   ]);
 
-  const acPlusRef = React.useRef();
-  React.useEffect(() => {
-    if (!acPlusRef.current) {
-      acPlusRef.current = new AudioContextPlus();
-    }
-  }, []);
-
-  if (acPlusRef && acPlusRef.current && acRefs &&
-      acRefs.current && !acRefs.current[sectionNumber]) {
-    acRefs.current[sectionNumber] = acPlusRef.current
+  if (
+    acPlusRef &&
+    acPlusRef.current &&
+    acRefs &&
+    acRefs.current &&
+    !acRefs.current[sectionNumber]
+  ) {
+    acRefs.current[sectionNumber] = acPlusRef.current;
   }
 
   React.useEffect(() => {
@@ -169,9 +190,19 @@ export default function MultiFilePlayer({
   // you dont need to wait for audio buffers if you have no files
   // and you want to record
   React.useEffect(() => {
-    if ((Object.keys(availableFiles).length === 0) & record) {
-      setDisabled(false);
-    }
+    const wait = async () => {
+      if ((Object.keys(availableFiles).length === 0) & record) {
+        let seconds = 0;
+        const maxWait = 10;
+        while (!recordStreamRef.current) {
+          await delay(1000);
+          seconds++;
+          if (seconds === maxWait) break;
+        }
+      }
+    };
+    wait();
+    setDisabled(false);
   }, [record, availableFiles]);
 
   React.useEffect(() => {
@@ -188,10 +219,20 @@ export default function MultiFilePlayer({
         const audio = undefined;
         await acPlusRef.current.createAudioBuffers(raw, audio, fileName);
       }
+
+      if (record) {
+        let seconds = 0;
+        const maxWait = 10;
+        while (!recordStreamRef.current) {
+          await delay(1000);
+          seconds++;
+          if (seconds === maxWait) break;
+        }
+      }
       setDisabled(false);
     };
     createBuffers();
-  }, [files, audioRawFiles]);
+  }, [record, files, audioRawFiles]);
 
   React.useEffect(() => {
     const getDuration = () => {
@@ -210,18 +251,17 @@ export default function MultiFilePlayer({
   const [sectionPlayed, setSectionPlayed] = React.useState(-1);
 
   const recordStartStop = async () => {
-    if (recorderRef.current) {
-      if (recorderRef.current.state === "recording") {
-        recorderRef.current.stop();
-        setMsgKey("stopped");
-        setIsRecording(false);
-        if (metrnomeRef.current) metrnomeRef.current.stop();
-      } else if (["inactive", "paused"].includes(recorderRef.current.state)) {
-        recorderRef.current.start();
-        setMsgKey("recording");
-        setIsRecording(true);
-        if (metrnomeRef.current) metrnomeRef.current.start();
-      }
+    if (isRecording) {
+      setMsgKey("stopped");
+      setIsRecording(false);
+      setSaveRecording(true);
+      sourceForMicophone.current.disconnect();
+      if (metrnomeRef.current) metrnomeRef.current.stop();
+    } else {
+      await startRecording();
+      setMsgKey("recording");
+      setIsRecording(true);
+      if (metrnomeRef.current) metrnomeRef.current.start();
     }
   };
 
@@ -234,6 +274,7 @@ export default function MultiFilePlayer({
     const onEndCallback = () => {
       setEnded(true);
     };
+    acPlusRef.current.loadSources(files.map((x) => x.name));
     await acPlusRef.current.playNSongs(
       files.map((x) => x.name),
       onEndCallback
@@ -327,17 +368,17 @@ export default function MultiFilePlayer({
   const finishedRef = React.useRef(false)
   const startedRef = React.useRef(false)
 
-  if ( finished && playAllCanvasCreatedRef.current) {
-    playAllCanvasCreatedRef.current = false
+  if (finished && playAllCanvasCreatedRef.current) {
+    playAllCanvasCreatedRef.current = false;
     //only happens for 1st section
   }
 
-  React.useEffect(()=>{
-    if ( finished && finishedRef.current) {
-      finishedRef.current = false
-      dispatch(setFinished(false))
+  React.useEffect(() => {
+    if (finished && finishedRef.current) {
+      finishedRef.current = false;
+      dispatch(setFinished(false));
     }
-  },[finished,sectionNumber,dispatch])
+  }, [finished, sectionNumber, dispatch]); 
 
   React.useEffect(()=>{
     if (playAllActuallyStarted) {
@@ -358,12 +399,29 @@ export default function MultiFilePlayer({
   },[playAllActuallyStarted,isPlaying,playAllPlayPause,
     sectionNumber,sectionToPlay,sections,ended,playSection])
 
+  React.useEffect(()=>{
+    if (playAllActuallyStarted) {
+      const sectionNum = (sections && sections[sectionToPlay] && sections[sectionToPlay].sectionNumber) ?? -10
+      if (sectionNum === sectionNumber ) {
+
+        if ( !playAllPlayPause ) {
+          if (acPlusRef.current.AC.state === "running")
+            acPlusRef.current.AC.suspend().then(val=>{console.log('suspended',sectionNumber)})
+        }
+        else if ( playAllPlayPause ) {
+          if ("suspended interrupted".includes(acPlusRef.current.AC.state))
+            acPlusRef.current.AC.resume().then(val=>{console.log('resumed',sectionNumber)})
+        }
+
+      }
+    }
+  },[playAllActuallyStarted,isPlaying,playAllPlayPause,
+    sectionNumber,sectionToPlay,sections,ended,playSection]) 
+
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
-
-      if (tryToStart && !finishedRef.current ) {
-
+      if (tryToStart && !finishedRef.current) {
         const sectionNum = sections[sectionToPlay].sectionNumber;
 
         if (sectionToPlay === 0 && 
@@ -411,18 +469,16 @@ export default function MultiFilePlayer({
         ) {
           const nextSection = sectionToPlay + 1;
           setSectionPlayed(-1);
-          finishedRef.current = true
+          finishedRef.current = true;
           if (nextSection < sections.length) {
             dispatch(setSectionToPlay(nextSection));
-            setPlayAllGPUconfig(
-              {isPlaying:true,
-                acPlusRef:acPlusRef.current,
-                sectionNumber:sections[nextSection].sectionNumber,
-                graphicsFn:0,
-                acRefs:acRefs
-              }
-            )
-  
+            setPlayAllGPUconfig({
+              isPlaying: true,
+              acPlusRef: acPlusRef.current,
+              sectionNumber: sections[nextSection].sectionNumber,
+              graphicsFn: 0,
+              acRefs: acRefs,
+            });
           } else if (!finished) {
             dispatch(setFinished(true));
             dispatch(setTryToStart(false))
@@ -466,6 +522,7 @@ export default function MultiFilePlayer({
         record={record}
         isRecording={isRecording}
         availableFiles={availableFiles}
+        files={files}
       />
       {smallPlayer === true ? (
         <Card>

@@ -37,11 +37,12 @@ export default function Player({
   loop,
   record,
   isRecording,
-  availableFiles
+  availableFiles,
+  files,
 }) {
 
   const play = async () => {
-    if (Object.keys(availableFiles).length) {
+    if ((Object.keys(availableFiles).length > 0) & (files.length > 0)) {
       await playOnClick();
     }
     if (record) {
