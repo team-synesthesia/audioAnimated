@@ -241,7 +241,7 @@ const GodRaysCombineShader = {
 		// before being combined with tColors
 
 			gl_FragColor = texture2D( tColors, vUv ) + fGodRayIntensity * vec4( 1.0 - texture2D( tGodRays, vUv ).rgb, 1. );
-                  //gl_FragColor = vec4( 1.0 - texture2D( tGodRays, vUv ).r );
+        	//gl_FragColor = vec4( 1.0 - texture2D( tGodRays, vUv ).r );
 			gl_FragColor.a = 1.0;
 
 		}`
@@ -306,10 +306,10 @@ const GodRaysFakeSunShader = {
 			diff.x *= fAspect;
 
 			float prop = clamp( length( diff ) / 0.5, 0.0, 1.0 );
-			prop = 0.35 * pow( 1.0 - prop, 1.5 );
+			prop = 0.35 * pow( 1.0 - prop, 1.6 );
 
 			float suv = sin(vUv.y);
-			vec3 bg = bgColor + vec3(0.,0.,suv*suv);
+			vec3 bg = bgColor + vec3(0.,0.,suv*suv);  //vec3(-vUv.y,-vUv.y,suv*suv) is cool but later
 			gl_FragColor.xyz = ( vSunPositionScreenSpace.z > 0.0 ) ? mix( sunColor, bg, 1.0 - prop ) : bg;
 			gl_FragColor.w = 1.0;
 

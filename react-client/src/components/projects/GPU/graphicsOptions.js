@@ -19,6 +19,7 @@ export const graphicsOptions = [
   { type: "shader", fn: 5, name: "\"Mandel Exp\"", imgUrl: "g5.jpg" },
   { type: "shader", fn: 6, name: "\"Color Companions\"", imgUrl: "g6.jpg" },
   { type: "vertex", fn: 0, name: "\"Dodeca-God Rays\"", imgUrl: "g0.jpg" },
+  { type: "vertex", fn: 1, name: "\"Dodeca-God Rays2\"", imgUrl: "g7.jpg" },
 ];
 
 let displayedLog = false;
@@ -39,7 +40,6 @@ export default function GraphicsOptions({ handleClose }) {
   }
   const devServer = "http://localhost:8080/";
   const prodUrl = window.origin + "/"
-  console.log('prod origin',prodUrl)
 
   function SetGO(index) {
     dispatch(setGraphicFN(index));
@@ -60,7 +60,9 @@ export default function GraphicsOptions({ handleClose }) {
       >
         <CloseIcon />
       </Button>
-      <Box key="graphicsOptions" id="graphicsOptions" sx={{ display: "flex" }}>
+      <Box key="graphicsOptions"
+        id="graphicsOptions" 
+        sx={{ display: "flex", flexWrap: "wrap" }}>
         {graphicsOptions.map((option, index) => (
           <div
             key={"div" + option.name}

@@ -239,7 +239,6 @@ export default function MultiFilePlayer({
       onEndCallback
     );
 
-    console.log('in playSection', acPlusRef.current.isPlaying, sectionNumber)
     setIsPlaying(acPlusRef.current.isPlaying);
 
   }, [ended, files]);
@@ -344,14 +343,7 @@ export default function MultiFilePlayer({
     if (playAllActuallyStarted) {
       const sectionNum = (sections && sections[sectionToPlay] && sections[sectionToPlay].sectionNumber) ?? -10
       if (sectionNum === sectionNumber ) {
-/*         if ( isPlaying !== playAllPlayPause && !ended && isPlaying && !toggle.current) {
-          console.log('playAll Info',sectionNumber,isPlaying,playAllPlayPause)
-          acPlusRef.current.AC.suspend()
-          setIsPlaying(false)
-          toggle.current = true
-        } */
 
-        console.log('use effect playAllPlayPause')
         if ( !playAllPlayPause ) {
           if (acPlusRef.current.AC.state === "running")
             acPlusRef.current.AC.suspend().then(val=>{console.log('suspended',sectionNumber)})
@@ -369,8 +361,6 @@ export default function MultiFilePlayer({
   React.useEffect(() => {
     //loop  through  the sections array in index order
     try {
-
-      console.log( 'first if', sectionNumber, tryToStart, finishedRef.current)
 
       if (tryToStart && !finishedRef.current ) {
 
@@ -408,7 +398,7 @@ export default function MultiFilePlayer({
           (sectionPlayed === -1) &
           !startedRef.current
         ) {
-          console.log('in big iff', sectionNumber)
+
           playSection();
           if (sectionToPlay === 0) {
             dispatch(setPlayAllActuallyStarted(true))
