@@ -514,7 +514,7 @@ export default function MultiFilePlayer({
         playOnClick={playSection}
         recordStartStop={recordStartStop}
         restartOnClick={restartOnClick}
-        disabled={disabled}   /* || (playAllActuallyStarted && !finished)} */
+        disabled={disabled  || (playAllActuallyStarted && !finished)} 
         duration={duration}
         loop={loop}
         toggleLoop={toggleLoop}

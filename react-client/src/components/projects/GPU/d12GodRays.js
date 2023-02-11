@@ -220,9 +220,9 @@ export function renderGR(md) {
         const vv = d12Mesh[i];
         vv.rotation.y += 0.01;
       }
-      d12group[0].rotation.x += 0.003 + md.sumLow / 80;
-      d12group[0].rotation.y += 0.001 + md.sumMid / 100;
-      d12group[0].rotation.z = md.sum /100;
+      d12group[0].rotation.x += .0005 + md.sumLow / 100;
+      d12group[0].rotation.y += .0007 + md.sumMid / 120;
+      d12group[0].rotation.z += .0009 + (md.sum-1) / 80
     }
     else {
       for (let i = 0; i < numElements; i++) {
