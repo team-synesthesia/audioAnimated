@@ -41,7 +41,8 @@ export function grInit({rendererIn,canvas,width,height}) {
 
     uvwidth = width; uvheight = height;  //dimensions of gr texture
 
-    materialDepth = new THREE.MeshPhongMaterial({ color: 0x2000B0, flatShading: true });
+    //materialDepth = new THREE.MeshPhongMaterial({ color: 0x2000B0 , transparent:true, opacity:.9}); //, flatShading: true });
+    materialDepth = new THREE.MeshPhongMaterial({ color: 0x2000B0 })
 
     //renderer = new THREE.WebGLRenderer({ antialias: true });
     clock = new THREE.Clock()
@@ -66,39 +67,45 @@ export function grInit({rendererIn,canvas,width,height}) {
 
     const d12 = d12Vertices(); window.d12 = d12;
 
-    d12group = new THREE.Object3D();
-    const ss = 30;
+    d12group = [new THREE.Object3D(), new THREE.Object3D()];
+    const ss = 20;
+    for (let j=1; j<=2; j++) {
     for (let i = 0; i < 20; i++) {
         //const vv = new THREE.BoxGeometry(4,6.47,1);
         //const vv = new THREE.DodecahedronGeometry(9,2);
-        const vv = new THREE.TorusGeometry(12, 3, 6, 9);
+        //const vv = new THREE.TorusGeometry(12, 3, 6, 9);
+        const vv = new THREE.TorusGeometry(8*j, 3, 3, 6);
         let vvMesh = new THREE.Mesh(vv, materialDepth);
         //vvMesh.scale.multiplyScalar(5);
-        vvMesh.position.x = d12[i * 3] * ss;
-        vvMesh.position.y = d12[i * 3 + 1] * ss;
-        vvMesh.position.z = d12[i * 3 + 2] * ss;
-        vvMesh.rotation.x = Math.random() * 2;
-        vvMesh.rotation.y = Math.random() * 3;
+        vvMesh.position.x = d12[i * 3] * ss*j;
+        vvMesh.position.y = d12[i * 3 + 1] * ss*j;
+        vvMesh.position.z = d12[i * 3 + 2] * ss*j;
+        const d12spherical = new THREE.Spherical()
+        d12spherical.setFromVector3(vvMesh.position)
+
+        vvMesh.rotation.x = d12spherical.phi  //Math.random() * 2;
+        vvMesh.rotation.y = d12spherical.theta   //Math.random() * 3;
         vvMesh.castShadow = true;
         vvMesh.receiveShadow = true;
 
-        d12group.add(vvMesh);
+        d12group[j-1].add(vvMesh);
         d12Mesh.push(vvMesh);
     }
-
-    scene.add(d12group);
+    }
+    scene.add(d12group[0]);
+    scene.add(d12group[1]);
 
     renderer.autoClear = false;
 
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.minDistance = 50;
-    controls.maxDistance = 500;
+    controls.minDistance = -10;
+    controls.maxDistance = 200;
 
     controls.minPolarAngle = 0
     controls.maxPolarAngle = Math.PI
 
     controls.minAzimuthAngle = -Math.PI/2.5
-    controls.maxAzimuthAngle = Math.PI/2.5
+    controls.maxAzimuthAngle = Math.PI/2.5 
 
     //
 
@@ -188,14 +195,19 @@ export function renderGR(md) {
     stats.begin();
     //const cc = Math.cos(time), ss = Math.sin(time);
 
-    for (let i = 0; i < 20; i++) {
+    //we need to cancel animation frame
+    //console.log(md.sum,md.sumLow,md.sumMid,md.sumHigh)
+    const iMusic = [md.sum,md.sumLow,md.sumMid,md.sumHigh]
+    for (let i = 0; i < 40; i++) {
         const vv = d12Mesh[i];
-        vv.rotation.y += .01;
+        vv.rotation.y = Math.sin(iMusic[i%3]*2)*3    //.01;
+        vv.rotation.z = Math.cos(iMusic[(i+1)%3]*2)*3
+        //vv.material.color = new THREE.Color(iMusic[0]/3,iMusic[1]/3,iMusic[2]/3)
     }
 
-    d12group.rotation.x += .003 + md.sumLow/30;
-    d12group.rotation.y += .001 + md.sumMid/30;
-    //d12group.rotation.z += .002 + md.sum/30;
+    d12group[0].rotation.x += .02 * (1+md.sum/20)//md.sumLow;
+    d12group[1].rotation.y += .01 * (1+md.sumLow/20)//md.sumMid;
+    //d12group.rotation.z = md.sum
 
     if (postprocessing.enabled) {
 

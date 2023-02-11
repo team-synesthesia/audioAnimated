@@ -12,6 +12,7 @@ export const playAllSlice = createSlice({
         graphicFN: 0,
         playAllPlayPause: false,
         playAllActuallyStarted: false,
+        playAllWaitingForData: false
     },
     reducers: {
         setSectionToPlay(state,action) {
@@ -40,6 +41,9 @@ export const playAllSlice = createSlice({
         },
         setPlayAllActuallyStarted(state,action) {
             state.playAllActuallyStarted = action.payload
+        },
+        setPlayAllWaitingForData(state,action) {
+            state.playAllWaitingForData = action.payload
         }
     }
 })

@@ -353,10 +353,12 @@ export default function MultiFilePlayer({
 
         console.log('use effect playAllPlayPause')
         if ( !playAllPlayPause ) {
-            acPlusRef.current.AC.suspend().then(val=>{console.log('suspended')})
+          if (acPlusRef.current.AC.state === "running")
+            acPlusRef.current.AC.suspend().then(val=>{console.log('suspended',sectionNumber)})
         }
         else if ( playAllPlayPause ) {
-            acPlusRef.current.AC.resume().then(val=>{console.log('resumed')})
+          if ("suspended interrupted".includes(acPlusRef.current.AC.state))
+            acPlusRef.current.AC.resume().then(val=>{console.log('resumed',sectionNumber)})
         }
 
       }
@@ -368,7 +370,7 @@ export default function MultiFilePlayer({
     //loop  through  the sections array in index order
     try {
 
-      console.log( 'in big iff before first if', sectionNumber)
+      console.log( 'first if', sectionNumber, tryToStart, finishedRef.current)
 
       if (tryToStart && !finishedRef.current ) {
 
@@ -456,6 +458,7 @@ export default function MultiFilePlayer({
     setPlayAllGPUconfig,
     finished,
   ]);
+
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>

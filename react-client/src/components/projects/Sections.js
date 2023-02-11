@@ -21,8 +21,7 @@ export default function Sections({ sections, userId, projectId, graphicsFn }) {
   const [singleSectionRender, setSingleSectionRender] = React.useState(false);
   const [selectedSectionId, setSelectedSectionId] = React.useState(1);
   const [selectedSection, setSelectedSection] = React.useState({});
-  const [assignSectionFormActive, setAssignSectionFormActive] =
-    React.useState(false);
+  const [assignSectionFormActive, setAssignSectionFormActive] = React.useState(false);
 
   React.useEffect(() => {
     if (singleSection) {

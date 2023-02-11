@@ -41,9 +41,9 @@ function getCustomTheme(index) {
 const App = ({ theme }) => {
   const [liveTheme, setLiveTheme] = useState(theme);
   const globalGraphicsFn = useSelector((state) => state.auth.globalGraphicsFn);
-  console.log("here it is", globalGraphicsFn);
+  
   useEffect(() => {
-    console.log(globalGraphicsFn);
+    
     if (globalGraphicsFn !== null) {
       const customTheme = getCustomTheme(globalGraphicsFn);
       if (customTheme) {
