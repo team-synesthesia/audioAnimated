@@ -33,7 +33,7 @@ const EditProjectLatencyFix = ({ handleClose }) => {
   };
 
   React.useEffect(() => {
-    if ((newLatencyFix >= 0) & (newLatencyFix <= 1)) {
+    if ((newLatencyFix >= 0) & (newLatencyFix <= 1.5)) {
       setError(false);
     } else {
       setError(true);
@@ -61,7 +61,9 @@ const EditProjectLatencyFix = ({ handleClose }) => {
               value={newLatencyFix}
               onChange={changeLatencyFix}
               error={error}
-              helperText={error ? "Adjustment should be between 0 and 1" : null}
+              helperText={
+                error ? "Adjustment should be between 0 and 1.5" : null
+              }
             />
           </div>
           <Button
