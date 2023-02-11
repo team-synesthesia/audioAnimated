@@ -218,10 +218,11 @@ export function renderGR(md) {
 
       for (let i = 0; i < numElements; i++) {
         const vv = d12Mesh[i];
-        vv.rotation.y += 0.03;
+        vv.rotation.y += 0.01;
       }
-      d12group[0].rotation.x += 0.003 + md.sumLow / 30;
-      d12group[0].rotation.y += 0.001 + md.sumMid / 30;
+      d12group[0].rotation.x += 0.003 + md.sumLow / 80;
+      d12group[0].rotation.y += 0.001 + md.sumMid / 100;
+      d12group[0].rotation.z = md.sum /100;
     }
     else {
       for (let i = 0; i < numElements; i++) {

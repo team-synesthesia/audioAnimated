@@ -434,7 +434,6 @@ export default function MultiFilePlayer({
           playAllCanvasRef.current.style.transform = "translate(0,-5vh)"
           playAllCanvasCreatedRef.current = true
           finishedRef.current = false
-          //dispatch(setPlayAllStarted(true))
           setPlayAllGPUconfig(
             {isPlaying:true,
               acPlusRef:acPlusRef.current,
@@ -515,7 +514,7 @@ export default function MultiFilePlayer({
         playOnClick={playSection}
         recordStartStop={recordStartStop}
         restartOnClick={restartOnClick}
-        disabled={disabled || (playAllStarted && !finished)}
+        disabled={disabled}   /* || (playAllActuallyStarted && !finished)} */
         duration={duration}
         loop={loop}
         toggleLoop={toggleLoop}
