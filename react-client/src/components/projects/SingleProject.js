@@ -29,15 +29,7 @@ const SingleProject = () => {
   return (
     <Box sx={{ minHeight: "100vh" }}>
       <PermanentDrawerLeft projectId={project.id} userId={userId} />
-      {project.type === "looper" ? (
-        <LooperProject
-          project={project}
-          userId={userId}
-          projectId={projectId}
-        />
-      ) : (
-        <h1>Single Project</h1>
-      )}
+      <LooperProject project={project} userId={userId} projectId={projectId} />
     </Box>
   );
 };

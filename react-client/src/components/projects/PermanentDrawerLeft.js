@@ -84,6 +84,18 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
             </ListItemButton>
           </ListItem>
 
+          <ListItem disablePadding sx={{ minWidth: "0" }}>
+            <ListItemButton onClick={() => handleOpen("editProjectLatencyFix")}>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
+                <DriveFileRenameOutlineIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Edit Latency Adj"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
+            </ListItemButton>
+          </ListItem>
+
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleOpen("changeGraphicsFn")}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
@@ -95,7 +107,6 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               />
             </ListItemButton>
           </ListItem>
-
           <ListItem disablePadding>
             <ListItemButton 
                 /* onClick={() => handleOpen("playAll")} */
