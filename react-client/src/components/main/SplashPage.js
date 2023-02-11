@@ -91,7 +91,10 @@ const SplashPage = (props) => {
             variant="text"
             color="info"
             onClick={() => {
-              window.scrollTo(0, 1000);
+              window.scrollTo({
+                top: 1000,
+                behavior: "smooth",
+              });
             }}
           >
             <Typography variant="h6">Learn More</Typography>
@@ -121,7 +124,10 @@ const SplashPage = (props) => {
               variant="text"
               color="info"
               onClick={() => {
-                window.scrollTo(0, 2300);
+                window.scrollTo({
+                  top: 2300,
+                  behavior: "smooth",
+                });
               }}
             >
               <Typography variant="h6">See our Graphics</Typography>
