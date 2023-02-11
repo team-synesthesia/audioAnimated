@@ -40,7 +40,6 @@ export default function Player({
   availableFiles,
   files,
 }) {
-
   const play = async () => {
     if ((Object.keys(availableFiles).length > 0) & (files.length > 0)) {
       await playOnClick();
@@ -106,7 +105,9 @@ export default function Player({
               )}
             </IconButton>
             <TinyText>{formatDuration(Math.round(currentTime))}</TinyText>
-            <TinyText>{"/" + formatDuration(Math.round(duration))}</TinyText>
+            {duration === 0 ? null : (
+              <TinyText>{"/" + formatDuration(Math.round(duration))}</TinyText>
+            )}
           </Box>
           {!record ? (
             <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
