@@ -41,6 +41,10 @@ export default function MultiFilePlayer({
 }) {
   const dispatch = useDispatch();
 
+  const { recordLatencyAdjustment } = useSelector(
+    (state) => state.singleProject
+  );
+
   const audioRawFiles = useSelector(
     (state) => state.singleProject.audioRawFiles
   );
@@ -140,7 +144,8 @@ export default function MultiFilePlayer({
     const fnSaveRecording = async () => {
       const file = convertChunksToWavBlob(
         context.current,
-        recordingMessages.current
+        recordingMessages.current,
+        recordLatencyAdjustment
       );
       const filePath = `${newFileName}.wav`;
       const data = {
@@ -163,6 +168,7 @@ export default function MultiFilePlayer({
     }
   }, [
     dispatch,
+    recordLatencyAdjustment,
     recordingMessages,
     saveRecording,
     userId,

@@ -1,6 +1,8 @@
-export default function convertChunksToWavBlob(audioContext, saveBuffers) {
-  console.log("save buffers ", saveBuffers);
-
+export default function convertChunksToWavBlob(
+  audioContext,
+  saveBuffers,
+  trimStartSeconds
+) {
   let buffer = Float32Concat(saveBuffers[0], saveBuffers[1]);
 
   for (let i = 2; i < saveBuffers.length; i++) {
@@ -17,7 +19,7 @@ export default function convertChunksToWavBlob(audioContext, saveBuffers) {
 
   // Try to create WAV file from data:
 
-  const blob = bufferToWave(rb, buffer.length);
+  const blob = bufferToWave(rb, buffer.length, trimStartSeconds);
   return blob;
 
   // For testing download wav in browser:
@@ -47,17 +49,17 @@ function Float32Concat(first, second) {
   return result;
 }
 
-function bufferToWave(abuffer, len) {
+function bufferToWave(abuffer, len, trimStartSeconds) {
   var numOfChan = 1, //abuffer.numberOfChannels,
     length = len * numOfChan * 2 + 44,
     buffer = new ArrayBuffer(length),
     view = new DataView(buffer),
     i,
     sample,
-    offset = 0,
     pos = 0;
 
-  console.log("wav file", abuffer, len, length);
+  let offset = trimStartSeconds * abuffer.sampleRate;
+
   // write WAVE header
   setUint32(0x46464952); // "RIFF"
   setUint32(length - 8); // file length - 8
@@ -80,8 +82,6 @@ function bufferToWave(abuffer, len) {
   //  channels.push(abuffer.getChannelData(i));
 
   const ch = abuffer.getChannelData(0);
-
-  //console.log(channels)
 
   while (pos < length) {
     for (i = 0; i < numOfChan; i++) {
