@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Route, Routes, Navigate } from "react-router-dom";
 import {
-  Profile,
   AuthForm,
   SplashPage,
   NotFound,
   SingleProject,
   AllProjects,
+  FinalProjectView,
 } from "../";
 import { me } from "../../features";
 
@@ -55,6 +55,7 @@ const AppRoutes = () => {
           />
         </>
       )}
+      <Route path="/share/:projectId" element={<FinalProjectView />}></Route>
       <Route path="/*" element={<NotFound />} />
     </Routes>
   );

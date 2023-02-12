@@ -17,10 +17,12 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import MicIcon from "@mui/icons-material/Mic";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import PauseIcon from "@mui/icons-material/Pause";
+import ShareIcon from "@mui/icons-material/Share";
 
 import TransitionsModal from "./TransitionsModal";
 
-import { useDispatch } from "react-redux"
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setPlayAllStarted, setPlayAllPlayPause } from "../../features";
 
 const drawerWidth = "12vw";
@@ -37,12 +39,20 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
     setOpen(true);
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    if (modalType === "record") {
+      window.location.reload();
+    }
+  };
 
   const { availableFiles, name } = useSelector((state) => state.singleProject);
   const availableFilesValues = Object.values(availableFiles);
-  const {playAllStarted, playAllPlayPause} = useSelector(state=>state.playAll)
-  const dispatch = useDispatch()
+  const { playAllStarted, playAllPlayPause } = useSelector(
+    (state) => state.playAll
+  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -108,30 +118,39 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton 
-                /* onClick={() => handleOpen("playAll")} */
-                  onClick={()=> {
-                    if (!playAllStarted) {
-                      dispatch(setPlayAllStarted(true))
-                      dispatch(setPlayAllPlayPause(true))
-                    }
-                    else if (playAllPlayPause) {
-                      dispatch(setPlayAllPlayPause(false))
-                    }
-                    else {
-                      dispatch(setPlayAllPlayPause(true))
-                    }
-                  }
-                } 
-              > 
+            <ListItemButton
+              /* onClick={() => handleOpen("playAll")} */
+              onClick={() => {
+                if (!playAllStarted) {
+                  dispatch(setPlayAllStarted(true));
+                  dispatch(setPlayAllPlayPause(true));
+                } else if (playAllPlayPause) {
+                  dispatch(setPlayAllPlayPause(false));
+                } else {
+                  dispatch(setPlayAllPlayPause(true));
+                }
+              }}
+            >
               <ListItemIcon sx={{ minWidth: "40px" }}>
-                { (!playAllStarted || (playAllStarted && !playAllPlayPause) ) ?
-                (<VideoLibraryIcon />):
-                (<PauseIcon />)
-              }
+                {!playAllStarted || (playAllStarted && !playAllPlayPause) ? (
+                  <VideoLibraryIcon />
+                ) : (
+                  <PauseIcon />
+                )}
               </ListItemIcon>
               <ListItemText
                 primary={"Play  All"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate(`/share/${projectId}`)}>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
+                <ShareIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Share Project"}
                 primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
               />
             </ListItemButton>

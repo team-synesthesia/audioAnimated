@@ -7,9 +7,9 @@ import TextField from "@mui/material/TextField";
 import MultiFilePlayer from "../MultiFilePlayer";
 
 const MESSAGES = {
-  label: "Label, you're recording",
+  label: "Label your recording",
   begin: "Click on the microphone to begin recording",
-  recording: "Click the Mic again to stop recording",
+  recording: "Click on the microphone again to stop recording",
   stopped: "Recording is being processed, hang tight...",
 };
 

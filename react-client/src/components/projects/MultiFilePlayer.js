@@ -39,6 +39,7 @@ export default function MultiFilePlayer({
   setPlayAllGPUconfig,
   useMetronome,
   metronomeTempo,
+  final,
 }) {
   const dispatch = useDispatch();
 
@@ -483,8 +484,8 @@ export default function MultiFilePlayer({
           !playAllCanvasCreatedRef.current
         ) {
           playAllCanvasRef.current.classList.remove("hidden");
-          playAllCanvasRef.current.style.width = "84vw";
-          playAllCanvasRef.current.style.height = "82vh";
+          playAllCanvasRef.current.style.width = final ? "100vw" : "84vw";
+          playAllCanvasRef.current.style.height = final ? "75vh" : "82vh";
           playAllCanvasRef.current.style.transform = "translate(0,-5vh)";
           playAllCanvasCreatedRef.current = true;
           finishedRef.current = false;
@@ -551,6 +552,7 @@ export default function MultiFilePlayer({
     acRefs,
     setPlayAllGPUconfig,
     finished,
+    final,
   ]);
 
   return (
