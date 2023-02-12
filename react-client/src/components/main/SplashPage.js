@@ -87,10 +87,24 @@ const SplashPage = (props) => {
             height: "10vh",
           }}
         >
-          <Typography variant="h6">Learn More</Typography>
-          <KeyboardArrowDownIcon />
+          <Button
+            variant="text"
+            color="info"
+            onClick={() => {
+              const el = document.getElementById("splash-studio");
+
+              el.scrollIntoView({
+                top: true,
+                behavior: "smooth",
+              });
+            }}
+          >
+            <Typography variant="h6">Learn More</Typography>
+            <KeyboardArrowDownIcon />
+          </Button>
         </Grid>
         <Grid
+          id="splash-studio"
           item
           xs={12}
           sm={6}
@@ -109,7 +123,20 @@ const SplashPage = (props) => {
               connecting tracks together.
             </Typography>
             <br />
-            <KeyboardArrowDownIcon />
+            <Button
+              variant="text"
+              color="info"
+              onClick={() => {
+                const el = document.getElementById("splash-graphics");
+                el.scrollIntoView({
+                  top: true,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              <Typography variant="h6">See our Graphics</Typography>
+              <KeyboardArrowDownIcon />
+            </Button>
           </Container>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -143,7 +170,7 @@ const SplashPage = (props) => {
             <KeyboardArrowDownIcon />
           </Container>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid id="splash-graphics" item xs={12} sm={6}>
           <Card>
             <CardMedia
               component="img"

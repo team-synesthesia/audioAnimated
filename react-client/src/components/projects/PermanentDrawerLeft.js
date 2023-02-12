@@ -39,7 +39,12 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
     setOpen(true);
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    if (modalType === "record") {
+      window.location.reload();
+    }
+  };
 
   const { availableFiles, name } = useSelector((state) => state.singleProject);
   const availableFilesValues = Object.values(availableFiles);
