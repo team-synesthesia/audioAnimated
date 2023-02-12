@@ -2,9 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import IconButton from "@mui/material/IconButton";
 import { Box, Link } from "@mui/material";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
+import Sections from "./Sections";
 import { fetchSingleProjectAsync, getFilesAsync } from "../../features";
+import { setPlayAllStarted, setPlayAllPlayPause } from "../../features";
 
 const FinalProjectView = () => {
   const { projectId } = useParams();
@@ -14,7 +20,11 @@ const FinalProjectView = () => {
     dispatch(fetchSingleProjectAsync({ projectId }));
   }, [dispatch, projectId]);
 
+  const { playAllStarted, playAllPlayPause } = useSelector(
+    (state) => state.playAll
+  );
   const project = useSelector((state) => state.singleProject);
+  const { sections, graphicsFn } = project;
   const { availableFiles } = project;
 
   useEffect(() => {
@@ -41,6 +51,27 @@ const FinalProjectView = () => {
         alignItems: "center",
       }}
     >
+      <Sections
+        sections={sections}
+        projectId={projectId}
+        graphicsFn={graphicsFn}
+        final={true}
+      />
+      <PlayerButton
+        isPlaying={playAllPlayPause}
+        playAllStarted={playAllStarted}
+        onClick={() => {
+          if (!playAllStarted) {
+            dispatch(setPlayAllStarted(true));
+            dispatch(setPlayAllPlayPause(true));
+          } else if (playAllPlayPause) {
+            dispatch(setPlayAllPlayPause(false));
+          } else {
+            dispatch(setPlayAllPlayPause(true));
+          }
+        }}
+      />
+
       <div>Share using this link!</div>
       {showCopiedMsg ? <small>Copied to clipboard</small> : null}
       <Link
@@ -55,5 +86,19 @@ const FinalProjectView = () => {
     </Box>
   );
 };
+
+function PlayerButton({ isPlaying, onClick, disabled }) {
+  return (
+    <div>
+      <IconButton aria-label="play/pause" onClick={onClick} disabled={disabled}>
+        {isPlaying ? (
+          <PauseIcon sx={{ height: 38, width: 38 }} />
+        ) : (
+          <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+        )}
+      </IconButton>
+    </div>
+  );
+}
 
 export default FinalProjectView;
