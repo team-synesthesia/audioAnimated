@@ -6,11 +6,11 @@ import Alert from "@mui/material/Alert";
 import MultiFilePlayer from "../MultiFilePlayer";
 
 const MESSAGES = {
-  begin: "Hit the play button to listen back",
+  begin: "Click the play button to listen back",
   playing:
-    "If you're satisfied with you're recording, hit the 'DONE', or hit the trash can to delete",
+    "If you're satisfied with your recording, click 'DONE', or click the trash can to delete",
   stopped:
-    "If you're satisfied with you're recording, hit the 'DONE', or hit the trash can to delete",
+    "If you're satisfied with your recording, click 'DONE', or click the trash can to delete",
 };
 
 export default function PlaybackForm({ selectedFiles }) {
