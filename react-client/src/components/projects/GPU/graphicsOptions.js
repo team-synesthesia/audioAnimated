@@ -18,9 +18,9 @@ export const graphicsOptions = [
   { type: "shader", fn: 4, name: "\"D20 Bubbles\"", imgUrl: "g4.jpg" },
   { type: "shader", fn: 5, name: "\"Mandel Exp\"", imgUrl: "g5.jpg" },
   { type: "shader", fn: 6, name: "\"Color Companions\"", imgUrl: "g6.jpg" },
-  { type: "shader", fn: 7, name: "\"Shiny Blue KIFS\"", imgUrl: "g5.jpg" },
   { type: "vertex", fn: 0, name: "\"Dodeca-God Rays\"", imgUrl: "g0.jpg" },
   { type: "vertex", fn: 1, name: "\"Dodeca-God Rays2\"", imgUrl: "g7.jpg" },
+  { type: "shader", fn: 7, name: "\"Golden Blob\"", imgUrl: "g8.jpg" },
 ];
 
 let displayedLog = false;

@@ -848,12 +848,12 @@ varying vec2 vUv;
 #define N     normalize
 
 float t, e=1., l=0., d, i=0.; // globals
-vec2 mm;  //Mouse
+vec2 mm;  //Mouse 
 
 float f(vec3 p) {
-  vec3  o = vec3(1,.75,.15), q;
-  float d=1e6, s=-.0065-.0002*iMusic.y, a=1.,r=.02, i=0., k = o.z*s;
-  for( p.xz *= R(t/7.) ; i++<17.; )  //+min(max(-10.,iMusic.y/10.),2.) ; )
+  vec3  o = vec3(1.,.75,.15), q;
+  float d=1e6, s=-.0075-.0002*iMusic.y, a=1.,r=.02, i=0., k = o.z*s;
+  for( p.xz *= R(t/7.) ; i++<17.; ) 
       a *= 1.-s,
       p.xy *= R(mm.x)  , p.yz *= R(mm.y), // rotations here have large impact on shape
       p = abs(p),
@@ -868,21 +868,19 @@ float f(vec3 p) {
 }
 
 void mainImage(out vec4 O, in vec2 U) {
-  t = iTime; // + iMusic.w/200.;
+  t = iTime;
   vec3 R = iResolution, E = vec3(1,-1,-1), n,
-       L =  vec3( cos(iTime/5.+iMusic.z/4.),0.,-2.+sin(iTime/5.+iMusic.z/4.) ),        // light pos
+       L =  vec3( cos(iTime/5.+iMusic.z/8.),0.,-2.+sin(iTime/5.+iMusic.z/4.) ),        // light pos
        D = N( vec3( U+U,-R.y) - R.xyy ),   // ray pos and dir
-       P = R-R; P.z = .3; //P.x=-.3; //max(0., .24 - max(.7*sin((t+6.28)/2.),0.));
+       P = R-R; P.z = max(0., .4 - max(.7*sin((t)/3.),0.));
 
-  //mm=5.*vec2(.25, ( iMusic.w>0.)?.08:.09 );
-  mm=5.*vec2(.235+.01*smoothstep(-100.,100.,iMusic.x), .07+.02*smoothstep(-100.,100.,iMusic.w ) );
+  mm=5.*vec2(.235+.01*iMusic.x/2., .07+.02*iMusic.y/50. );
       
   O = vec4(0.,0.,0.,1.);
   for ( ; i++<1e2 && l<3. && e>0.; P += d*D ) {
       l += d = f(P)*.7;
       e = d - (1.+l*l)/4e4;
-      //float dd = sin(d*10.); dd*=dd;
-      //O = vec4(dd,dd,dd,1.);
+
       if( e < 0. ) {
           P += e*D;
           L = N(L-P);
