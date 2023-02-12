@@ -102,7 +102,14 @@ export default function AllProjects() {
                     <CardActions
                       sx={{ display: "flex", justifyContent: "space-evenly" }}
                     >
-                      <Button size="small">View Final</Button>
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          navigate(`/share/${project.id}`);
+                        }}
+                      >
+                        View Final
+                      </Button>
                       <Button
                         size="small"
                         onClick={() => {
