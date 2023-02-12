@@ -49,15 +49,14 @@ export  const fragmentShaders = [
         vec2 jc = 3.*(-vec2(.5));
         jc.x += jc.y/50.; jc.y = 0.; jc.x -= .5; 
     
-        jc = vec2(-.95 -.4*smoothstep(0.,100.,iMusic.z),0.);
+        jc = vec2(-.95 -.2*smoothstep(-100.,100.,iMusic.z),0.);
         vec2 iter=final_uv, new_iter;
     
         float escape_value = 0.;
     
-        MAX_ITER = iMusic.x*3.;
+        MAX_ITER = iMusic.x; //+=  ((-15.*smoothstep(-100.,100.,iMusic.x))/3.)*3.+1.;    
      
-        //why is this behaving like webgl1???? -because we were using 0.67.0 instead of 0.149.0
-        //have to explicitly give npm install three@0.149.0
+        //why is this behaving like webgl1????
         for ( float i=0.; i<100.; i++ ) {
             if ( i>MAX_ITER) break;    
             new_iter = invz2(iter) + jc; iter = new_iter;
@@ -898,6 +897,66 @@ void main() {
   mainImage(gl_FragColor, vUv*iResolution.xy);
 }
 
+
+`,
+
+`
+///////////////// odeToJulia2   more fractally
+    precision mediump float;
+    varying vec2 vUv;
+    uniform vec3  iResolution;
+    uniform float iTime;
+    uniform vec4  iMusic;
+    
+    float MAX_ITER=17.;  //if you are at a point that looks random reduce this to 5 or 10
+    vec2 invz2( in vec2 z ) {  //1/z^2 here, z being complex
+        float xy = z.x*z.y; z*=z;
+        float modz2 = 1./max(z.x*z.x + z.y*z.y + 2.*xy*xy, 1e-3);
+        z.x = z.x - z.y; z.y = -2.*xy; return modz2*z; }
+    
+    void mainImage( out vec4 fragColor, in vec2 fragCoord )
+    {
+    
+        vec2 uv = (2.*fragCoord-iResolution.xy)/iResolution.y;
+    
+        vec2 center = vec2(0.,0.), width  = vec2( 2.5); 
+        vec2 final_uv = (uv*width - center);
+        float mix_factor=1., infinity=1e5;
+    
+        vec2 jc = 3.*(-vec2(.5));
+        jc.x += jc.y/50.; jc.y = 0.; jc.x -= .5; 
+    
+        jc = vec2(-.95 -.4*smoothstep(0.,100.,iMusic.z),0.);
+        vec2 iter=final_uv, new_iter;
+    
+        float escape_value = 0.;
+    
+        MAX_ITER = iMusic.x*2.4;
+     
+        //why is this behaving like webgl1???? -because we were using 0.67.0 instead of 0.149.0
+        //have to explicitly give npm install three@0.149.0
+        for ( float i=0.; i<100.; i++ ) {
+            if ( i>MAX_ITER) break;    
+            new_iter = invz2(iter) + jc; iter = new_iter;
+            float distance = new_iter.x*new_iter.x + new_iter.y*new_iter.y;
+            if ( distance > infinity ) {
+                escape_value = i; break; }       
+        }    
+    
+        if ( escape_value != 0. ) {
+            fragColor = vec4( vec3(0.), 1.);
+        }
+        else {
+            vec2 l1 = cos(log(abs(new_iter))*vec2(.3,.15));
+            float l2 = cos(atan( new_iter.y/new_iter.x)*.5);
+            fragColor = vec4( pow( (vec3( l1, l2)),vec3(8.)), 1. );
+        }
+    
+    }
+    
+    void main() {
+        mainImage(gl_FragColor, vUv*iResolution.xy);
+    }
 
 `
     ]

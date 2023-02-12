@@ -16,6 +16,8 @@ const primaryColors = {
   5: "#702020",
   6: "#B1A8C5",
   7: "#B1A8F5",
+  8: "#EED000",
+  9: "#A000B0"
 };
 
 export default function SingleSectionView({
