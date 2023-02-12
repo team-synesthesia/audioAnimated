@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, Card, Button, Input, Modal } from "@mui/material";
+import { Alert, Box, Card, Button, Input, Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { createProjectAsync } from "../../features";
@@ -17,18 +17,24 @@ const AddNewProject = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [name, setName] = useState("");
+  const [showUniqueErrorMessage, setShowUniqueErrorMessage] = useState(false);
 
+  let nameIsUnique = true;
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!name) {
-      setName(`Project ${projects.length + 1}`);
+    for (let project of projects) {
+      if (name === project.name) {
+        nameIsUnique = false;
+        setShowUniqueErrorMessage(true);
+      }
     }
 
-    const { payload } = await dispatch(createProjectAsync({ userId, name }));
+    const { payload } =
+      nameIsUnique && (await dispatch(createProjectAsync({ userId, name })));
     setName("");
 
-    navigate(`${payload.id}`);
+    nameIsUnique && navigate(`${payload.id}`);
   };
 
   return (
@@ -48,6 +54,11 @@ const AddNewProject = () => {
               <CloseIcon />
             </Button>
           </Box>
+          {showUniqueErrorMessage && (
+            <Box sx={{ textAlign: "center" }}>
+              <Alert severity="error">Please use a unique name</Alert>
+            </Box>
+          )}
           <form onSubmit={handleSubmit}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <div>
@@ -56,7 +67,11 @@ const AddNewProject = () => {
                   name="projectName"
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setShowUniqueErrorMessage(false);
+                  }}
+                  required
                 />
               </div>
               <Button
