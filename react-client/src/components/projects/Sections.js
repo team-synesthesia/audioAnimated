@@ -93,22 +93,24 @@ export default function Sections({
       style={canvasStyle}
       className="hidden"
     >
-      <IconButton
-        sx={{
-          position: "absolute",
-          left: "0",
-          color: "blue",
-          backgroundColor: "white",
-          "&:hover": { color: "white", backgroundColor: "rgb(50,50,100)" },
-        }}
-        onClick={(ev) => {
-          playAllCanvasRef.current &&
-            playAllCanvasRef.current.classList.add("hidden");
-          dispatch(setFinished(true));
-        }}
-      >
-        <CloseIcon />
-      </IconButton>
+      {final ? null : (
+        <IconButton
+          sx={{
+            position: "absolute",
+            left: "0",
+            color: "blue",
+            backgroundColor: "white",
+            "&:hover": { color: "white", backgroundColor: "rgb(50,50,100)" },
+          }}
+          onClick={(ev) => {
+            playAllCanvasRef.current &&
+              playAllCanvasRef.current.classList.add("hidden");
+            dispatch(setFinished(true));
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      )}
     </div>,
 
     <div key="sectionContainer" className={final ? "hidden" : null}>

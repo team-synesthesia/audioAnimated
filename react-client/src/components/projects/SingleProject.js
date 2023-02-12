@@ -6,6 +6,8 @@ import PermanentDrawerLeft from "./PermanentDrawerLeft";
 import { Box } from "@mui/material";
 
 import { fetchSingleProjectAsync, getFilesAsync } from "../../features/";
+import { setGlobalGraphics } from "../../features";
+import { setGraphicFN } from "../../features";
 import LooperProject from "./LooperProject";
 
 const SingleProject = () => {
@@ -18,7 +20,14 @@ const SingleProject = () => {
   }, [dispatch, projectId]);
 
   const project = useSelector((state) => state.singleProject);
-  const { availableFiles } = project;
+  const { availableFiles, graphicsFn } = project;
+
+  useEffect(() => {
+    if (graphicsFn) {
+      dispatch(setGraphicFN(graphicsFn));
+      dispatch(setGlobalGraphics(graphicsFn));
+    }
+  }, [dispatch, graphicsFn]);
 
   useEffect(() => {
     if (Object.keys(availableFiles).length) {
