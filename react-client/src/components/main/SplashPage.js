@@ -91,8 +91,10 @@ const SplashPage = (props) => {
             variant="text"
             color="info"
             onClick={() => {
-              window.scrollTo({
-                top: 1000,
+              const el = document.getElementById("splash-studio");
+
+              el.scrollIntoView({
+                top: true,
                 behavior: "smooth",
               });
             }}
@@ -102,6 +104,7 @@ const SplashPage = (props) => {
           </Button>
         </Grid>
         <Grid
+          id="splash-studio"
           item
           xs={12}
           sm={6}
@@ -124,8 +127,9 @@ const SplashPage = (props) => {
               variant="text"
               color="info"
               onClick={() => {
-                window.scrollTo({
-                  top: 2300,
+                const el = document.getElementById("splash-graphics");
+                el.scrollIntoView({
+                  top: true,
                   behavior: "smooth",
                 });
               }}
@@ -166,7 +170,7 @@ const SplashPage = (props) => {
             <KeyboardArrowDownIcon />
           </Container>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid id="splash-graphics" item xs={12} sm={6}>
           <Card>
             <CardMedia
               component="img"
