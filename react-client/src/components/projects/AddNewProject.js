@@ -17,18 +17,24 @@ const AddNewProject = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [name, setName] = useState("");
+  const [showUniqueErrorMessage, setShowUniqueErrorMessage] = useState(true);
 
+  let nameIsUnique = true;
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!name) {
-      setName(`Project ${projects.length + 1}`);
+    for (let project of projects) {
+      if (name === project.name) {
+        nameIsUnique = false;
+        setShowUniqueErrorMessage(false);
+      }
     }
 
-    const { payload } = await dispatch(createProjectAsync({ userId, name }));
+    const { payload } =
+      nameIsUnique && (await dispatch(createProjectAsync({ userId, name })));
     setName("");
 
-    navigate(`${payload.id}`);
+    nameIsUnique && navigate(`${payload.id}`);
   };
 
   return (
@@ -48,6 +54,7 @@ const AddNewProject = () => {
               <CloseIcon />
             </Button>
           </Box>
+          {!showUniqueErrorMessage && <small>Please use a unique name</small>}
           <form onSubmit={handleSubmit}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <div>
@@ -57,6 +64,7 @@ const AddNewProject = () => {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  required
                 />
               </div>
               <Button

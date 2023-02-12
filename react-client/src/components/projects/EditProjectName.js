@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Button, Box, Card, Input } from "@mui/material";
+import { Button, Box, Input } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { updateProjectAsync } from "../../features";
@@ -38,6 +38,7 @@ const EditProjectName = ({ handleClose }) => {
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
+              required
             />
           </div>
           <Button
