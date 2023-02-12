@@ -17,6 +17,7 @@ import {
   setFinished,
   setTryToStart,
   setPlayAllActuallyStarted,
+  setPlayAllStarted
 } from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
@@ -58,7 +59,6 @@ export default function MultiFilePlayer({
     tryToStart,
     finished,
     playAllPlayPause,
-    playAllStarted,
     playAllActuallyStarted,
   } = useSelector((state) => state.playAll);
 
@@ -160,8 +160,8 @@ export default function MultiFilePlayer({
         userId: userId,
         projectId: projectId,
       };
-      await dispatch(writeFileAsync({ projectId, filePath, file }));
-      await dispatch(addFileAsync(data));
+      dispatch(writeFileAsync({ projectId, filePath, file }));
+      dispatch(addFileAsync(data));
       setRecorded(true);
     };
     if (
@@ -363,14 +363,16 @@ export default function MultiFilePlayer({
 
   React.useEffect(() => {
     if (renderGraphics) {
+      //acRefs.current[sectionNumber] = acPlusRef.current
       setGPUconfig({
         isPlaying,
         acPlusRef: acPlusRef.current,
         sectionNumber,
         graphicsFn: sectionNumber - 1,
+        //acRefs:acRefs
       });
     }
-  }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig]);
+  }, [renderGraphics, isPlaying, sectionNumber, setGPUconfig, acRefs]);
 
   const playAllCanvasCreatedRef = React.useRef(false);
   const finishedRef = React.useRef(false);
@@ -393,8 +395,7 @@ export default function MultiFilePlayer({
       const sectionNum =
         (sections &&
           sections[sectionToPlay] &&
-          sections[sectionToPlay].sectionNumber) ??
-        -10;
+          sections[sectionToPlay].sectionNumber) ?? -10;
       if (sectionNum === sectionNumber) {
         if (!playAllPlayPause) {
           if (acPlusRef.current.AC.state === "running")
@@ -425,8 +426,7 @@ export default function MultiFilePlayer({
       const sectionNum =
         (sections &&
           sections[sectionToPlay] &&
-          sections[sectionToPlay].sectionNumber) ??
-        -10;
+          sections[sectionToPlay].sectionNumber) ?? -10;
       if (sectionNum === sectionNumber) {
         if (!playAllPlayPause) {
           if (acPlusRef.current.AC.state === "running")
@@ -451,6 +451,25 @@ export default function MultiFilePlayer({
     ended,
     playSection,
   ]);
+
+  React.useEffect(()=>{
+    if (finished) {
+      console.log('in MultiFilePlayer finished', sectionNumber)
+      dispatch(setPlayAllStarted(false))
+      dispatch(setPlayAllActuallyStarted(false))
+
+      if (isPlaying) {
+        acPlusRef.current.sources.forEach((source) => {
+          source.stop();
+          source.disconnect();
+        });
+      }
+      setIsPlaying(false)
+      setEnded(true)
+
+      acPlusRef.current.AC.suspend()
+    }
+  },[finished, sectionNumber, dispatch, isPlaying])
 
   React.useEffect(() => {
     //loop  through  the sections array in index order

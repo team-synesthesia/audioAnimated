@@ -49,6 +49,8 @@ export default function Sections({ sections, userId, projectId, graphicsFn }) {
 
   const togglePreviewOnClick = (singleSection, sectionId) => {
     if (singleSection) {
+      console.log('dispatching setFinished')
+      dispatch(setFinished(true))
       setSingleSection(false);
     } else {
       setSelectedSectionId(sectionId);
@@ -84,6 +86,7 @@ export default function Sections({ sections, userId, projectId, graphicsFn }) {
             "&:hover": { color: "white", backgroundColor:"rgb(50,50,100)" }}}
         onClick={(ev)=>{playAllCanvasRef.current&& 
           playAllCanvasRef.current.classList.add("hidden")
+          console.log('dispatching setFinished')
           dispatch(setFinished(true))
         }}
       >
@@ -107,6 +110,7 @@ export default function Sections({ sections, userId, projectId, graphicsFn }) {
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
           graphicsFn={graphicsFn}
+          acRefs={acRefs}
         />
       ) : (
         <MultiSectionView

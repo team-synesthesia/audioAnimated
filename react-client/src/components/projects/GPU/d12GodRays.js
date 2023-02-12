@@ -214,6 +214,7 @@ export function renderGR(md) {
     //we need to cancel animation frame
     const iMusic = [md.sum,md.sumLow,md.sumMid,md.sumHigh]
 
+    console.log('in grRender', globalVersion, version)
     if ( version === 0) {
 
       for (let i = 0; i < numElements; i++) {

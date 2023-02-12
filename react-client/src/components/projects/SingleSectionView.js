@@ -29,6 +29,7 @@ export default function SingleSectionView({
   togglePreviewOnClick,
   handleDeleteSection,
   graphicsFn,
+  acRefs
 }) {
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
@@ -68,6 +69,7 @@ export default function SingleSectionView({
           inSection={true}
           setGPUconfig={setGPUconfig}
           renderGraphics={true}
+          acRefs={acRefs}
         />
         <ToggleAssignFileForm
           section={section}
