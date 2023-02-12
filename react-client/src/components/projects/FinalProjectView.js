@@ -4,8 +4,7 @@ import { useParams } from "react-router-dom";
 
 import { Box, Link } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-
-import { fetchSingleProjectAsync, getFilesAsync } from "../../features/";
+import { fetchSingleProjectAsync, getFilesAsync } from "../../features";
 
 const FinalProjectView = () => {
   const { projectId } = useParams();
@@ -15,7 +14,6 @@ const FinalProjectView = () => {
     dispatch(fetchSingleProjectAsync({ projectId }));
   }, [dispatch, projectId]);
 
-  // all the info needed to generate the project should be available in the project variable!
   const project = useSelector((state) => state.singleProject);
   const { availableFiles } = project;
 
@@ -26,10 +24,9 @@ const FinalProjectView = () => {
   }, [dispatch, projectId, availableFiles]);
 
   const [showCopiedMsg, setShowCopiedMsg] = useState(false);
+  const shareUrl = window.location.href;
   const copyToClipboard = () => {
-    const linkDiv = document.querySelector("#linkDiv");
-    const url = linkDiv.innerText;
-    navigator.clipboard.writeText(`${url}`);
+    navigator.clipboard.writeText(`${shareUrl}`);
 
     setShowCopiedMsg(true);
   };
@@ -45,14 +42,14 @@ const FinalProjectView = () => {
       }}
     >
       <div>Share using this link!</div>
-      {showCopiedMsg ? <div>Copied to clipboard</div> : null}
+      {showCopiedMsg ? <small>Copied to clipboard</small> : null}
       <Link
         component="button"
         underline="none"
         sx={{ display: "flex", alignItems: "center" }}
         onClick={copyToClipboard}
       >
-        <div id="linkDiv">{window.location.href}</div>
+        <div>{shareUrl}</div>
         <ContentCopyIcon sx={{ marginLeft: "5px" }} />
       </Link>
     </Box>
