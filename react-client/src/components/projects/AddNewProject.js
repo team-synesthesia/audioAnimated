@@ -17,7 +17,7 @@ const AddNewProject = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [name, setName] = useState("");
-  const [showUniqueErrorMessage, setShowUniqueErrorMessage] = useState(true);
+  const [showUniqueErrorMessage, setShowUniqueErrorMessage] = useState(false);
 
   let nameIsUnique = true;
   const handleSubmit = async (event) => {
@@ -26,7 +26,7 @@ const AddNewProject = () => {
     for (let project of projects) {
       if (name === project.name) {
         nameIsUnique = false;
-        setShowUniqueErrorMessage(false);
+        setShowUniqueErrorMessage(true);
       }
     }
 
@@ -54,7 +54,11 @@ const AddNewProject = () => {
               <CloseIcon />
             </Button>
           </Box>
-          {!showUniqueErrorMessage && <small>Please use a unique name</small>}
+          {showUniqueErrorMessage && (
+            <Box sx={{ textAlign: "center" }}>
+              <small>Please use a unique name</small>
+            </Box>
+          )}
           <form onSubmit={handleSubmit}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <div>
@@ -63,7 +67,10 @@ const AddNewProject = () => {
                   name="projectName"
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    setShowUniqueErrorMessage(false);
+                  }}
                   required
                 />
               </div>
