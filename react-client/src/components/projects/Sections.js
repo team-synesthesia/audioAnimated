@@ -78,7 +78,7 @@ export default function Sections({ sections, userId, projectId, graphicsFn }) {
       key="playAllCanvas"
       id="playAllCanvas"
       ref={playAllCanvasRef}
-      style={{ position: "relative", left: "max(14vw,155px)" }}
+      style={{ position: "relative", left: "max(14vw,155px)" }} 
       className="hidden"
     >
       <IconButton 

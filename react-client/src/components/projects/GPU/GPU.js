@@ -107,7 +107,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             renderer.setClearColor("rgb(255,255,255)", 0);
 
             if ( !GL.renderer ) canvas.appendChild(renderer.domElement);
-
+            
             const uniforms = {
                 iTime: { value: 0 },
                 iResolution: { value: new THREE.Vector3(width, height, 1.0) },

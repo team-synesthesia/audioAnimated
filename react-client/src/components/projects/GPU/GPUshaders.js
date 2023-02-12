@@ -40,24 +40,24 @@ export  const fragmentShaders = [
     void mainImage( out vec4 fragColor, in vec2 fragCoord )
     {
     
-        vec2 uv = fragCoord.xy / iResolution.xy;
-        uv.x *= iResolution.x / iResolution.y;
+        vec2 uv = (2.*fragCoord-iResolution.xy)/iResolution.y;
     
-        vec2 center = vec2(3.5, 1.7), width  = vec2( 3.5); 
+        vec2 center = vec2(0.,0.), width  = vec2( 2.5); 
         vec2 final_uv = (uv*width - center);
         float mix_factor=1., infinity=1e5;
     
         vec2 jc = 3.*(-vec2(.5));
         jc.x += jc.y/50.; jc.y = 0.; jc.x -= .5; 
     
-        jc = vec2(-.95 -.2*smoothstep(-100.,100.,iMusic.z),0.);
+        jc = vec2(-.95 -.4*smoothstep(0.,100.,iMusic.z),0.);
         vec2 iter=final_uv, new_iter;
     
         float escape_value = 0.;
     
-        MAX_ITER = iMusic.x; //+=  ((-15.*smoothstep(-100.,100.,iMusic.x))/3.)*3.+1.;    
+        MAX_ITER = iMusic.x*3.;
      
-        //why is this behaving like webgl1????
+        //why is this behaving like webgl1???? -because we were using 0.67.0 instead of 0.149.0
+        //have to explicitly give npm install three@0.149.0
         for ( float i=0.; i<100.; i++ ) {
             if ( i>MAX_ITER) break;    
             new_iter = invz2(iter) + jc; iter = new_iter;
