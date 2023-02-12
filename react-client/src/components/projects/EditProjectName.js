@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Button, Box, Input } from "@mui/material";
+import { Alert, Button, Box, Input } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { updateProjectAsync } from "../../features";
@@ -45,7 +45,7 @@ const EditProjectName = ({ handleClose }) => {
       </Button>
       {showUniqueErrorMessage && (
         <Box sx={{ textAlign: "center" }}>
-          <small>Please use a unique name</small>
+          <Alert severity="error">Please use a unique name</Alert>
         </Box>
       )}
       <form onSubmit={handleSubmit}>

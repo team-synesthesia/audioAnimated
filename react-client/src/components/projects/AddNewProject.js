@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Box, Card, Button, Input, Modal } from "@mui/material";
+import { Alert, Box, Card, Button, Input, Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { createProjectAsync } from "../../features";
@@ -56,7 +56,7 @@ const AddNewProject = () => {
           </Box>
           {showUniqueErrorMessage && (
             <Box sx={{ textAlign: "center" }}>
-              <small>Please use a unique name</small>
+              <Alert severity="error">Please use a unique name</Alert>
             </Box>
           )}
           <form onSubmit={handleSubmit}>
