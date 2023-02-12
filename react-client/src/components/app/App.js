@@ -12,6 +12,8 @@ export const primaryColors = {
   5: "#702020",
   6: "#B1A8C5",
   7: "#B1A8F5",
+  8: "#EED000",
+  9: "#A000B0"
 };
 
 const SecondaryColors = {
@@ -23,6 +25,8 @@ const SecondaryColors = {
   5: "#8BFFFE",
   6: "#FFFEDF",
   7: "#FFFEDF",
+  8: "#000000",
+  9: "#D8FE5B",
 };
 
 function getCustomTheme(index) {

@@ -56,6 +56,8 @@ export default function Sections({
 
   const togglePreviewOnClick = (singleSection, sectionId) => {
     if (singleSection) {
+      console.log('dispatching setFinished')
+      dispatch(setFinished(true))
       setSingleSection(false);
     } else {
       setSelectedSectionId(sectionId);
@@ -129,6 +131,7 @@ export default function Sections({
           togglePreviewOnClick={togglePreviewOnClick}
           handleDeleteSection={handleDeleteSection}
           graphicsFn={graphicsFn}
+          acRefs={acRefs}
         />
       ) : (
         <MultiSectionView
