@@ -11,6 +11,8 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Sections from "./Sections";
 import { fetchSingleProjectAsync, getFilesAsync } from "../../features";
 import { setPlayAllStarted, setPlayAllPlayPause } from "../../features";
+import { setGlobalGraphics } from "../../features";
+import { setGraphicFN } from "../../features";
 
 const FinalProjectView = () => {
   const { projectId } = useParams();
@@ -26,6 +28,13 @@ const FinalProjectView = () => {
   const project = useSelector((state) => state.singleProject);
   const { sections, graphicsFn } = project;
   const { availableFiles } = project;
+
+  useEffect(() => {
+    if (graphicsFn) {
+      dispatch(setGraphicFN(graphicsFn));
+      dispatch(setGlobalGraphics(graphicsFn));
+    }
+  }, [dispatch, graphicsFn]);
 
   useEffect(() => {
     if (Object.keys(availableFiles).length) {

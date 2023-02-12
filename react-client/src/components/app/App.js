@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Navbar, AppRoutes, StickyFooter } from "../";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-const primaryColors = {
+export const primaryColors = {
   0: "#4516BA",
   1: "#0D6056",
   2: "#FE00FF",

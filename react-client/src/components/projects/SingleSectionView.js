@@ -6,19 +6,7 @@ import MultiFilePlayer from "./MultiFilePlayer";
 import { ToggleAssignFileForm } from "./ToggleAssignFileForm";
 
 import { GPU } from "./GPU/GPU";
-
-const primaryColors = {
-  0: "#4516BA",
-  1: "#0D6056",
-  2: "#FE00FF",
-  3: "#6D029D",
-  4: "#F17803",
-  5: "#702020",
-  6: "#B1A8C5",
-  7: "#B1A8F5",
-  8: "#EED000",
-  9: "#A000B0"
-};
+import { primaryColors } from "../app/App";
 
 export default function SingleSectionView({
   singleSection,
@@ -31,7 +19,7 @@ export default function SingleSectionView({
   togglePreviewOnClick,
   handleDeleteSection,
   graphicsFn,
-  acRefs
+  acRefs,
 }) {
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
@@ -90,7 +78,7 @@ export default function SingleSectionView({
             // flexShrink: "0",
             width: 640,
             height: 480,
-            backgroundColor: primaryColors[graphicsFn]
+            backgroundColor: primaryColors[graphicsFn],
           }}
         ></div>
       </Box>
