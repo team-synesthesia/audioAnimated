@@ -14,6 +14,11 @@ const Project = db.define("project", {
   sectionDuration: {
     type: Sequelize.INTEGER,
   },
+  recordLatencyAdjustment: {
+    type: Sequelize.FLOAT,
+    defaultValue: 0.45,
+    allowNull: false,
+  },
   finalAudioFilePath: {
     type: Sequelize.TEXT,
   },

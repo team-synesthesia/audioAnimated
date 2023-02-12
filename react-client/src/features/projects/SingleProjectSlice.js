@@ -132,6 +132,7 @@ export const singleProjectSlice = createSlice({
     id: null,
     name: null,
     type: null,
+    recordLatencyAdjustment: null,
     sectionDuration: null,
     graphicsFn: null,
     sections: [],
@@ -140,8 +141,15 @@ export const singleProjectSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSingleProjectAsync.fulfilled, (state, action) => {
-      const { id, name, type, sections, sectionDuration, graphicsFn } =
-        action.payload;
+      const {
+        id,
+        name,
+        recordLatencyAdjustment,
+        type,
+        sections,
+        sectionDuration,
+        graphicsFn,
+      } = action.payload;
 
       const availableFiles = {};
       sections.forEach((section) => {
@@ -154,6 +162,7 @@ export const singleProjectSlice = createSlice({
 
       state.id = id;
       state.name = name;
+      state.recordLatencyAdjustment = recordLatencyAdjustment;
       state.type = type;
       state.sections = sections
         .filter((x) => x.sectionNumber !== 0)
@@ -217,12 +226,15 @@ export const singleProjectSlice = createSlice({
       }
     });
     builder.addCase(updateProjectAsync.fulfilled, (state, action) => {
-      const { name, graphicsFn } = action.payload;
+      const { name, recordLatencyAdjustment, graphicsFn } = action.payload;
       if (name !== state.name) {
         state.name = name;
       }
       if (graphicsFn !== state.graphicsFn) {
         state.graphicsFn = graphicsFn;
+      }
+      if (recordLatencyAdjustment !== state.recordLatencyAdjustment) {
+        state.recordLatencyAdjustment = recordLatencyAdjustment;
       }
     });
   },

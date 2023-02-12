@@ -43,9 +43,8 @@ function getCustomTheme(index) {
 const App = ({ theme }) => {
   const [liveTheme, setLiveTheme] = useState(theme);
   const globalGraphicsFn = useSelector((state) => state.auth.globalGraphicsFn);
-  
+
   useEffect(() => {
-    
     if (globalGraphicsFn !== null) {
       const customTheme = getCustomTheme(globalGraphicsFn);
       if (customTheme) {
@@ -54,7 +53,7 @@ const App = ({ theme }) => {
         setLiveTheme(theme);
       }
     }
-  }, [globalGraphicsFn]);
+  }, [theme, globalGraphicsFn]);
   return (
     <div>
       <ThemeProvider theme={liveTheme}>

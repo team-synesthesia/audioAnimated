@@ -10,7 +10,7 @@ const MESSAGES = {
   label: "Label, you're recording",
   begin: "Click on the microphone to begin recording",
   recording: "Click the Mic again to stop recording",
-  stopped: "Recording saved. Hit the 'NEXT' button to listen back",
+  stopped: "Recording is being processed, hang tight...",
 };
 
 export default function RecordForm({

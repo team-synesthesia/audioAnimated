@@ -87,8 +87,19 @@ const SplashPage = (props) => {
             height: "10vh",
           }}
         >
-          <Typography variant="h6">Learn More</Typography>
-          <KeyboardArrowDownIcon />
+          <Button
+            variant="text"
+            color="info"
+            onClick={() => {
+              window.scrollTo({
+                top: 1000,
+                behavior: "smooth",
+              });
+            }}
+          >
+            <Typography variant="h6">Learn More</Typography>
+            <KeyboardArrowDownIcon />
+          </Button>
         </Grid>
         <Grid
           item
@@ -109,7 +120,19 @@ const SplashPage = (props) => {
               connecting tracks together.
             </Typography>
             <br />
-            <KeyboardArrowDownIcon />
+            <Button
+              variant="text"
+              color="info"
+              onClick={() => {
+                window.scrollTo({
+                  top: 2300,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              <Typography variant="h6">See our Graphics</Typography>
+              <KeyboardArrowDownIcon />
+            </Button>
           </Container>
         </Grid>
         <Grid item xs={12} sm={6}>
