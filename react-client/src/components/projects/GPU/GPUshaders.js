@@ -833,6 +833,74 @@ void main() {
     mainImage(gl_FragColor, vUv*iResolution.xy);
 }
 
+`,
+
+`
+//////////// Golden KIFS
+uniform vec3 iResolution;
+uniform float iTime;
+uniform sampler2D iChannel0;
+uniform vec4 iMusic;
+
+varying vec2 vUv;
+
+#define R(a)  mat2(cos(a + 1.57*vec4(0,-1,1,0)))  //rotation matrix using pi/2 phase offset for sin
+#define N     normalize
+
+float t, e=1., l=0., d, i=0.; // globals
+vec2 mm;  //Mouse
+
+float f(vec3 p) {
+  vec3  o = vec3(1,.75,.15), q;
+  float d=1e6, s=-.0065-.0002*iMusic.y, a=1.,r=.02, i=0., k = o.z*s;
+  for( p.xz *= R(t/7.) ; i++<17.; )  //+min(max(-10.,iMusic.y/10.),2.) ; )
+      a *= 1.-s,
+      p.xy *= R(mm.x)  , p.yz *= R(mm.y), // rotations here have large impact on shape
+      p = abs(p),
+#define S(p) p.x < p.y ? p = p.yx : p     
+      S(p.xy), S(p.xz), S(p.yz),  // sort
+      p = mix( p, o, s),
+      p.z < k*.5 ? p.z -= k : d,
+      q = p = abs(p),
+      S(q.xy), S(q.xz), S(q.yz),  // sort
+      d = min(d, max( q.x/a - r, -q.y/a +r-.002 ) );
+  return d;
+}
+
+void mainImage(out vec4 O, in vec2 U) {
+  t = iTime; // + iMusic.w/200.;
+  vec3 R = iResolution, E = vec3(1,-1,-1), n,
+       L =  vec3( cos(iTime/5.+iMusic.z/4.),0.,-2.+sin(iTime/5.+iMusic.z/4.) ),        // light pos
+       D = N( vec3( U+U,-R.y) - R.xyy ),   // ray pos and dir
+       P = R-R; P.z = .3; //P.x=-.3; //max(0., .24 - max(.7*sin((t+6.28)/2.),0.));
+
+  //mm=5.*vec2(.25, ( iMusic.w>0.)?.08:.09 );
+  mm=5.*vec2(.235+.01*smoothstep(-100.,100.,iMusic.x), .07+.02*smoothstep(-100.,100.,iMusic.w ) );
+      
+  O = vec4(0.,0.,0.,1.);
+  for ( ; i++<1e2 && l<3. && e>0.; P += d*D ) {
+      l += d = f(P)*.7;
+      e = d - (1.+l*l)/4e4;
+      //float dd = sin(d*10.); dd*=dd;
+      //O = vec4(dd,dd,dd,1.);
+      if( e < 0. ) {
+          P += e*D;
+          L = N(L-P);
+#define F(x)  x* f( P + (1.+l*l)/2e3 *x )
+          n = N( F(E.x)+F(E.yyx)+F(E)+F(E.yxy) );  // normal vec
+          O.rgb =  .3* max(0.,dot(-n,L)) *vec3(.7,.5,0.)
+                  +.6* pow(max(0.,dot(reflect(-D,n),L)),4.) *vec3(.9,.8,.3);
+          O = pow( 5.*(1.-exp(-O*O)) /exp(l*l),vec4(.4) ); 
+          break; 
+      }
+  }
+}
+
+void main() {
+  mainImage(gl_FragColor, vUv*iResolution.xy);
+}
+
+
 `
     ]
     
