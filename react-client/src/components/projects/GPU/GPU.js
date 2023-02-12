@@ -1,16 +1,18 @@
 import * as React from "react"
 import * as THREE from "three"
-import {createVertexModel,animateVertexModel,
-        createShaderModel,animateShaderModel} from "./graphicsFunctions" 
+import { createShaderModel,animateShaderModel} from "./graphicsFunctions" 
 import { graphicsOptions } from "./graphicsOptions"
-import {useSelector} from "react-redux"
+import {useSelector, useDispatch} from "react-redux"
+import {setFinished} from "../../../features/projects/playAllSlice"
 
 import { grInit, renderGR} from "./d12GodRays"
 
 //gpuDivRef was passed in as:  gpuDivRef.current in order to satisfy the dependencies array
 export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized} ) {
     
-    const {graphicFN} = useSelector(state=>state.playAll)
+    const dispatch =  useDispatch()
+
+    const {graphicFN, finished} = useSelector(state=>state.playAll)
 
     const [GL, setGL] = React.useState({})
  
@@ -26,11 +28,15 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
     const ACtoUse = React.useRef()
 
+    //console.log(GPUconfig.acRefs, sectionNumber)
     if (GPUconfig.acRefs) {
         ACtoUse.current = GPUconfig.acRefs.current[sectionNumber]
+        //console.log('using acRefs')
+        //console.log(ACtoUse.current, acPlusRef)
     }
     else {
         ACtoUse.current = acPlusRef
+        //console.log('single section AC ref')
     }
 
     const resizeRef = React.useRef(false)
@@ -60,6 +66,20 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
     }, []); 
 
     React.useEffect(()=>{
+        if (finished) {
+            if (GL.renderer) {
+                console.log('disposing of current renderer')
+                isPlayingRef.current = false
+                isRendering.current = false
+                GL.renderer.dispose()
+                dispatch(setFinished(false))
+                
+            }
+        }
+   
+    },[finished, GL.renderer, dispatch])
+
+    React.useEffect(()=>{
 
         let canvas, canvasDim, hidden
         if ( gpuDivRef) {
@@ -70,9 +90,9 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
         const Restart = restart && gpuDivRef && !hidden
 
-        if ( (gpuDivRef && !canvasInitialized 
+        if ( ((gpuDivRef && !canvasInitialized 
             && !hidden && typeof graphicFN !== "undefined")
-            || Restart
+            || Restart) && !finished
             ) {
 
             setCanvasInitialized(true)
@@ -87,7 +107,7 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             renderer.setClearColor("rgb(255,255,255)", 0);
 
             if ( !GL.renderer ) canvas.appendChild(renderer.domElement);
-
+            
             const uniforms = {
                 iTime: { value: 0 },
                 iResolution: { value: new THREE.Vector3(width, height, 1.0) },
@@ -138,9 +158,10 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             isPlayingRef.current = isPlaying
             let prevRenderTime = Date.now()
 
-            if ( isPlaying && !isRendering.current ) {
+            if ( isPlaying && !isRendering.current && !finished ) {
                 requestAnimationFrame(render)
                 isRendering.current = true
+                console.log(ACtoUse.current)
             }
 
             function render(time) {
@@ -162,7 +183,10 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                     renderer.setSize(width,height)
                 }
 
-                frameIdRef.current = requestAnimationFrame(render);
+                if (isPlayingRef.current && !restartRef.current && !finished) 
+                    frameIdRef.current = requestAnimationFrame(render);
+                else return
+
                 //we are rendering way too many times a second
                 const currentRenderTime = Date.now()
                 const elapsed = currentRenderTime - prevRenderTime
@@ -173,11 +197,14 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
                 time *= .001  //convert from milliseconds to seconds
 
                 const AC =  ACtoUse.current //acPlusRef 
-  
+                //console.log(AC.AC.state)
+
                 const md = AC.musicData()
 
                 if ( useShader ) {
                     animateShaderModel(GL,md, time)
+
+                    //console.log(md.sum)
                     renderer.render(scene,camera)
                 }
                 else {

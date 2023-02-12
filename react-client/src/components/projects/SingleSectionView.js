@@ -16,6 +16,8 @@ const primaryColors = {
   5: "#702020",
   6: "#B1A8C5",
   7: "#B1A8F5",
+  8: "#EED000",
+  9: "#A000B0"
 };
 
 export default function SingleSectionView({
@@ -29,6 +31,7 @@ export default function SingleSectionView({
   togglePreviewOnClick,
   handleDeleteSection,
   graphicsFn,
+  acRefs
 }) {
   const [GPUconfig, setGPUconfig] = React.useState({});
   const [canvasInitialized, setCanvasInitialized] = React.useState(false);
@@ -68,6 +71,7 @@ export default function SingleSectionView({
           inSection={true}
           setGPUconfig={setGPUconfig}
           renderGraphics={true}
+          acRefs={acRefs}
         />
         <ToggleAssignFileForm
           section={section}
