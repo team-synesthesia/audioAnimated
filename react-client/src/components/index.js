@@ -17,3 +17,4 @@ export { default as AddNewProject } from "./projects/AddNewProject";
 export { default as DeleteConfirmation } from "./projects/DeleteConfirmation";
 export { default as EditProjectName } from "./projects/EditProjectName";
 export { default as EditProjectLatencyFix } from "./projects/EditProjectLatencyFix";
+export { default as FinalProjectView } from "./projects/FinalProjectView";

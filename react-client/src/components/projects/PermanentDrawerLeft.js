@@ -17,10 +17,12 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import MicIcon from "@mui/icons-material/Mic";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import PauseIcon from "@mui/icons-material/Pause";
+import ShareIcon from "@mui/icons-material/Share";
 
 import TransitionsModal from "./TransitionsModal";
 
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setPlayAllStarted, setPlayAllPlayPause } from "../../features";
 
 const drawerWidth = "12vw";
@@ -50,6 +52,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
     (state) => state.playAll
   );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -137,6 +140,17 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
               </ListItemIcon>
               <ListItemText
                 primary={"Play  All"}
+                primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate(`/share/${projectId}`)}>
+              <ListItemIcon sx={{ minWidth: "40px" }}>
+                <ShareIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Share Project"}
                 primaryTypographyProps={{ fontSize: "max(1vw, 12px)" }}
               />
             </ListItemButton>
