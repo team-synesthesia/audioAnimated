@@ -23,6 +23,7 @@ export default function RecordForm({
   displayRecorder,
   useMetronome,
   metronomeTempo,
+  acPlusRefs,
 }) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
@@ -86,6 +87,7 @@ export default function RecordForm({
               newFileName={newFileName}
               useMetronome={useMetronome}
               metronomeTempo={metronomeTempo}
+              acPlusRef={acPlusRefs ? acPlusRefs.record : null}
             />
           ) : null}
         </Box>

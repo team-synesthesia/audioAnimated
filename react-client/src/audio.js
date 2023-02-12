@@ -87,9 +87,8 @@ class AudioContextPlus {
   }
 
   async createAudioBuffers(data, audio, filename) {
-
     //this is called sometimes when data is undefined
-    if ( typeof data==="undefined") return
+    if (typeof data === "undefined") return;
 
     //atob is base64 string to binary
     //formData PUT with an audio file runs btoa at some point
@@ -124,7 +123,7 @@ class AudioContextPlus {
   addGainNode() {
     const gainNode = this.AC.createGain();
     //all audio source/effect/control nodes connect to Analyser before speakers
-    gainNode.connect(this.AA)
+    gainNode.connect(this.AA);
     this.gainNodes.push(gainNode);
   }
   playSound(source, gainNode, time, fudge) {

@@ -17,8 +17,10 @@ export default function SectionColumn({
   handleDeleteSection,
   playAllCanvasRef,
   acRefs,
-  setPlayAllGPUconfig
+  setPlayAllGPUconfig,
 }) {
+  const acPlusRef = React.useRef();
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
       <SectionButtons
@@ -37,6 +39,7 @@ export default function SectionColumn({
         playAllCanvasRef={playAllCanvasRef}
         acRefs={acRefs}
         setPlayAllGPUconfig={setPlayAllGPUconfig}
+        acPlusRef={acPlusRef}
       />
       <ToggleAssignFileForm
         section={section}

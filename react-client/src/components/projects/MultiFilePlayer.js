@@ -38,6 +38,7 @@ export default function MultiFilePlayer({
   setPlayAllGPUconfig,
   useMetronome,
   metronomeTempo,
+  acPlusRef,
 }) {
   const dispatch = useDispatch();
 
@@ -82,12 +83,12 @@ export default function MultiFilePlayer({
   const recordingMessages = React.useRef();
   const sourceForMicophone = React.useRef();
 
-  const acPlusRef = React.useRef();
   React.useEffect(() => {
     if (!acPlusRef.current) {
       acPlusRef.current = new AudioContextPlus();
     }
-  }, []);
+  }, [acPlusRef]);
+
   if (record && !recordStreamRef.current) {
     getRecordingPermission();
   }

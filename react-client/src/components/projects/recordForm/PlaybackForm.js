@@ -13,7 +13,7 @@ const MESSAGES = {
     "If you're satisfied with you're recording, hit the 'DONE', or hit the trash can to delete",
 };
 
-export default function PlaybackForm({ selectedFiles }) {
+export default function PlaybackForm({ selectedFiles, acPlusRefs }) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
     const _files = [];
@@ -27,7 +27,6 @@ export default function PlaybackForm({ selectedFiles }) {
 
   const smallPlayer = true;
   const [msgKey, setMsgKey] = React.useState("begin");
-  console.log(msgKey);
   return (
     <React.Fragment>
       <Box>
@@ -47,6 +46,7 @@ export default function PlaybackForm({ selectedFiles }) {
             renderGraphics={false}
             record={false}
             smallPlayer={smallPlayer}
+            acPlusRef={acPlusRefs ? acPlusRefs.recordPlayback : null}
           />
         </Box>
       </Box>

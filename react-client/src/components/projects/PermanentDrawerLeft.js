@@ -38,10 +38,10 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
   };
 
   const handleClose = () => {
-    setOpen(false);
-    if (modalType === "record") {
-      window.location.reload();
+    if (acPlusRefs.recordPlayback.current.isPlaying) {
+      acPlusRefs.recordPlayback.current.AC.suspend();
     }
+    setOpen(false);
   };
 
   const { availableFiles, name } = useSelector((state) => state.singleProject);
@@ -50,6 +50,34 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
     (state) => state.playAll
   );
   const dispatch = useDispatch();
+
+  const acPlusRefs = {
+    record: React.useRef(),
+    recordPlayback: React.useRef(),
+  };
+
+  if (acPlusRefs.record.current) {
+    acPlusRefs.record.current.started = false;
+    acPlusRefs.record.current.isPlaying = false;
+    acPlusRefs.record.current.currentTime = 0;
+    // if (acPlusRefs.record.current.sources) {
+    //   acPlusRefs.record.current.sources.forEach((source) => {
+    //     source.stop();
+    //     source.disconnect();
+    //   });
+    // }
+  }
+  if (acPlusRefs.recordPlayback.current) {
+    acPlusRefs.recordPlayback.current.started = false;
+    acPlusRefs.recordPlayback.current.isPlaying = false;
+    acPlusRefs.recordPlayback.current.currentTime = 0;
+    // if (acPlusRefs.recordPlayback.current.sources) {
+    //   acPlusRefs.recordPlayback.current.sources.forEach((source) => {
+    //     source.stop();
+    //     source.disconnect();
+    //   });
+    // }
+  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -77,6 +105,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
           type={modalType}
           clickedFile={clickedFile}
           availableFiles={availableFiles}
+          acPlusRefs={acPlusRefs}
         />
         <List>
           <ListItem disablePadding sx={{ minWidth: "0" }}>

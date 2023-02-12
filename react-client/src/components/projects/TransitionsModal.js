@@ -28,6 +28,7 @@ function SwitchComponent({
   type,
   clickedFile,
   availableFiles,
+  acPlusRefs,
 }) {
   switch (type) {
     case "uploadFile":
@@ -53,6 +54,7 @@ function SwitchComponent({
           availableFiles={availableFiles}
           userId={userId}
           projectId={projectId}
+          acPlusRefs={acPlusRefs}
         />
       );
 
@@ -83,6 +85,7 @@ export default function TransitionsModal({
   type,
   clickedFile,
   availableFiles,
+  acPlusRefs,
 }) {
   return (
     <div>
@@ -106,6 +109,7 @@ export default function TransitionsModal({
               type={type}
               clickedFile={clickedFile}
               availableFiles={availableFiles}
+              acPlusRefs={acPlusRefs}
             />
           </Box>
         </Fade>

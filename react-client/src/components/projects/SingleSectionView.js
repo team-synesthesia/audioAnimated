@@ -41,7 +41,7 @@ export default function SingleSectionView({
     canvasInitialized,
     setCanvasInitialized,
   });
-
+  const acPlusRef = React.useRef();
   return (
     <Box
       sx={{
@@ -68,6 +68,7 @@ export default function SingleSectionView({
           inSection={true}
           setGPUconfig={setGPUconfig}
           renderGraphics={true}
+          acPlusRef={acPlusRef}
         />
         <ToggleAssignFileForm
           section={section}
@@ -86,7 +87,7 @@ export default function SingleSectionView({
             // flexShrink: "0",
             width: 640,
             height: 480,
-            backgroundColor: primaryColors[graphicsFn]
+            backgroundColor: primaryColors[graphicsFn],
           }}
         ></div>
       </Box>

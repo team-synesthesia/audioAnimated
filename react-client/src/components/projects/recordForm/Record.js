@@ -34,7 +34,8 @@ function getStepContent(
   useMetronome,
   setUseMetronome,
   metronomeTempo,
-  setMetronomeTempo
+  setMetronomeTempo,
+  acPlusRefs
 ) {
   switch (step) {
     case 0:
@@ -63,16 +64,24 @@ function getStepContent(
           displayRecorder={displayRecorder}
           useMetronome={useMetronome}
           metronomeTempo={metronomeTempo}
+          acPlusRefs={acPlusRefs}
         />
       );
     case 2:
-      return <PlaybackForm selectedFiles={selectedFiles} />;
+      return (
+        <PlaybackForm selectedFiles={selectedFiles} acPlusRefs={acPlusRefs} />
+      );
     default:
       throw new Error("Unknown step");
   }
 }
 
-export default function Record({ availableFiles, userId, projectId }) {
+export default function Record({
+  availableFiles,
+  userId,
+  projectId,
+  acPlusRefs,
+}) {
   const [error, setError] = React.useState(false);
   const [selectedFiles, setSelectedFiles] = React.useState({});
   const [displayRecorder, setDisplayRecorder] = React.useState({});
@@ -112,6 +121,11 @@ export default function Record({ availableFiles, userId, projectId }) {
   }, [newFileName, recorded]);
 
   const handleNext = () => {
+    console.log("i am here");
+    console.log("active step: ", activeStep);
+    if (activeStep === 2) {
+      acPlusRefs.recordPlayback.current.AC.suspend();
+    }
     setActiveStep(activeStep + 1);
     if (activeStep === 2) {
       window.location.reload();
@@ -182,7 +196,8 @@ export default function Record({ availableFiles, userId, projectId }) {
               useMetronome,
               setUseMetronome,
               metronomeTempo,
-              setMetronomeTempo
+              setMetronomeTempo,
+              acPlusRefs
             )}
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               {activeStep === steps.length - 1 ? (
