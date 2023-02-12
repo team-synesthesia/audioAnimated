@@ -113,6 +113,9 @@ export default function Record({ availableFiles, userId, projectId }) {
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
+    if (activeStep === 2) {
+      window.location.reload();
+    }
   };
 
   React.useEffect(() => {
