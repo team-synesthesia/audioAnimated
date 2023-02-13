@@ -1,7 +1,8 @@
 import { Box, IconButton } from "@mui/material";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import Tooltip from "@mui/material/Tooltip";
+
+import { DeleteConfirmation } from "..";
 
 export function SectionButtons({
   singleSection,
@@ -31,14 +32,11 @@ export function SectionButtons({
       </Tooltip>
       <Tooltip title="Remove Section">
         <span>
-          <IconButton
-            type="button"
-            onClick={() => handleDeleteSection(sectionId)}
-            sx={{ "&:hover": { color: "red" } }}
-            disabled={disabled}
-          >
-            <RemoveCircleOutlineIcon />
-          </IconButton>
+            <DeleteConfirmation
+              handleDelete={handleDeleteSection}
+              deleteParam={sectionId}
+              origin={"SectionButtons"}
+            />
         </span>
       </Tooltip>
     </Box>
