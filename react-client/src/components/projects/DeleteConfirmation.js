@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-import { Button, Modal, Box, Typography } from "@mui/material";
+import { Button, Modal, Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 import { style } from "./TransitionsModal";
 
@@ -13,9 +14,19 @@ const DeleteConfirmation = ({ handleDelete, deleteParam, origin }) => {
 
   return (
     <div>
-      <Button color="error" size="small" onClick={handleOpen}>
-        <DeleteIcon />
-      </Button>
+      {origin === "SectionButtons" ? (
+        <IconButton
+          type="button"
+          onClick={handleOpen}
+          sx={{ "&:hover": { color: "red" } }}
+        >
+          <RemoveCircleOutlineIcon />
+        </IconButton>
+      ) : (
+        <Button color="error" size="small" onClick={handleOpen}>
+          <DeleteIcon />
+        </Button>
+      )}
       <Modal
         open={open}
         onClose={handleClose}
@@ -39,6 +50,8 @@ const DeleteConfirmation = ({ handleDelete, deleteParam, origin }) => {
                 ? "This project will be permanantly deleted"
                 : origin === "FileOptions"
                 ? "This file will be permanantly deleted"
+                : origin === "SectionButtons"
+                ? "This section will be permanantly deleted"
                 : null}
             </Typography>
             <Button
