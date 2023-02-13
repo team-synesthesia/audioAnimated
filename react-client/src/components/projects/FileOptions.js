@@ -85,29 +85,27 @@ const FileOptions = ({ handleClose, clickedFile }) => {
           <Typography variant="h3" sx={{ marginBottom: "10px" }}>
             {clickedFile.name}
           </Typography>
-          <Typography variant="h6">Select section(s)</Typography>
           {sectionsCopy && sectionsCopy.length ? (
             sectionsCopy.map((section) => (
-              <FormControlLabel
-                key={section.id}
-                control={<Checkbox />}
-                label={`Section ${section.sectionNumber}`}
-                name={String(section.sectionNumber)}
-                onChange={(_, value) =>
-                  handleCheckBox(section.sectionNumber, value)
-                }
-              />
+              <>
+                <Typography variant="h6">Select section(s)</Typography>
+                <FormControlLabel
+                  key={section.id}
+                  control={<Checkbox />}
+                  label={`Section ${section.sectionNumber}`}
+                  name={String(section.sectionNumber)}
+                  onChange={(_, value) =>
+                    handleCheckBox(section.sectionNumber, value)
+                  }
+                />
+                <Button type="submit" variant="contained">
+                  Assign to Section(s)
+                </Button>
+              </>
             ))
           ) : (
             <div>Cannot be assigned to any sections</div>
           )}
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{ alignSelf: "flex-end" }}
-          >
-            Assign to Section(s)
-          </Button>
         </Box>
       </form>
       <Box
