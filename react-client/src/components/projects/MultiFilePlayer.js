@@ -32,6 +32,8 @@ function getRecordingPermission(setRecordingStream) {
 }
 
 export default function MultiFilePlayer({
+  poisonPill,
+  setPoisonPill,
   title,
   files,
   sectionNumber,
@@ -43,6 +45,7 @@ export default function MultiFilePlayer({
   projectId,
   setMsgKey,
   smallPlayer,
+  newFileName,
 }) {
   const dispatch = useDispatch();
 
@@ -68,8 +71,37 @@ export default function MultiFilePlayer({
   const [recordedChunk, setRecordedChunk] = React.useState(new Blob());
   const [recordedChunks, setRecordedChunks] = React.useState([]);
   const [saveRecording, setSaveRecording] = React.useState(false);
-
   const recorderRef = React.useRef();
+
+  React.useEffect(() => {
+    if (poisonPill) {
+      if (acPlusRef.current) {
+        acPlusRef.current.sources.forEach((source) => {
+          source.stop();
+          source.disconnect();
+        });
+
+        acPlusRef.current.started = false;
+        acPlusRef.current.isPlaying = false;
+      }
+      if (record) {
+        console.log("recorderRefCuirrent", recorderRef.current);
+        if (isPlaying && recorderRef.current) recorderRef.current.stop();
+        setRecordedChunk(new Blob());
+        setRecordedChunks([]);
+        getRecordingPermission(setRecordingStream);
+      }
+      setTimeSnapshot(0);
+      setRecordReady(true);
+
+      setCurrentTime(0);
+      clearInterval(intervalId);
+      setIntervalId(0);
+      setIsPlaying(false);
+
+      setPoisonPill(false);
+    }
+  }, [poisonPill, setPoisonPill, isPlaying, record, intervalId]);
 
   if (record) {
     getRecordingPermission(setRecordingStream);
@@ -99,8 +131,7 @@ export default function MultiFilePlayer({
 
   React.useEffect(() => {
     const fnSaveRecording = async () => {
-      const name = prompt("Enter a label to identify your new track:");
-      const filePath = `${name}.ogg`;
+      const filePath = `${newFileName}.ogg`;
 
       const file = new Blob(recordedChunks, {
         type: "audio/ogg; codecs=opus",
@@ -109,7 +140,7 @@ export default function MultiFilePlayer({
       console.log(file);
 
       const data = {
-        name,
+        name: newFileName,
         filePath,
         type: "ogg",
         userId: userId,
@@ -117,8 +148,9 @@ export default function MultiFilePlayer({
       };
       await dispatch(addFileAsync(data));
       await dispatch(writeFileAsync({ projectId, filePath, file }));
+      setPoisonPill(true);
     };
-    if (saveRecording && recordedChunks.length > 0) {
+    if (newFileName && saveRecording && recordedChunks.length > 0) {
       fnSaveRecording();
     }
   }, [dispatch, recordedChunks, saveRecording, userId, projectId]);
@@ -176,7 +208,7 @@ export default function MultiFilePlayer({
       files.map((x) => x.name),
       onEndCallback
     );
-
+    console.log("recordReady", recordReady);
     if (recordReady) {
       if (isPlaying) {
         recorderRef.current.stop();
@@ -186,8 +218,8 @@ export default function MultiFilePlayer({
         setMsgKey("recording");
       }
     } else if (setMsgKey) {
-      if (isPlaying) setMsgKey("playing");
-      else setMsgKey("stopped");
+      if (isPlaying) setMsgKey("stopped");
+      else setMsgKey("playing");
     }
     setIsPlaying(acPlusRef.current.isPlaying);
   }, [recordReady, isPlaying, ended, files, setMsgKey]);

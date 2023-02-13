@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useDispatch } from "react-redux";
+
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
@@ -12,6 +14,8 @@ import SelectTracksForm from "./SelectTracksForm";
 import RecordForm from "./RecordForm";
 import PlaybackForm from "./PlaybackForm";
 
+import { deleteFileAsync } from "../../../features";
+
 const steps = ["Select Tracks", "Record", "Listen Back"];
 
 function getStepContent(
@@ -20,7 +24,11 @@ function getStepContent(
   projectId,
   selectedFiles,
   setSelectedFiles,
-  availableFiles
+  availableFiles,
+  newFileName,
+  setNewFileName,
+  poisonPill,
+  setPoisonPill
 ) {
   switch (step) {
     case 0:
@@ -37,16 +45,34 @@ function getStepContent(
           selectedFiles={selectedFiles}
           userId={userId}
           projectId={projectId}
+          newFileName={newFileName}
+          setNewFileName={setNewFileName}
+          poisonPill={poisonPill}
+          setPoisonPill={setPoisonPill}
         />
       );
     case 2:
-      return <PlaybackForm selectedFiles={selectedFiles} />;
+      return (
+        <PlaybackForm
+          selectedFiles={selectedFiles}
+          poisonPill={poisonPill}
+          setPoisonPill={setPoisonPill}
+        />
+      );
     default:
       throw new Error("Unknown step");
   }
 }
 
 export default function Record({ availableFiles, userId, projectId }) {
+  const [poisonPill, setPoisonPill] = React.useState(false);
+  const [newFileName, setNewFileName] = React.useState("");
+  const dispatch = useDispatch();
+
+  const handleDelete = async (fileName) => {
+    dispatch(deleteFileAsync({ deleteParam: fileName, type: "byName" }));
+  };
+
   const [selectedFiles, setSelectedFiles] = React.useState({});
 
   React.useEffect(() => {
@@ -65,10 +91,18 @@ export default function Record({ availableFiles, userId, projectId }) {
     setActiveStep(activeStep + 1);
   };
 
-  const handleBack = () => {
+  const handleBack = async () => {
+    // kill player if user did not
+    setPoisonPill(true);
+
+    // if user goes back to re-record then delete
+    // their recording
+    console.log([1, 2].includes(activeStep));
+    if ([1, 2].includes(activeStep)) {
+      await handleDelete(newFileName);
+    }
     setActiveStep(activeStep - 1);
   };
-
   return (
     <div>
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
@@ -103,7 +137,11 @@ export default function Record({ availableFiles, userId, projectId }) {
               projectId,
               selectedFiles,
               setSelectedFiles,
-              availableFiles
+              availableFiles,
+              newFileName,
+              setNewFileName,
+              poisonPill,
+              setPoisonPill
             )}
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               {activeStep !== 0 && (

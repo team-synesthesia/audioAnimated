@@ -13,7 +13,11 @@ const MESSAGES = {
     "If you're satisfied with you're recording, hit the 'DONE', otherwise, click 'BACK' to re-record",
 };
 
-export default function PlaybackForm({ selectedFiles }) {
+export default function PlaybackForm({
+  selectedFiles,
+  poisonPill,
+  setPoisonPill,
+}) {
   const [files, setFiles] = React.useState([]);
   React.useEffect(() => {
     const _files = [];
@@ -27,7 +31,11 @@ export default function PlaybackForm({ selectedFiles }) {
 
   const smallPlayer = true;
   const [msgKey, setMsgKey] = React.useState("begin");
-  console.log(msgKey);
+
+  React.useEffect(() => {
+    console.log("playback msg key", msgKey);
+  }, [msgKey]);
+
   return (
     <React.Fragment>
       <Box>
@@ -47,6 +55,8 @@ export default function PlaybackForm({ selectedFiles }) {
             renderGraphics={false}
             record={false}
             smallPlayer={smallPlayer}
+            poisonPill={poisonPill}
+            setPoisonPill={setPoisonPill}
           />
         </Box>
       </Box>
