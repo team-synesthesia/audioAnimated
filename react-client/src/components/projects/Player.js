@@ -40,6 +40,9 @@ export default function Player({
   availableFiles,
   files,
 }) {
+  const noTimer =
+    (Object.keys(availableFiles).length === 0) & (files.length === 0) & record;
+
   const play = async () => {
     if ((Object.keys(availableFiles).length > 0) & (files.length > 0)) {
       await playOnClick();
@@ -85,6 +88,7 @@ export default function Player({
               border: "1px solid grey",
               paddingRight: "15px",
               margin: "5px",
+              paddingLeft: noTimer ? "10px" : null,
             }}
           >
             <IconButton
@@ -104,7 +108,9 @@ export default function Player({
                 <PlayArrowIcon sx={{ height: 38, width: 38 }} />
               )}
             </IconButton>
-            <TinyText>{formatDuration(Math.round(currentTime))}</TinyText>
+            {noTimer ? null : (
+              <TinyText>{formatDuration(Math.round(currentTime))}</TinyText>
+            )}
             {duration === 0 ? null : (
               <TinyText>{"/" + formatDuration(Math.round(duration))}</TinyText>
             )}
