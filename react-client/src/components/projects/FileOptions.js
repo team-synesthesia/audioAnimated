@@ -18,15 +18,18 @@ const FileOptions = ({ handleClose, clickedFile }) => {
   const dispatch = useDispatch();
 
   const sectionsCopy = [...sections];
-  for (let section of sectionsCopy) {
+  const spliceIndices = [];
+  for (let [i, section] of sectionsCopy.entries()) {
     if (section.files && section.files.length) {
       for (let file of section.files) {
         if (file.name === clickedFile.name) {
-          const spliceIndex = section.files.indexOf(clickedFile);
-          sectionsCopy.splice(spliceIndex, 1);
+          spliceIndices.unshift(i);
         }
       }
     }
+  }
+  for (let i of spliceIndices) {
+    sectionsCopy.splice(i, 1);
   }
 
   const sectionsToAssign = [];
@@ -86,26 +89,28 @@ const FileOptions = ({ handleClose, clickedFile }) => {
             {clickedFile.name}
           </Typography>
           {sectionsCopy && sectionsCopy.length ? (
+            <Typography variant="h6">Select section(s)</Typography>
+          ) : null}
+          {sectionsCopy && sectionsCopy.length ? (
             sectionsCopy.map((section) => (
-              <>
-                <Typography variant="h6">Select section(s)</Typography>
-                <FormControlLabel
-                  key={section.id}
-                  control={<Checkbox />}
-                  label={`Section ${section.sectionNumber}`}
-                  name={String(section.sectionNumber)}
-                  onChange={(_, value) =>
-                    handleCheckBox(section.sectionNumber, value)
-                  }
-                />
-                <Button type="submit" variant="contained">
-                  Assign to Section(s)
-                </Button>
-              </>
+              <FormControlLabel
+                key={section.id}
+                control={<Checkbox />}
+                label={`Section ${section.sectionNumber}`}
+                name={String(section.sectionNumber)}
+                onChange={(_, value) =>
+                  handleCheckBox(section.sectionNumber, value)
+                }
+              />
             ))
           ) : (
             <div>Cannot be assigned to any sections</div>
           )}
+          {sectionsCopy && sectionsCopy.length ? (
+            <Button type="submit" variant="contained">
+              Assign to Section(s)
+            </Button>
+          ) : null}
         </Box>
       </form>
       <Box
