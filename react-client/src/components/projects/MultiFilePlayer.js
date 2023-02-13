@@ -17,7 +17,7 @@ import {
   setFinished,
   setTryToStart,
   setPlayAllActuallyStarted,
-  setPlayAllStarted
+  setPlayAllStarted,
 } from "../../features/projects/playAllSlice";
 
 export default function MultiFilePlayer({
@@ -161,8 +161,8 @@ export default function MultiFilePlayer({
         userId: userId,
         projectId: projectId,
       };
-      dispatch(writeFileAsync({ projectId, filePath, file }));
-      dispatch(addFileAsync(data));
+      await dispatch(writeFileAsync({ projectId, filePath, file }));
+      await dispatch(addFileAsync(data));
       setRecorded(true);
     };
     if (
@@ -396,7 +396,8 @@ export default function MultiFilePlayer({
       const sectionNum =
         (sections &&
           sections[sectionToPlay] &&
-          sections[sectionToPlay].sectionNumber) ?? -10;
+          sections[sectionToPlay].sectionNumber) ??
+        -10;
       if (sectionNum === sectionNumber) {
         if (!playAllPlayPause) {
           if (acPlusRef.current.AC.state === "running")
@@ -427,7 +428,8 @@ export default function MultiFilePlayer({
       const sectionNum =
         (sections &&
           sections[sectionToPlay] &&
-          sections[sectionToPlay].sectionNumber) ?? -10;
+          sections[sectionToPlay].sectionNumber) ??
+        -10;
       if (sectionNum === sectionNumber) {
         if (!playAllPlayPause) {
           if (acPlusRef.current.AC.state === "running")
@@ -453,11 +455,11 @@ export default function MultiFilePlayer({
     playSection,
   ]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     if (finished) {
-      console.log('in MultiFilePlayer finished', sectionNumber)
-      dispatch(setPlayAllStarted(false))
-      dispatch(setPlayAllActuallyStarted(false))
+      console.log("in MultiFilePlayer finished", sectionNumber);
+      dispatch(setPlayAllStarted(false));
+      dispatch(setPlayAllActuallyStarted(false));
 
       if (isPlaying) {
         acPlusRef.current.sources.forEach((source) => {
@@ -465,12 +467,12 @@ export default function MultiFilePlayer({
           source.disconnect();
         });
       }
-      setIsPlaying(false)
-      setEnded(true)
+      setIsPlaying(false);
+      setEnded(true);
 
-      acPlusRef.current.AC.suspend()
+      acPlusRef.current.AC.suspend();
     }
-  },[finished, sectionNumber, dispatch, isPlaying])
+  }, [finished, sectionNumber, dispatch, isPlaying]);
 
   React.useEffect(() => {
     //loop  through  the sections array in index order
