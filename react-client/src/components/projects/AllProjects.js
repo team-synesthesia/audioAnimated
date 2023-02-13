@@ -68,12 +68,12 @@ export default function AllProjects() {
           </Stack>
         </Container>
       </Box>
-      <Box sx={{ py: 8 }} maxWidth="md">
+      <Box sx={{ py: 8 }}>
         {/* End hero unit */}
         <Grid container spacing={4}>
           {projects && projects.length
             ? projects.map((project) => (
-                <Grid item key={project.id} xs={12} sm={6} md={4}>
+                <Grid item key={project.id} xs={12} sm={6} md={4} lg={3}>
                   <Card
                     sx={{
                       height: "100%",
