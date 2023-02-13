@@ -47,8 +47,8 @@ export function grInit({rendererIn,canvas,width,height,version}) {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setClearColor(0xffffff);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(width, height);
+    //renderer.setPixelRatio(window.devicePixelRatio);
+    //renderer.setSize(width, height);
 
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(0, 0, -10)

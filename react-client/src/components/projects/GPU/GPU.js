@@ -103,7 +103,9 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
             if (restart && GL.renderer) GL.renderer.dispose()
 
             const renderer = GL.renderer ?? new THREE.WebGLRenderer({antialias:true, alpha:true})
-            renderer.setSize(width, height,  false);  //get dimensions of gpuDivRef
+ 
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(width, height, true);  //get dimensions of gpuDivRef
             renderer.setClearColor("rgb(255,255,255)", 0);
 
             if ( !GL.renderer ) canvas.appendChild(renderer.domElement);
@@ -142,6 +144,8 @@ export function GPU( {GPUconfig,gpuDivRef,canvasInitialized,setCanvasInitialized
 
                 const grConfig = grInit( {rendererIn:renderer, canvas,width,height,version:gfn})
                 const { camera, scene} = grConfig
+                canvas.style.marginBottom = "2vh"
+
                 renderer.render( scene, camera)
                 setGL( grConfig,renderer,camera,scene,uniforms)
 
