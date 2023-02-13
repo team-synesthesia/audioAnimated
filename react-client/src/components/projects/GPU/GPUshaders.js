@@ -91,16 +91,21 @@ export  const fragmentShaders = [
     uniform vec4  iMusic;
     
     #define R(p,a,t) mix(a*dot(p,a),p,cos(t))+sin(t)*cross(p,a)
-    #define H(h)  (cos( max(1.,(1.1+sin(t)))*1.3*h +vec3(5,25,21)+iMusic.xyz/30. )*.7 + .2 )
+    #define H(h)  (cos( max(1.,(1.1+sin(t)))*1.3*h +vec3(5,25,21) + iMusic.xyx/10.  )*.7 + .2 )
     void mainImage( out vec4 O, vec2 C)
     { 
         O=vec4(0.,0.,0.,1.);
         vec3 r=iResolution,c=vec3(0),
         d = normalize(vec3(C-.5*r.xy,r.y))*4.;
-        float s,e,g=0.,t=1. + mod(iTime,500.)/5.;
+
+        float bass = smoothstep(-10.,10.,iMusic.x);
+        float s,e,g=0.,t=1. + mod(iTime,500.)/5. + 3.*bass;
         for(float i=0.;i<115.;i++){
             vec4 p=vec4(g*d,0.);
-            p.xyz=R(p.xyz+vec3(5.*cos(iTime/5.),0.,-6.+7.*sin(iTime/5.)),normalize(H(t*.05)),t);
+            
+            //p.xyz=R(p.xyz+vec3(5.*cos(iTime/5.),0.,-6.+7.*sin(iTime/5.)),normalize(H(t*.05)),t);
+            p.xyz=R(p.xyz+vec3(cos(iTime/5.),0.,-4.+sin(iTime/5.)),normalize(H(t*.05)),t);
+            //p.xyz=R(p.xyz+vec3(0.,0.,-3.5),normalize(H(t*.05)),t);
             s=1.;
             for(float j=0.;j<7.;j++) {  
                 p= abs(p)*.621;
@@ -383,7 +388,7 @@ float sphere_sdf( vec3 pos, float r ) {
 }
 
 mat3 rot_xz(float an) {
-    an -= iMusic.z/50.;
+    an += (iMusic.x)/30.;
     float cc = cos(an), ss=sin(an);
     return mat3(cc,0.,ss,0.,1.,0.,-ss,0.,cc);
 
@@ -402,7 +407,7 @@ vec2 dist_func01(vec3 z) {
        
         if ( i > max_iter ) break;
 
-        float w = iTime/3.;
+        float w = iTime/6.;
         vec3 dd_0 = rot_xz(w)*d20[0];
         min_vtx = dd_0;
         min_dist=length(z-dd_0);
@@ -513,7 +518,7 @@ vec3  main_loop( vec3 ro, vec3 rd ) {
         
         vec3 light_dir=normalize(lt_pos-prime_ray.raypos); 
         float diffuse_light = clamp(dot(light_dir, -nn), 0., 1.);
-        float ambient_light = (1.+iMusic.x) * 0.5 * dot(nn, normalize(1.+iMusic.xyz) ); //ambdir );
+        float ambient_light = (1.+iMusic.x/3.) * 0.5 * dot(nn, normalize(1.+iMusic.xyz) ); //ambdir );
        
         vec3 view_dir= rd;      
         vec3 refl = reflect(-view_dir,nn);      
@@ -617,7 +622,7 @@ void mainImage0( out vec4 fragColor, in vec2 fragCoord )
     
     vec2 final_uv = uv * width + center ; 
     
-    float max_iter=1100.-iMusic.x*150., mix_factor=.711 , infinity=1.e9;
+    float max_iter=1100. , mix_factor=.711 , infinity=1.e9;
     vec3  julia_freq = vec3(  9.5  , //+ sin(myTime),
                               10. ,
                               50. ); // + 10.*sin(myTime/5.) ) ;
@@ -707,7 +712,7 @@ void main() {
 uniform vec3 iResolution;
 uniform float iTime;
 uniform vec4 iMusic;
-#define brighter 1
+//#define brighter 1
 varying vec2 vUv;
 
 float numOct  = 6. ;  //number of fbm octaves
@@ -792,17 +797,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     vec3 q;
     
-    mm *= coord_scale * (1.+((iMusic.x-5.)));
+    mm *= coord_scale * (1.+((iMusic.x-2.)/5.));
     
     float myTime = iTime/3.;
-    vec2 nudge = vec2(.8*cos(myTime),-.9*sin(myTime));
-    focus = length(uv-mm+nudge);
+    vec2 nudge = vec2(.3*cos(myTime),-.5*sin(myTime));
 
+    focus = length(uv-mm+nudge);
     focus = sqrt(focus);
-    focus = 2./(1.+focus/2.); 
+    focus = 2./(1.+focus*focus/2.);
 
     focus2 = length(uv+mm-nudge);
-    focus2 = 1.5/(1.+focus2*focus2);
+    focus2 = 2./(1.+focus2*focus2);
 
 
     q.x = fbm3d(p);
@@ -818,7 +823,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     cc.r += 6.*focus; cc.g+= 2.*focus; cc.b += 9.*focus2; cc.r-=5.*focus2; 
     cc /=  25.;
 #else
-    cc.r += 4.*focus; cc.g+= 2.*focus; cc.b += 7.*focus2; cc.r-=3.*focus2;    
+    cc.r += 4.*focus*(1.+iMusic.y/10.); cc.g+= 2.*focus; cc.b += 7.*focus2; cc.r-=3.*focus2;    
     cc /= 17.;
     cc = pow(cc, vec3(2.));
 #endif   
@@ -851,7 +856,7 @@ vec2 mm;  //Mouse
 
 float f(vec3 p) {
   vec3  o = vec3(1.,.75,.15), q;
-  float d=1e6, s=-.0075-.0002*iMusic.y, a=1.,r=.02, i=0., k = o.z*s;
+  float d=1e6, s=-.0072-.00015*iMusic.y, a=1.,r=.02, i=0., k = o.z*s;
   for( p.xz *= R(t/7.) ; i++<17.; ) 
       a *= 1.-s,
       p.xy *= R(mm.x)  , p.yz *= R(mm.y), // rotations here have large impact on shape
@@ -869,11 +874,12 @@ float f(vec3 p) {
 void mainImage(out vec4 O, in vec2 U) {
   t = iTime;
   vec3 R = iResolution, E = vec3(1,-1,-1), n,
-       L =  vec3( cos(iTime/5.+iMusic.z/8.),0.,-2.+sin(iTime/5.+iMusic.z/4.) ),        // light pos
+       //L =  vec3( cos(iTime/5.+iMusic.x),0.,-2.+sin(iTime/5.+iMusic.x) ),        // light pos
+       L = vec3( cos(iMusic.x)*5., 0., -3. ),
        D = N( vec3( U+U,-R.y) - R.xyy ),   // ray pos and dir
-       P = R-R; P.z = max(0., .4 - max(.7*sin((t)/3.),0.));
+       P = R-R; P.z = max(0., .45 - max(.7*sin((t)/3.),0.));
 
-  mm=5.*vec2(.235+.01*iMusic.x/2., .07+.02*iMusic.y/50. );
+  mm=5.*vec2(.235+.013*iMusic.x/4., .07 ); //+.02*iMusic.y/50. );
       
   O = vec4(0.,0.,0.,1.);
   for ( ; i++<1e2 && l<3. && e>0.; P += d*D ) {
@@ -926,12 +932,12 @@ void main() {
         vec2 jc = 3.*(-vec2(.5));
         jc.x += jc.y/50.; jc.y = 0.; jc.x -= .5; 
     
-        jc = vec2(-.95 -.4*smoothstep(0.,100.,iMusic.z),0.);
+        jc = vec2(-.95 -.3*smoothstep(0.,150.,iMusic.z/3.),0.);
         vec2 iter=final_uv, new_iter;
     
         float escape_value = 0.;
     
-        MAX_ITER = iMusic.x*2.4;
+        MAX_ITER = 11.; //iMusic.x*1.5;
      
         //why is this behaving like webgl1???? -because we were using 0.67.0 instead of 0.149.0
         //have to explicitly give npm install three@0.149.0
