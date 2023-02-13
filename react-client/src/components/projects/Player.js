@@ -40,7 +40,8 @@ export default function Player({
   availableFiles,
   files,
 }) {
-  const noTimer =
+
+  const noTimer = availableFiles && files &&
     (Object.keys(availableFiles).length === 0) & (files.length === 0) & record;
 
   const play = async () => {
