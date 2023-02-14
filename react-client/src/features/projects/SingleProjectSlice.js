@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
 export const getFilesAsync = createAsyncThunk(
   "getFiles",
   async ({ projectId, availableFiles }) => {
@@ -9,10 +11,23 @@ export const getFilesAsync = createAsyncThunk(
       for (const name in availableFiles) {
         const file = availableFiles[name];
         const filePath = file.filePath;
-        const { data } = await axios.get("/api/audiofiles/", {
-          params: { projectId, filePath },
-        });
-        rawData[name] = data;
+
+        let seconds = 0;
+        const maxWait = 10;
+        let response;
+        while (true) {
+          try {
+            response = await axios.get("/api/audiofilesA/", {
+              params: { projectId, filePath },
+            });
+            if (response.status === 200) break;
+          } catch (error) {
+            await delay(1000);
+            seconds++;
+            if (seconds === maxWait) break;
+          }
+        }
+        rawData[name] = response.data;
       }
       return rawData;
     } catch (error) {
