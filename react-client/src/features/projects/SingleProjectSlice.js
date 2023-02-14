@@ -17,7 +17,7 @@ export const getFilesAsync = createAsyncThunk(
         let response;
         while (true) {
           try {
-            response = await axios.get("/api/audiofilesA/", {
+            response = await axios.get("/api/audiofiles/", {
               params: { projectId, filePath },
             });
             if (response.status === 200) break;
