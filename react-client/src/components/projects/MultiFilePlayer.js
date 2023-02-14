@@ -220,7 +220,10 @@ export default function MultiFilePlayer({
   React.useEffect(() => {
     const createBuffers = async () => {
       // wait for raw audio to load before executing
-      if (!Object.keys(audioRawFiles).length || typeof files === "undefined")
+      if (
+        (audioRawFiles && !Object.keys(audioRawFiles).length) ||
+        typeof files === "undefined"
+      )
         return;
 
       for (let i = 0; i < files.length; i++) {
