@@ -617,24 +617,25 @@ void mainImage0( out vec4 fragColor, in vec2 fragCoord )
     float myTime = iTime;
     
     //we want to start in a particular rectangle in complex plane
-    vec2 center = vec2( -1.587+.02*sin(myTime/5.),-.34-.02*sin(myTime/7.)); //-.31000);
-    vec2 width  = (1.-.8*sin(myTime/9.))*.5*vec2( .025, .03);
+    //vec2 center = vec2( -1.587+.02*sin(myTime/5.),-.34-.02*sin(myTime/7.));
+    vec2 center = vec2( -1.59+.003*sin(myTime/5.),-.333);
+    vec2 width  = vec2(.002,.002)*(1.-.5*sin(myTime/7.)); //*.5*vec2( .025, .03);
     
     vec2 final_uv = uv * width + center ; 
     
-    float max_iter=1100. , mix_factor=.711 , infinity=1.e9;
-    vec3  julia_freq = vec3(  9.5  , //+ sin(myTime),
+    float max_iter=300. , mix_factor=.711 , infinity=1e8;
+    vec3  julia_freq = vec3(  9.5 , 
                               10. ,
-                              50. ); // + 10.*sin(myTime/5.) ) ;
+                              50. ); 
 
-    julia_freq += (iMusic.zyx - 20.)/5. ;
+
+    julia_freq.x += iMusic.z>.3 ? 4.* sqrt(1.+max(iMusic.x,iMusic.y)/2. ) : 0.;
+
 
     vec4 qq = vec4(0.); //counts orbit in 4 quadrants
     
-    //mix_factor += .02 * sin(myTime/5.);
     vec2 wgt=vec2(mix_factor, 1.-mix_factor);
     
-
     vec2 iter=final_uv, new_iter;
     float escape_value = 0.;
     for ( float i=0.; i<max_iter; i++ ) {
@@ -691,7 +692,7 @@ void mainImage0( out vec4 fragColor, in vec2 fragCoord )
 //https://shadertoyunofficial.wordpress.com/author/fabriceneyret/
 void mainImage(out vec4 O, vec2 U) {
     mainImage0(O,U);
-    if ( fwidth(length(O)) > .01 ) {  // difference threshold between neighbor pixels
+    if ( fwidth(length(O)) > .02 ) {  // difference threshold between neighbor pixels
         vec4 o;
         for (int k=0; k < 9; k+= k==3?2:1 )
           { mainImage0(o,U+vec2(k%3-1,k/3-1)/3.); O += o; }
@@ -724,7 +725,6 @@ float random(vec2 p) {
     //a random modification of the one and only random() func
     return fract( sin( dot( p, vec2(12., 90.)))* 1e6 );
 }
-
 
 //this is taken from Visions of Chaos shader "Sample Noise 2D 4.glsl"
 float noise(vec3 p) {
@@ -832,7 +832,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
 }
 
-
 void main() {
     mainImage(gl_FragColor, vUv*iResolution.xy);
 }
@@ -903,7 +902,6 @@ void main() {
   mainImage(gl_FragColor, vUv*iResolution.xy);
 }
 
-
 `,
 
 `
@@ -963,6 +961,137 @@ void main() {
     void main() {
         mainImage(gl_FragColor, vUv*iResolution.xy);
     }
+
+`,
+
+`
+///////////// Color Companions 2 - more swirly
+uniform vec3 iResolution;
+uniform float iTime;
+uniform vec4 iMusic;
+//#define brighter 1
+varying vec2 vUv;
+
+float numOct  = 6. ;  //number of fbm octaves
+float focus = 0.;
+float focus2 = 0.;
+#define pi  3.14159265
+
+float random(vec2 p) {
+    //a random modification of the one and only random() func
+    return fract( sin( dot( p, vec2(12., 90.)))* 1e6 );
+}
+
+//this is taken from Visions of Chaos shader "Sample Noise 2D 4.glsl"
+float noise(vec3 p) {
+    vec2 i = floor(p.yz);
+    vec2 f = fract(p.yz);
+    float a = random(i + vec2(0.,0.));
+    float b = random(i + vec2(1.,0.));
+    float c = random(i + vec2(0.,1.));
+    float d = random(i + vec2(1.,1.));
+    vec2 u = f*f*(3.-2.*f); //smoothstep here, it also looks good with u=f
+    
+    return mix(a,b,u.x) + (c-a)*u.y*(1.-u.x) + (d-b)*u.x*u.y;
+
+}
+
+float fbm3d(vec3 p) {
+    float v = 0.;
+    float a = .5;
+    vec3 shift = vec3(focus - focus2);  //play with this
+    
+    float angle = pi/4. + .03*focus;      //play with this
+    float cc=cos(angle), ss=sin(angle);  
+    mat3 rot = mat3( cc,  0., ss, 
+                      0., 1., 0.,
+                     -ss, 0., cc );
+    for (float i=0.; i<numOct; i++) {
+        v += a * noise(p);
+        p = rot * p * 2. + shift;
+        a *= .2*(1.+focus+focus2)/(1.+iMusic.x/50.);  //changed from the usual .5
+    }
+    return v;
+}
+
+mat3 rxz(float an){
+    float cc=cos(an),ss=sin(an);
+    return mat3(cc,0.,-ss,
+                0.,1.,0.,
+                ss,0.,cc);                
+}
+mat3 ryz(float an){
+    float cc=cos(an),ss=sin(an);
+    return mat3(1.,0.,0.,
+                0.,cc,-ss,
+                0.,ss,cc);
+}                
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+
+    float coord_scale = 2.;
+    float tt = iTime / 8.;
+    vec2 uv = (2.*fragCoord-iResolution.xy)/iResolution.y;
+
+    float aspect = iResolution.x / iResolution.y;
+    vec2 mm = vec2(.3*aspect,0.);
+
+    uv *= coord_scale;
+
+    vec3 rd = normalize( vec3(uv, -1.2) );  
+    vec3 ro = vec3(0.,1.,0.);
+    
+    float delta = iTime / 4. ; 
+    mat3 rot = rxz(delta*2. ) * ryz(-delta );
+    
+    ro -= rot[2] * (1.+iMusic.y/20.); //*iTime/4.;
+    
+    vec3 p = ro + rot*rd;
+    
+    vec3 q;
+    
+    float myTime = iTime/4.;
+
+    float bass = (1.+(iMusic.x)/6.);
+    
+    //vec2 nudge = vec2( .8*aspect*cos(myTime), -sin(myTime));
+    vec2 nudge = vec2( .5*aspect, 0.);
+
+    focus = length(uv+mm+nudge);
+    focus = sqrt(focus);
+    focus = 1./(1.+focus*focus/2.) * min(4., bass) ;
+
+    focus2 = length(uv-mm-nudge);
+    focus2 = 1./(1.+focus2*focus2) * min(2.5, 4./ bass);
+
+
+    q.x = fbm3d(p);
+    q.y = fbm3d(p.yzx);
+    q.z = fbm3d(p.zxy);
+
+    float f = fbm3d(p + q);
+    
+    vec3 cc = q;
+    cc *= 30.*f;
+    
+#ifndef brighter
+    cc.r += 6.*focus; cc.g+= 2.*focus; cc.b += 9.*focus2; cc.r-=5.*focus2; 
+    cc /=  25.;
+#else
+    cc.r += 4.*focus*(1.+iMusic.y/10.); cc.g+= 2.*focus; cc.b += 7.*focus2; cc.r-=3.*focus2;    
+    cc /= 17.;
+    cc = pow(cc, vec3(2.));
+#endif   
+
+    fragColor = vec4(cc,1.0);
+    
+}
+
+
+void main() {
+    mainImage(gl_FragColor, vUv*iResolution.xy);
+}
 
 `
     ]

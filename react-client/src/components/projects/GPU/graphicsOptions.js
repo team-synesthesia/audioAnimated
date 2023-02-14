@@ -22,6 +22,7 @@ export const graphicsOptions = [
   { type: "vertex", fn: 1, name: "\"Dodeca-God Rays2\"", imgUrl: "g7.jpg" },
   { type: "shader", fn: 7, name: "\"Golden Blob\"", imgUrl: "g8.jpg" },
   { type: "shader", fn: 8, name: "\"Ode to Julia 2\"", imgUrl: "g9.jpg" },
+  { type: "shader", fn: 9, name: "\"Color Companions 2\"", imgUrl: "g10.jpg" },
 ];
 
 let displayedLog = false;
