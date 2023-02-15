@@ -1,41 +1,27 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
+import {
+  getWithToken,
+  postWithToken,
+  deleteWithToken,
+} from "../requestWithToken";
 export const fetchAllProjectsByUserIdAsync = createAsyncThunk(
   "allProjectsByUserId",
   async (userId) => {
-    try {
-      const { data } = await axios.get("/api/projects/", {
-        params: { userId },
-      });
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
+    return getWithToken("/api/projects/", [], { userId });
   }
 );
 
 export const createProjectAsync = createAsyncThunk(
   "createProject",
   async (payload) => {
-    try {
-      const { data } = await axios.post("/api/projects/", payload);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
+    return postWithToken("/api/projects/", {}, payload);
   }
 );
 
 export const deleteProjectAsync = createAsyncThunk(
   "deleteProject",
   async (projectId) => {
-    try {
-      const { data } = await axios.delete(`/api/projects/${projectId}`);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
+    return deleteWithToken(`/api/projects/${projectId}`, null);
   }
 );
 

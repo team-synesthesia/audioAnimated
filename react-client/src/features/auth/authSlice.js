@@ -4,7 +4,7 @@ import axios from "axios";
 /*
   CONSTANT VARIABLES
 */
-const TOKEN = "token";
+export const TOKEN = "token";
 
 /*
   THUNKS
