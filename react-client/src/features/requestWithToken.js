@@ -59,7 +59,7 @@ export async function putWithToken(url, emptyReturnValue, payload, params) {
   }
 }
 
-export async function deleteWithToken(url, emptyReturnValue) {
+export async function deleteWithToken(url, emptyReturnValue, params) {
   const token = window.localStorage.getItem(TOKEN);
   try {
     if (token) {
@@ -67,6 +67,7 @@ export async function deleteWithToken(url, emptyReturnValue) {
         headers: {
           authorization: token,
         },
+        params,
       });
       return data;
     } else {

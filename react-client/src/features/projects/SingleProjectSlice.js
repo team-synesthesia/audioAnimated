@@ -78,8 +78,7 @@ export const writeFileAsync = createAsyncThunk(
 
 export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
   try {
-    const { data } = await axios.post("/api/files/", formData);
-    return data;
+    return postWithToken("/api/files/", {}, formData);
   } catch (error) {
     console.error(error);
   }
@@ -89,7 +88,7 @@ export const deleteFileAsync = createAsyncThunk(
   "deleteFile",
   async ({ deleteParam, type }) => {
     try {
-      await axios.delete("/api/files/", { params: { deleteParam, type } });
+      deleteWithToken("/api/files/", null, { deleteParam, type });
       return { deleteParam, type };
     } catch (error) {
       console.error(error);

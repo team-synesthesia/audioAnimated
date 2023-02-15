@@ -1,11 +1,9 @@
 const {
-  models: { User, Section, Project },
+  models: { User, File, Section, Project },
 } = require("./db");
 
 const requireToken = async (req, res, next) => {
   const token = req.headers.authorization;
-  console.log("token : ");
-  console.log(token);
   req.user = await User.findByToken(token);
   next();
 };
@@ -15,6 +13,52 @@ const isAdmin = (req, res, next) => {
     return res.status(403).send("You must be an admin to access this route");
   } else {
     next();
+  }
+};
+
+const isYourFile = async (req, res, next) => {
+  const { deleteParam, type } = req.query;
+  let userIds;
+  if (type === "byId") {
+    const fileId = deleteParam;
+    const file = await File.findByPk(fileId, {
+      include: {
+        model: Section,
+        include: {
+          model: Project,
+          include: User,
+        },
+      },
+    });
+    userIds = file.section.project.users.map((x) => x.id);
+  } else if (type === "byName") {
+    const name = deleteParam;
+    const files = await File.findAll({
+      where: { name },
+      include: {
+        model: Section,
+        include: {
+          model: Project,
+          include: User,
+        },
+      },
+    });
+
+    // using Set to dedup list on each pass thru of reduce
+    userIds = Array.from(
+      files.reduce((accumSet, f) => {
+        uIds = f.section.project.users.map((x) => x.id);
+        uIds.forEach((id) => accumSet.add(id));
+        return accumSet;
+      }, new Set())
+    );
+  }
+
+  const userInProject = userIds.some((x) => x === req.user.id);
+  if (userInProject) {
+    next();
+  } else {
+    return res.status(403).send("You cannot access other users files");
   }
 };
 
@@ -92,6 +136,7 @@ module.exports = {
   requireToken,
   isSelf,
   sharableOrIsSelf,
+  isYourFile,
   isYourSection,
   isYourProject,
   isAdmin,
