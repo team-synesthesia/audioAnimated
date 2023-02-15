@@ -4,7 +4,9 @@ const {
 } = require("../db");
 module.exports = router;
 
-router.post("/", async (req, res, next) => {
+const { requireToken, isYourFile, isYourProject } = require("../gatekeeper");
+
+router.post("/", requireToken, isYourProject, async (req, res, next) => {
   try {
     let { projectId, sectionNumber, filePath, name, type, userId } = req.body;
     if (typeof sectionNumber === "undefined") {
@@ -28,7 +30,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/", async (req, res, next) => {
+router.delete("/", requireToken, isYourFile, async (req, res, next) => {
   try {
     const { deleteParam, type } = req.query;
     if (type === "byName") {

@@ -22,7 +22,6 @@ import ShareIcon from "@mui/icons-material/Share";
 import TransitionsModal from "./TransitionsModal";
 
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { setPlayAllStarted, setPlayAllPlayPause } from "../../features";
 
 const drawerWidth = "12vw";
@@ -52,7 +51,6 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
     (state) => state.playAll
   );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -145,7 +143,7 @@ export default function PermanentDrawerLeft({ projectId, userId }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate(`/share/${projectId}`)}>
+            <ListItemButton onClick={() => handleOpen("shareSettings")}>
               <ListItemIcon sx={{ minWidth: "40px" }}>
                 <ShareIcon />
               </ListItemIcon>

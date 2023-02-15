@@ -11,6 +11,11 @@ const Project = db.define("project", {
     allowNull: false,
     defaultValue: 0,
   },
+  shareable: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
   sectionDuration: {
     type: Sequelize.INTEGER,
   },

@@ -4,7 +4,15 @@ const {
 } = require("../db");
 module.exports = router;
 
-router.get("/", async (req, res, next) => {
+const {
+  requireToken,
+  requireTokenOrShareable,
+  isSelf,
+  isYourProject,
+  isYourProjectOrShareable,
+} = require("../gatekeeper");
+
+router.get("/", requireToken, isSelf, async (req, res, next) => {
   try {
     const { userId } = req.query;
     if (userId) {
@@ -22,7 +30,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", requireToken, isSelf, async (req, res, next) => {
   try {
     const { name, userId } = req.body;
     const user = await User.findByPk(userId);
@@ -50,57 +58,72 @@ router.post("/", async (req, res, next) => {
 });
 
 // get project by projectId
-router.get("/:id", async (req, res, next) => {
-  try {
-    const projectId = req.params.id;
-    const project = await Project.findByPk(projectId, {
-      include: [
-        {
-          model: Section,
-          order: "id",
-          include: { model: File, order: "id" },
-        },
-      ],
-    });
-    res.send(project);
-  } catch (err) {
-    console.error("error in Single Projects GET route");
-    next(err);
-  }
-});
-
-router.put("/:id", async (req, res, next) => {
-  try {
-    const projectId = req.params.id;
-    const projectToUpdate = await Project.findByPk(projectId);
-    const updatedProject = await projectToUpdate.update(req.body);
-
-    res.send(updatedProject);
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
-
-router.delete("/:id", async (req, res, next) => {
-  try {
-    const projectId = req.params.id;
-    const projectToDelete = await Project.findByPk(projectId);
-    const sectionsToDelete = await Section.findAll({ where: { projectId } });
-
-    await projectToDelete.destroy();
-    for (let section of sectionsToDelete) {
-      const filesToDelete = await File.findAll({
-        where: { sectionId: section.id },
+router.get(
+  "/:projectId",
+  requireTokenOrShareable,
+  isYourProjectOrShareable,
+  async (req, res, next) => {
+    try {
+      const projectId = req.params.projectId;
+      const project = await Project.findByPk(projectId, {
+        include: [
+          {
+            model: Section,
+            order: "id",
+            include: { model: File, order: "id" },
+          },
+        ],
       });
-      for (let file of filesToDelete) {
-        await file.destroy();
-      }
-      await section.destroy();
+      res.send(project);
+    } catch (err) {
+      console.error("error in Single Projects GET route");
+      next(err);
     }
-    res.status(202).send(projectId);
-  } catch (err) {
-    console.error("error in delete project route");
-    next(err);
   }
-});
+);
+
+router.put(
+  "/:projectId",
+  requireToken,
+  isYourProject,
+  async (req, res, next) => {
+    try {
+      const projectId = req.params.projectId;
+      const projectToUpdate = await Project.findByPk(projectId);
+      const updatedProject = await projectToUpdate.update(req.body);
+
+      res.send(updatedProject);
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  }
+);
+
+router.delete(
+  "/:projectId",
+  requireToken,
+  isYourProject,
+  async (req, res, next) => {
+    try {
+      const projectId = req.params.projectId;
+      const projectToDelete = await Project.findByPk(projectId);
+      const sectionsToDelete = await Section.findAll({ where: { projectId } });
+
+      await projectToDelete.destroy();
+      for (let section of sectionsToDelete) {
+        const filesToDelete = await File.findAll({
+          where: { sectionId: section.id },
+        });
+        for (let file of filesToDelete) {
+          await file.destroy();
+        }
+        await section.destroy();
+      }
+      res.status(202).send(projectId);
+    } catch (err) {
+      console.error("error in delete project route");
+      next(err);
+    }
+  }
+);

@@ -90,14 +90,15 @@ export default function AllProjects() {
                       image={graphicsOptions[project.graphicsFn].imgUrl}
                       alt="random"
                     />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography
-                        variant="h5"
-                        component="h2"
-                        sx={{ textAlign: "center" }}
-                      >
+                    <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+                      <Typography variant="h5" component="h2">
                         {project.name}
                       </Typography>
+                      <small>
+                        {project.shareable
+                          ? "Public"
+                          : "Private"}
+                      </small>
                     </CardContent>
                     <CardActions
                       sx={{ display: "flex", justifyContent: "space-evenly" }}

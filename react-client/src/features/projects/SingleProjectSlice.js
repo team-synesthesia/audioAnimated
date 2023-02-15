@@ -1,11 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { TOKEN } from "../auth/authSlice";
+
+import {
+  get,
+  getNoCatch,
+  getWithTokenNoCatch,
+  getWithToken,
+  putWithToken,
+  postWithToken,
+  deleteWithToken,
+} from "../requestWithToken";
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 export const getFilesAsync = createAsyncThunk(
   "getFiles",
-  async ({ projectId, availableFiles }) => {
+  async ({ projectId, availableFiles, checkIfShareable }) => {
     try {
       const rawData = {};
       for (const name in availableFiles) {
@@ -17,9 +27,20 @@ export const getFilesAsync = createAsyncThunk(
         let response;
         while (true) {
           try {
-            response = await axios.get("/api/audiofiles/", {
-              params: { projectId, filePath },
-            });
+            const token = window.localStorage.getItem(TOKEN);
+            if (token) {
+              response = await getWithTokenNoCatch("/api/audiofiles/", "", {
+                projectId,
+                filePath,
+              });
+            } else if (checkIfShareable) {
+              response = await getNoCatch("/api/audiofiles/", {
+                projectId,
+                filePath,
+              });
+            } else {
+              response = { status: null };
+            }
             if (response.status === 200) break;
           } catch (error) {
             await delay(1000);
@@ -39,14 +60,11 @@ export const getFilesAsync = createAsyncThunk(
 export const getFileAsync = createAsyncThunk(
   "getFile",
   async ({ fileLabel, projectId, filePath }) => {
-    try {
-      const { data } = await axios.get("/api/audiofiles/", {
-        params: { projectId, filePath },
-      });
-      return [fileLabel, data];
-    } catch (error) {
-      console.log(error);
-    }
+    const data = await getWithToken("/api/audiofiles/", "", {
+      projectId,
+      filePath,
+    });
+    return [fileLabel, data];
   }
 );
 
@@ -56,13 +74,20 @@ export const writeFileAsync = createAsyncThunk(
     try {
       const formData = new FormData();
       formData.append("audiofile", file);
-      const { data } = await axios.post("/api/audiofiles/", formData, {
-        params: { projectId, filePath },
-        headers: {
-          "Content-Type": "multipart/form-data",
+
+      const additionalHeaders = {
+        "Content-Type": "multipart/form-data",
+      };
+      return await postWithToken(
+        "/api/audiofiles/",
+        "",
+        formData,
+        {
+          projectId,
+          filePath,
         },
-      });
-      return data;
+        additionalHeaders
+      );
     } catch (error) {
       console.error(error);
     }
@@ -70,74 +95,46 @@ export const writeFileAsync = createAsyncThunk(
 );
 
 export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
-  try {
-    const { data } = await axios.post("/api/files/", formData);
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
+  return await postWithToken("/api/files/", {}, formData);
 });
 
 export const deleteFileAsync = createAsyncThunk(
   "deleteFile",
   async ({ deleteParam, type }) => {
-    try {
-      await axios.delete("/api/files/", { params: { deleteParam, type } });
-      return { deleteParam, type };
-    } catch (error) {
-      console.error(error);
-    }
+    await deleteWithToken("/api/files/", null, { deleteParam, type });
+    return { deleteParam, type };
   }
 );
 
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
-  async ({ projectId }) => {
-    try {
-      const { data } = await axios.get(`/api/projects/${projectId}`);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
+  async ({ projectId, checkIfShareable }) => {
+    const token = window.localStorage.getItem(TOKEN);
+    if (token) return await getWithToken(`/api/projects/${projectId}`, {});
+    if (checkIfShareable) return await get(`/api/projects/${projectId}`);
+    return {};
   }
 );
 
 export const updateProjectAsync = createAsyncThunk(
   "updateProject",
   async ({ projectId, updateData }) => {
-    try {
-      const { data } = await axios.put(
-        `/api/projects/${projectId}`,
-        updateData
-      );
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
+    return await putWithToken(`/api/projects/${projectId}`, {}, updateData);
   }
 );
 
 export const createSectionAsync = createAsyncThunk(
   "createSection",
   async (payload) => {
-    try {
-      const { data } = await axios.post("/api/sections/", payload);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
+    return await postWithToken("/api/sections/", {}, payload);
   }
 );
 
 export const deleteSectionAsync = createAsyncThunk(
   "deleteSection",
-  async (id) => {
-    try {
-      await axios.delete(`/api/sections/${id}`);
-      return id;
-    } catch (error) {
-      console.error(error);
-    }
+  async (sectionId) => {
+    await deleteWithToken(`/api/sections/${sectionId}`, null);
+    return sectionId;
   }
 );
 
@@ -150,6 +147,7 @@ export const singleProjectSlice = createSlice({
     recordLatencyAdjustment: null,
     sectionDuration: null,
     graphicsFn: null,
+    shareable: false,
     sections: [],
     availableFiles: {}, // de-duped, key is file.name
     audioRawFiles: {}, // de-duped, key is file.name
@@ -164,8 +162,8 @@ export const singleProjectSlice = createSlice({
         sections,
         sectionDuration,
         graphicsFn,
+        shareable,
       } = action.payload;
-
       const availableFiles = {};
       sections.forEach((section) => {
         section.files.forEach((file) => {
@@ -185,6 +183,7 @@ export const singleProjectSlice = createSlice({
       state.sectionDuration = sectionDuration;
       state.availableFiles = availableFiles;
       state.graphicsFn = graphicsFn;
+      state.shareable = shareable;
     });
     builder.addCase(getFilesAsync.fulfilled, (state, action) => {
       state.audioRawFiles = action.payload;

@@ -4,7 +4,9 @@ const {
 } = require("../db");
 module.exports = router;
 
-router.post("/", async (req, res, next) => {
+const { requireToken, isYourSection, isYourProject } = require("../gatekeeper");
+
+router.post("/", requireToken, isYourProject, async (req, res, next) => {
   try {
     const { projectId } = req.body;
     const existingSections = await Section.findAll({
@@ -23,18 +25,23 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
-  try {
-    const sectionToDelete = await Section.findByPk(req.params.id);
-    const filesToDelete = await File.findAll({
-      where: { sectionId: sectionToDelete.id },
-    });
-    for (let file of filesToDelete) {
-      await file.destroy();
+router.delete(
+  "/:sectionId",
+  requireToken,
+  isYourSection,
+  async (req, res, next) => {
+    try {
+      const sectionToDelete = await Section.findByPk(req.params.sectionId);
+      const filesToDelete = await File.findAll({
+        where: { sectionId: sectionToDelete.id },
+      });
+      for (let file of filesToDelete) {
+        await file.destroy();
+      }
+      const deletedSection = await sectionToDelete.destroy();
+      res.status(202).send(deletedSection);
+    } catch (err) {
+      next(err);
     }
-    const deletedSection = await sectionToDelete.destroy();
-    res.status(202).send(deletedSection);
-  } catch (err) {
-    next(err);
   }
-});
+);
