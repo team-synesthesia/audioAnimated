@@ -1,7 +1,12 @@
 const fs = require("fs");
 const router = require("express").Router();
 
-const { requireToken, isYourProject } = require("../gatekeeper");
+const {
+  requireToken,
+  requireTokenOrShareable,
+  isYourProject,
+  isYourProjectOrShareable,
+} = require("../gatekeeper");
 
 module.exports = router;
 require("dotenv").config();
@@ -9,20 +14,25 @@ require("dotenv").config();
 const multer = require("multer");
 const upload = multer();
 
-router.get("/", requireToken, isYourProject, (req, res, next) => {
-  const { projectId, filePath } = req.query;
-  const fullFilepath =
-    process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + filePath;
-  fs.readFile(fullFilepath, { encoding: "base64" }, (err, data) => {
-    if (err) {
-      next(err);
-      res.status(500).send("problem");
-    } else {
-      console.log("read file in");
-      res.status(200).send(data);
-    }
-  });
-});
+router.get(
+  "/",
+  requireTokenOrShareable,
+  isYourProjectOrShareable,
+  (req, res, next) => {
+    const { projectId, filePath } = req.query;
+    const fullFilepath =
+      process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + filePath;
+    fs.readFile(fullFilepath, { encoding: "base64" }, (err, data) => {
+      if (err) {
+        next(err);
+        res.status(500).send("problem");
+      } else {
+        console.log("read file in");
+        res.status(200).send(data);
+      }
+    });
+  }
+);
 
 router.post(
   "/",

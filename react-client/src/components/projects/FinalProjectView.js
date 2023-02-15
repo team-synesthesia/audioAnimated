@@ -19,7 +19,8 @@ const FinalProjectView = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchSingleProjectAsync({ projectId }));
+    const checkIfShareable = true;
+    dispatch(fetchSingleProjectAsync({ projectId, checkIfShareable }));
   }, [dispatch, projectId]);
 
   const { playAllStarted, playAllPlayPause } = useSelector(
@@ -38,7 +39,8 @@ const FinalProjectView = () => {
 
   useEffect(() => {
     if (Object.keys(availableFiles).length) {
-      dispatch(getFilesAsync({ projectId, availableFiles }));
+      const checkIfShareable = true;
+      dispatch(getFilesAsync({ projectId, availableFiles, checkIfShareable }));
     }
   }, [dispatch, projectId, availableFiles]);
 

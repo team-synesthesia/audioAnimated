@@ -2,6 +2,24 @@ const {
   models: { User, File, Section, Project },
 } = require("./db");
 
+const requireTokenOrShareable = async (req, res, next) => {
+  const token = req.headers.authorization;
+  if (token) {
+    req.user = await User.findByToken(token);
+    next();
+  } else {
+    let { projectId } = req.params;
+    if (!projectId) projectId = req.query.projectId;
+    const project = await Project.findByPk(projectId);
+    const shareable = project.dataValues.shareable;
+    if (shareable) next();
+    else
+      return res
+        .status(403)
+        .send("You do not have permission to view this content");
+  }
+};
+
 const requireToken = async (req, res, next) => {
   const token = req.headers.authorization;
   req.user = await User.findByToken(token);
@@ -79,6 +97,24 @@ const isYourSection = async (req, res, next) => {
   }
 };
 
+const isYourProjectOrShareable = async (req, res, next) => {
+  let projectId = req.params.projectId;
+  if (!projectId) projectId = req.query.projectId;
+  const project = await Project.findByPk(projectId, {
+    include: User,
+  });
+  if (project.shareable) next();
+  else {
+    const userIds = project.users.map((x) => x.id);
+    const userInProject = userIds.some((x) => x === req.user.id);
+    if (userInProject) {
+      next();
+    } else {
+      return res.status(403).send("You cannot access other users projects");
+    }
+  }
+};
+
 const isYourProject = async (req, res, next) => {
   let projectId = req.params.projectId;
   if (!projectId) projectId = req.query.projectId;
@@ -134,12 +170,14 @@ const isAdminOrSelf = (req, res, next) => {
 };
 
 module.exports = {
+  requireTokenOrShareable,
   requireToken,
   isSelf,
   sharableOrIsSelf,
   isYourFile,
   isYourSection,
   isYourProject,
+  isYourProjectOrShareable,
   isAdmin,
   isAdminOrSelf,
 };

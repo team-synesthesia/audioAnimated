@@ -4,7 +4,13 @@ const {
 } = require("../db");
 module.exports = router;
 
-const { requireToken, isSelf, isYourProject } = require("../gatekeeper");
+const {
+  requireToken,
+  requireTokenOrShareable,
+  isSelf,
+  isYourProject,
+  isYourProjectOrShareable,
+} = require("../gatekeeper");
 
 router.get("/", requireToken, isSelf, async (req, res, next) => {
   try {
@@ -54,8 +60,8 @@ router.post("/", requireToken, isSelf, async (req, res, next) => {
 // get project by projectId
 router.get(
   "/:projectId",
-  requireToken,
-  isYourProject,
+  requireTokenOrShareable,
+  isYourProjectOrShareable,
   async (req, res, next) => {
     try {
       const projectId = req.params.projectId;

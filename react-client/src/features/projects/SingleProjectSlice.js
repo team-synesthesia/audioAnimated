@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { TOKEN } from "../auth/authSlice";
 
 import {
+  get,
+  getNoCatch,
   getWithTokenNoCatch,
   getWithToken,
   putWithToken,
@@ -12,7 +15,7 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 export const getFilesAsync = createAsyncThunk(
   "getFiles",
-  async ({ projectId, availableFiles }) => {
+  async ({ projectId, availableFiles, checkIfShareable }) => {
     try {
       const rawData = {};
       for (const name in availableFiles) {
@@ -24,10 +27,20 @@ export const getFilesAsync = createAsyncThunk(
         let response;
         while (true) {
           try {
-            response = await getWithTokenNoCatch("/api/audiofiles/", "", {
-              projectId,
-              filePath,
-            });
+            const token = window.localStorage.getItem(TOKEN);
+            if (token) {
+              response = await getWithTokenNoCatch("/api/audiofiles/", "", {
+                projectId,
+                filePath,
+              });
+            } else if (checkIfShareable) {
+              response = await getNoCatch("/api/audiofiles/", {
+                projectId,
+                filePath,
+              });
+            } else {
+              response = { status: null };
+            }
             if (response.status === 200) break;
           } catch (error) {
             await delay(1000);
@@ -95,8 +108,11 @@ export const deleteFileAsync = createAsyncThunk(
 
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
-  async ({ projectId }) => {
-    return await getWithToken(`/api/projects/${projectId}`, {});
+  async ({ projectId, checkIfShareable }) => {
+    const token = window.localStorage.getItem(TOKEN);
+    if (token) return await getWithToken(`/api/projects/${projectId}`, {});
+    if (checkIfShareable) return await get(`/api/projects/${projectId}`);
+    return {};
   }
 );
 
@@ -146,7 +162,6 @@ export const singleProjectSlice = createSlice({
         sectionDuration,
         graphicsFn,
       } = action.payload;
-
       const availableFiles = {};
       sections.forEach((section) => {
         section.files.forEach((file) => {

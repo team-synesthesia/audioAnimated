@@ -17,6 +17,23 @@ export async function getWithTokenNoCatch(url, emptyReturnValue, params) {
   }
 }
 
+export async function getNoCatch(url, params) {
+  return await axios.get(url, {
+    params,
+  });
+}
+
+export async function get(url, params) {
+  try {
+    const { data } = await axios.get(url, {
+      params,
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export async function getWithToken(url, emptyReturnValue, params) {
   const token = window.localStorage.getItem(TOKEN);
   try {
