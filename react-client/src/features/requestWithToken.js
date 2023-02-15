@@ -21,14 +21,25 @@ export async function getWithToken(url, emptyReturnValue, params) {
   }
 }
 
-export async function postWithToken(url, emptyReturnValue, payload, params) {
+export async function postWithToken(
+  url,
+  emptyReturnValue,
+  payload,
+  params,
+  additionalHeaders
+) {
   const token = window.localStorage.getItem(TOKEN);
+
+  let headers = {
+    authorization: token,
+  };
+  if (additionalHeaders) {
+    headers = { ...headers, ...additionalHeaders };
+  }
   try {
     if (token) {
       const { data } = await axios.post(url, payload, {
-        headers: {
-          authorization: token,
-        },
+        headers,
         params,
       });
       return data;

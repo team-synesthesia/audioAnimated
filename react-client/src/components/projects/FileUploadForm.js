@@ -15,7 +15,7 @@ const FileUploadForm = (props) => {
 
   const dispatch = useDispatch();
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     const formData = {
@@ -26,9 +26,11 @@ const FileUploadForm = (props) => {
       projectId,
     };
 
-    dispatch(addFileAsync(formData));
-    dispatch(writeFileAsync({ projectId, filePath: file.name, file }));
-    dispatch(getFileAsync({ fileLabel: name, projectId, filePath: file.name }));
+    await dispatch(addFileAsync(formData));
+    await dispatch(writeFileAsync({ projectId, filePath: file.name, file }));
+    await dispatch(
+      getFileAsync({ fileLabel: name, projectId, filePath: file.name })
+    );
 
     setName("");
     setFile({});

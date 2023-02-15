@@ -63,13 +63,20 @@ export const writeFileAsync = createAsyncThunk(
     try {
       const formData = new FormData();
       formData.append("audiofile", file);
-      const { data } = await axios.post("/api/audiofiles/", formData, {
-        params: { projectId, filePath },
-        headers: {
-          "Content-Type": "multipart/form-data",
+
+      const additionalHeaders = {
+        "Content-Type": "multipart/form-data",
+      };
+      return await postWithToken(
+        "/api/audiofiles/",
+        "",
+        formData,
+        {
+          projectId,
+          filePath,
         },
-      });
-      return data;
+        additionalHeaders
+      );
     } catch (error) {
       console.error(error);
     }
@@ -78,7 +85,7 @@ export const writeFileAsync = createAsyncThunk(
 
 export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
   try {
-    return postWithToken("/api/files/", {}, formData);
+    return await postWithToken("/api/files/", {}, formData);
   } catch (error) {
     console.error(error);
   }
@@ -88,7 +95,7 @@ export const deleteFileAsync = createAsyncThunk(
   "deleteFile",
   async ({ deleteParam, type }) => {
     try {
-      deleteWithToken("/api/files/", null, { deleteParam, type });
+      await deleteWithToken("/api/files/", null, { deleteParam, type });
       return { deleteParam, type };
     } catch (error) {
       console.error(error);
@@ -99,7 +106,7 @@ export const deleteFileAsync = createAsyncThunk(
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
   async ({ projectId }) => {
-    return getWithToken(`/api/projects/${projectId}`, {});
+    return await getWithToken(`/api/projects/${projectId}`, {});
   }
 );
 
@@ -107,7 +114,7 @@ export const updateProjectAsync = createAsyncThunk(
   "updateProject",
   async ({ projectId, updateData }) => {
     try {
-      return putWithToken(`/api/projects/${projectId}`, {}, updateData);
+      return await putWithToken(`/api/projects/${projectId}`, {}, updateData);
     } catch (error) {
       console.error(error);
     }
@@ -118,7 +125,7 @@ export const createSectionAsync = createAsyncThunk(
   "createSection",
   async (payload) => {
     try {
-      return postWithToken("/api/sections/", {}, payload);
+      return await postWithToken("/api/sections/", {}, payload);
     } catch (error) {
       console.log(error);
     }
@@ -129,7 +136,7 @@ export const deleteSectionAsync = createAsyncThunk(
   "deleteSection",
   async (sectionId) => {
     try {
-      deleteWithToken(`/api/sections/${sectionId}`, null);
+      await deleteWithToken(`/api/sections/${sectionId}`, null);
       return sectionId;
     } catch (error) {
       console.error(error);

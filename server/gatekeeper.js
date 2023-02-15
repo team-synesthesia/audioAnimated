@@ -81,6 +81,7 @@ const isYourSection = async (req, res, next) => {
 
 const isYourProject = async (req, res, next) => {
   let projectId = req.params.projectId;
+  if (!projectId) projectId = req.query.projectId;
   if (!projectId) projectId = req.body.projectId;
   const project = await Project.findByPk(projectId, {
     include: User,

@@ -7,21 +7,21 @@ import {
 export const fetchAllProjectsByUserIdAsync = createAsyncThunk(
   "allProjectsByUserId",
   async (userId) => {
-    return getWithToken("/api/projects/", [], { userId });
+    return await getWithToken("/api/projects/", [], { userId });
   }
 );
 
 export const createProjectAsync = createAsyncThunk(
   "createProject",
   async (payload) => {
-    return postWithToken("/api/projects/", {}, payload);
+    return await postWithToken("/api/projects/", {}, payload);
   }
 );
 
 export const deleteProjectAsync = createAsyncThunk(
   "deleteProject",
   async (projectId) => {
-    return deleteWithToken(`/api/projects/${projectId}`, null);
+    return await deleteWithToken(`/api/projects/${projectId}`, null);
   }
 );
 

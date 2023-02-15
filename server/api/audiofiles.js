@@ -1,6 +1,8 @@
 const fs = require("fs");
 const router = require("express").Router();
 
+const { requireToken, isYourProject } = require("../gatekeeper");
+
 module.exports = router;
 require("dotenv").config();
 
@@ -22,26 +24,32 @@ router.get("/", (req, res, next) => {
   });
 });
 
-router.post("/", upload.single("audiofile"), (req, res, next) => {
-  const { projectId, filePath } = req.query;
-  const file = req.file;
+router.post(
+  "/",
+  requireToken,
+  isYourProject,
+  upload.single("audiofile"),
+  (req, res, next) => {
+    const { projectId, filePath } = req.query;
+    const file = req.file;
 
-  const fullFilepath =
-    process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + filePath;
+    const fullFilepath =
+      process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + filePath;
 
-  const folder = process.env.AUDIO_DATA_DIR + "/" + projectId;
-  if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder);
-  }
-  try {
-    fs.open(fullFilepath, "w+", (err, fd) => {
-      fs.writeFile(fd, file.buffer, (err) => {
-        fs.close(fd, (err) => {
-          res.status(201).send(`${filePath}`);
+    const folder = process.env.AUDIO_DATA_DIR + "/" + projectId;
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder);
+    }
+    try {
+      fs.open(fullFilepath, "w+", (err, fd) => {
+        fs.writeFile(fd, file.buffer, (err) => {
+          fs.close(fd, (err) => {
+            res.status(201).send(`${filePath}`);
+          });
         });
       });
-    });
-  } catch (err) {
-    next(err);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
