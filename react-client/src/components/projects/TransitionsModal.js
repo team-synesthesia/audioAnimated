@@ -5,7 +5,12 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 
 import FileUploadForm from "./FileUploadForm";
-import { FileOptions, EditProjectName, EditProjectLatencyFix } from "../";
+import {
+  FileOptions,
+  EditProjectName,
+  EditProjectLatencyFix,
+  ShareSettings,
+} from "../";
 import Record from "./recordForm/Record";
 import PlayAll from "./PlayAll";
 import GraphicsOptions from "./GPU/graphicsOptions";
@@ -70,6 +75,8 @@ function SwitchComponent({
     case "editProjectLatencyFix":
       return <EditProjectLatencyFix handleClose={handleClose} />;
 
+    case "shareSettings":
+      return <ShareSettings handleClose={handleClose} projectId={projectId} />;
     default:
       return null;
   }

@@ -147,6 +147,7 @@ export const singleProjectSlice = createSlice({
     recordLatencyAdjustment: null,
     sectionDuration: null,
     graphicsFn: null,
+    shareable: false,
     sections: [],
     availableFiles: {}, // de-duped, key is file.name
     audioRawFiles: {}, // de-duped, key is file.name
@@ -161,6 +162,7 @@ export const singleProjectSlice = createSlice({
         sections,
         sectionDuration,
         graphicsFn,
+        shareable,
       } = action.payload;
       const availableFiles = {};
       sections.forEach((section) => {
@@ -181,6 +183,7 @@ export const singleProjectSlice = createSlice({
       state.sectionDuration = sectionDuration;
       state.availableFiles = availableFiles;
       state.graphicsFn = graphicsFn;
+      state.shareable = shareable;
     });
     builder.addCase(getFilesAsync.fulfilled, (state, action) => {
       state.audioRawFiles = action.payload;
