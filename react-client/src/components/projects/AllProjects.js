@@ -96,8 +96,8 @@ export default function AllProjects() {
                       </Typography>
                       <small>
                         {project.shareable
-                          ? "Public Project"
-                          : "Private Project"}
+                          ? "Public"
+                          : "Private"}
                       </small>
                     </CardContent>
                     <CardActions
