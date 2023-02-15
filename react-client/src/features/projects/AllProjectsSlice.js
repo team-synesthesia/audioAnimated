@@ -45,12 +45,7 @@ export const allProjectsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllProjectsByUserIdAsync.fulfilled, (state, action) => {
-        const stateCopy = [...state];
-        const projects = action.payload;
-        for (let project of projects) {
-          stateCopy.push(project);
-        }
-        return stateCopy;
+        return action.payload;
       })
       .addCase(createProjectAsync.fulfilled, (state, action) => {
         const stateCopy = [...state];
