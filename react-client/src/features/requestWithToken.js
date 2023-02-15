@@ -40,6 +40,25 @@ export async function postWithToken(url, emptyReturnValue, payload, params) {
   }
 }
 
+export async function putWithToken(url, emptyReturnValue, payload, params) {
+  const token = window.localStorage.getItem(TOKEN);
+  try {
+    if (token) {
+      const { data } = await axios.put(url, payload, {
+        headers: {
+          authorization: token,
+        },
+        params,
+      });
+      return data;
+    } else {
+      return emptyReturnValue;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export async function deleteWithToken(url, emptyReturnValue) {
   const token = window.localStorage.getItem(TOKEN);
   try {

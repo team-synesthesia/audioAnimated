@@ -1,5 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import axios from "axios";
+import {
+  getWithToken,
+  putWithToken,
+  postWithToken,
+  deleteWithToken,
+} from "../requestWithToken";
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -93,12 +100,7 @@ export const deleteFileAsync = createAsyncThunk(
 export const fetchSingleProjectAsync = createAsyncThunk(
   "singleProject",
   async ({ projectId }) => {
-    try {
-      const { data } = await axios.get(`/api/projects/${projectId}`);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
+    return getWithToken(`/api/projects/${projectId}`, {});
   }
 );
 
@@ -106,11 +108,7 @@ export const updateProjectAsync = createAsyncThunk(
   "updateProject",
   async ({ projectId, updateData }) => {
     try {
-      const { data } = await axios.put(
-        `/api/projects/${projectId}`,
-        updateData
-      );
-      return data;
+      return putWithToken(`/api/projects/${projectId}`, {}, updateData);
     } catch (error) {
       console.error(error);
     }
@@ -121,8 +119,7 @@ export const createSectionAsync = createAsyncThunk(
   "createSection",
   async (payload) => {
     try {
-      const { data } = await axios.post("/api/sections/", payload);
-      return data;
+      return postWithToken("/api/sections/", {}, payload);
     } catch (error) {
       console.log(error);
     }
@@ -131,10 +128,10 @@ export const createSectionAsync = createAsyncThunk(
 
 export const deleteSectionAsync = createAsyncThunk(
   "deleteSection",
-  async (id) => {
+  async (sectionId) => {
     try {
-      await axios.delete(`/api/sections/${id}`);
-      return id;
+      deleteWithToken(`/api/sections/${sectionId}`, null);
+      return sectionId;
     } catch (error) {
       console.error(error);
     }

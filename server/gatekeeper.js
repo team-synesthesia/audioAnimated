@@ -1,6 +1,5 @@
-// const { User } = require("./db");
 const {
-  models: { User, Project },
+  models: { User, Section, Project },
 } = require("./db");
 
 const requireToken = async (req, res, next) => {
@@ -19,8 +18,26 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+const isYourSection = async (req, res, next) => {
+  let sectionId = req.params.sectionId;
+  const section = await Section.findByPk(sectionId, {
+    include: {
+      model: Project,
+      include: User,
+    },
+  });
+  const userIds = section.project.users.map((x) => x.id);
+  const userInProject = userIds.some((x) => x === req.user.id);
+  if (userInProject) {
+    next();
+  } else {
+    return res.status(403).send("You cannot access other users sections");
+  }
+};
+
 const isYourProject = async (req, res, next) => {
-  const projectId = req.params.projectId;
+  let projectId = req.params.projectId;
+  if (!projectId) projectId = req.body.projectId;
   const project = await Project.findByPk(projectId, {
     include: User,
   });
@@ -75,6 +92,7 @@ module.exports = {
   requireToken,
   isSelf,
   sharableOrIsSelf,
+  isYourSection,
   isYourProject,
   isAdmin,
   isAdminOrSelf,
