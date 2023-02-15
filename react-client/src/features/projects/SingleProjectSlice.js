@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import axios from "axios";
 import {
+  getWithTokenNoCatch,
   getWithToken,
   putWithToken,
   postWithToken,
@@ -24,8 +24,9 @@ export const getFilesAsync = createAsyncThunk(
         let response;
         while (true) {
           try {
-            response = await axios.get("/api/audiofiles/", {
-              params: { projectId, filePath },
+            response = await getWithTokenNoCatch("/api/audiofiles/", "", {
+              projectId,
+              filePath,
             });
             if (response.status === 200) break;
           } catch (error) {
@@ -46,14 +47,11 @@ export const getFilesAsync = createAsyncThunk(
 export const getFileAsync = createAsyncThunk(
   "getFile",
   async ({ fileLabel, projectId, filePath }) => {
-    try {
-      const { data } = await axios.get("/api/audiofiles/", {
-        params: { projectId, filePath },
-      });
-      return [fileLabel, data];
-    } catch (error) {
-      console.log(error);
-    }
+    const data = await getWithToken("/api/audiofiles/", "", {
+      projectId,
+      filePath,
+    });
+    return [fileLabel, data];
   }
 );
 
@@ -84,22 +82,14 @@ export const writeFileAsync = createAsyncThunk(
 );
 
 export const addFileAsync = createAsyncThunk("addFile", async (formData) => {
-  try {
-    return await postWithToken("/api/files/", {}, formData);
-  } catch (error) {
-    console.error(error);
-  }
+  return await postWithToken("/api/files/", {}, formData);
 });
 
 export const deleteFileAsync = createAsyncThunk(
   "deleteFile",
   async ({ deleteParam, type }) => {
-    try {
-      await deleteWithToken("/api/files/", null, { deleteParam, type });
-      return { deleteParam, type };
-    } catch (error) {
-      console.error(error);
-    }
+    await deleteWithToken("/api/files/", null, { deleteParam, type });
+    return { deleteParam, type };
   }
 );
 
@@ -113,34 +103,22 @@ export const fetchSingleProjectAsync = createAsyncThunk(
 export const updateProjectAsync = createAsyncThunk(
   "updateProject",
   async ({ projectId, updateData }) => {
-    try {
-      return await putWithToken(`/api/projects/${projectId}`, {}, updateData);
-    } catch (error) {
-      console.error(error);
-    }
+    return await putWithToken(`/api/projects/${projectId}`, {}, updateData);
   }
 );
 
 export const createSectionAsync = createAsyncThunk(
   "createSection",
   async (payload) => {
-    try {
-      return await postWithToken("/api/sections/", {}, payload);
-    } catch (error) {
-      console.log(error);
-    }
+    return await postWithToken("/api/sections/", {}, payload);
   }
 );
 
 export const deleteSectionAsync = createAsyncThunk(
   "deleteSection",
   async (sectionId) => {
-    try {
-      await deleteWithToken(`/api/sections/${sectionId}`, null);
-      return sectionId;
-    } catch (error) {
-      console.error(error);
-    }
+    await deleteWithToken(`/api/sections/${sectionId}`, null);
+    return sectionId;
   }
 );
 

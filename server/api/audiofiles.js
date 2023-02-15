@@ -9,7 +9,7 @@ require("dotenv").config();
 const multer = require("multer");
 const upload = multer();
 
-router.get("/", (req, res, next) => {
+router.get("/", requireToken, isYourProject, (req, res, next) => {
   const { projectId, filePath } = req.query;
   const fullFilepath =
     process.env.AUDIO_DATA_DIR + "/" + projectId + "/" + filePath;

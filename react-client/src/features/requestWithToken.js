@@ -2,6 +2,21 @@ import axios from "axios";
 
 import { TOKEN } from "./auth/authSlice";
 
+export async function getWithTokenNoCatch(url, emptyReturnValue, params) {
+  const token = window.localStorage.getItem(TOKEN);
+  if (token) {
+    const response = await axios.get(url, {
+      headers: {
+        authorization: token,
+      },
+      params,
+    });
+    return response;
+  } else {
+    return emptyReturnValue;
+  }
+}
+
 export async function getWithToken(url, emptyReturnValue, params) {
   const token = window.localStorage.getItem(TOKEN);
   try {
