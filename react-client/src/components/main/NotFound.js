@@ -1,7 +1,20 @@
 import React from "react";
 
-const NotFound = () => {
-    return <h1>ERROR: Page not found</h1>
-}
+import { Box } from "@mui/material";
 
-export default NotFound
+const NotFound = () => {
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <h1>ERROR: Page not found</h1>
+    </Box>
+  );
+};
+
+export default NotFound;
