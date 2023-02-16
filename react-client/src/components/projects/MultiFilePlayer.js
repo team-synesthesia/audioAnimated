@@ -95,7 +95,10 @@ export default function MultiFilePlayer({
 
   function getRecordingPermission() {
     if (navigator.mediaDevices.getUserMedia) {
-      const constraints = { audio: true };
+      const constraints = { 
+        audio: { echoCancellation: false },
+      };
+
       let onSuccess = function (stream) {
         recordStreamRef.current = stream;
       };
@@ -104,6 +107,7 @@ export default function MultiFilePlayer({
         console.log("The following error occured: " + err);
       };
 
+      console.log('media devices:',constraints)
       navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
     } else {
       console.log("getUserMedia not supported on your browser!");
@@ -111,9 +115,12 @@ export default function MultiFilePlayer({
   }
 
   const context = React.useRef();
+  const rGain = React.useRef()
   if (!context.current) {
     context.current = new AudioContext();
+    rGain.current = context.current.createGain()
   }
+
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   const startRecording = async () => {
@@ -139,7 +146,12 @@ export default function MultiFilePlayer({
 
     sourceForMicophone.current
       .connect(recorder)
-      .connect(context.current.destination);
+      .connect(rGain.current)
+      //.connect(context.current.destination);
+
+    rGain.current.connect(context.current.destination)
+
+    rGain.current.value  =  2
 
     if (!recordingMessages.current) recordingMessages.current = [];
     recorder.port.onmessage = (e) => {

@@ -32,8 +32,8 @@ class Metronome {
     const envelope = this.audioContext.createGain();
 
     osc.frequency.value = beatNumber % this.beatsPerBar == 0 ? 1000 : 800;
-    envelope.gain.value = 1;
-    envelope.gain.exponentialRampToValueAtTime(1, time + 0.001);
+    envelope.gain.value = .1;
+    envelope.gain.exponentialRampToValueAtTime(.1, time + 0.001);
     envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
 
     osc.connect(envelope);

@@ -20,6 +20,7 @@ class AudioContextPlus {
   audioBuffers = {};
   sources = [];
   gainNodes = [];
+  loggedWaveForm = false;
 
   constructor() {
     this.init();
@@ -177,6 +178,8 @@ class AudioContextPlus {
     const freqBins = this.getFrequencyData();
     const waveForm = this.getTimeDomainData();
 
+    let sumWave = 0
+
     let sum = 0,
       sumLow = 0,
       sumMid = 0,
@@ -185,6 +188,7 @@ class AudioContextPlus {
       wsum2 = 0;
     for (let i = 0; i < 200; i++) {
       sum += freqBins[i];
+      sumWave += waveForm[i]
       if (i < 50) {
         sumLow += freqBins[i];
         wsum1 += waveForm[i];
@@ -204,6 +208,10 @@ class AudioContextPlus {
     sumHigh /= 5000;
     sum *= 1.3;
 
+    if (  Math.abs(sumWave/200 - 128) > 2 && !this.loggedWaveForm ) {
+      console.log(waveForm)
+      this.loggedWaveForm = true
+    }
     return { sum, sumLow, sumMid, sumHigh, wsum1, wsum2 };
   }
 }
