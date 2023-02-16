@@ -95,11 +95,9 @@ export default function MultiFilePlayer({
 
   function getRecordingPermission() {
     if (navigator.mediaDevices.getUserMedia) {
-      
+
       const constraints = {
         audio: {
-          //true };
-
           echoCancellation: false,
           noiseSuppression: false,
           autoGainControl: false,
