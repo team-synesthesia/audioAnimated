@@ -13,6 +13,7 @@ import { fetchSingleProjectAsync, getFilesAsync } from "../../features";
 import { setPlayAllStarted, setPlayAllPlayPause } from "../../features";
 import { setGlobalGraphics } from "../../features";
 import { setGraphicFN } from "../../features";
+import { NotFound } from "../";
 
 const FinalProjectView = () => {
   const { projectId } = useParams();
@@ -52,7 +53,7 @@ const FinalProjectView = () => {
     setShowCopiedMsg(true);
   };
 
-  return (
+  return project.id ? (
     <Box
       sx={{
         minHeight: "100vh",
@@ -95,6 +96,8 @@ const FinalProjectView = () => {
         <ContentCopyIcon sx={{ marginLeft: "5px" }} />
       </Link>
     </Box>
+  ) : (
+    <NotFound />
   );
 };
 

@@ -5,9 +5,13 @@ import PermanentDrawerLeft from "./PermanentDrawerLeft";
 
 import { Box } from "@mui/material";
 
-import { fetchSingleProjectAsync, getFilesAsync } from "../../features/";
-import { setGlobalGraphics } from "../../features";
-import { setGraphicFN } from "../../features";
+import { NotFound } from "../";
+import {
+  fetchSingleProjectAsync,
+  getFilesAsync,
+  setGlobalGraphics,
+  setGraphicFN,
+} from "../../features/";
 import LooperProject from "./LooperProject";
 
 const SingleProject = () => {
@@ -35,11 +39,13 @@ const SingleProject = () => {
     }
   }, [dispatch, projectId, availableFiles]);
 
-  return (
+  return project.id ? (
     <Box sx={{ minHeight: "100vh" }}>
       <PermanentDrawerLeft projectId={project.id} userId={userId} />
       <LooperProject project={project} userId={userId} projectId={projectId} />
     </Box>
+  ) : (
+    <NotFound />
   );
 };
 
