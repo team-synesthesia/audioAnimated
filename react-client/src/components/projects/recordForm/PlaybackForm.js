@@ -27,7 +27,7 @@ export default function PlaybackForm({ selectedFiles }) {
 
   const smallPlayer = true;
   const [msgKey, setMsgKey] = React.useState("begin");
-  console.log(msgKey);
+  //console.log(msgKey);
   return (
     <React.Fragment>
       <Box>

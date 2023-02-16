@@ -95,7 +95,28 @@ export default function MultiFilePlayer({
 
   function getRecordingPermission() {
     if (navigator.mediaDevices.getUserMedia) {
-      const constraints = { audio: true };
+
+      const constraints = {
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+          googEchoCancellation: false,
+          googAutoGainControl: false,
+          googExperimentalAutoGainControl: false,
+          googNoiseSuppression: false,
+          googExperimentalNoiseSuppression: false,
+          googHighpassFilter: false,
+          googTypingNoiseDetection: false,
+          googBeamforming: false,
+          googArrayGeometry: false,
+          googAudioMirroring: false,
+          googNoiseReduction: false,
+          mozNoiseSuppression: false,
+          mozAutoGainControl: false,
+        },
+      };
+
       let onSuccess = function (stream) {
         recordStreamRef.current = stream;
       };
