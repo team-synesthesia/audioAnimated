@@ -103,6 +103,7 @@ const isYourProjectOrShareable = async (req, res, next) => {
   const project = await Project.findByPk(projectId, {
     include: User,
   });
+  if (!project) return res.status(404).send("Project does not exist");
   if (project.shareable) next();
   else {
     const userIds = project.users.map((x) => x.id);
