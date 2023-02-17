@@ -1093,6 +1093,219 @@ void main() {
     mainImage(gl_FragColor, vUv*iResolution.xy);
 }
 
+`,
+`
+///////// zackpudil sierpinski remix
+// this is derived from https://www.shadertoy.com/view/4tGGRV
+// i take no credit for the volumetric rendering - i swapped out
+// the mandelbox for the sierpinksi gasket and changed some other
+// parameters
+uniform vec3 iResolution;
+uniform float iTime;
+uniform vec4 iMusic;
+varying vec2 vUv;
+
+int max_iter = 5;
+float ifs_scale = 1.9;
+vec3 ro;
+
+vec3[] d4 = vec3[] (
+vec3(1.,1.,1.),
+vec3(-1.,-1.,1.),
+vec3(1.,-1.,-1.),
+vec3(-1.,1.,-1)
+);
+
+float hash(float n) {
+    return fract(sin(n)*43578.5453);
+}
+
+mat3 rot_xz(float an) {
+    float cc = cos(an), ss=sin(an);
+    return mat3(1,0.,0.,0.,cc,-ss,0.,ss,cc);
+
+}
+mat3 rot_xzx(float an) {
+    float cc = cos(an), ss=sin(an);
+    return mat3(cc,0.,ss,0.,1.,0.,-ss,0.,cc);
+}
+
+float box(vec3 p, vec3 b) {
+    //actually now a sphere - haha
+    return length(p) - 2.0;
+    
+    //vec3 d = abs(p) - b;
+    //return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
+}
+
+float de(vec3 z) {
+    
+    vec3 min_vtx;
+    vec3 orig_z = z;
+    int n=0;
+    float min_dist,dist_to_vtx;
+
+    for (int i=0; i<100; i++) {
+       
+        if ( i > max_iter ) break;
+
+        float sc = 1.0 + .5*sin(iTime/2.);
+        float w = iTime/4.;
+        vec3 dd_0 = rot_xz(w)*d4[0]*sc;
+        min_vtx = dd_0;
+        min_dist=length(z-dd_0);
+        for (int j=1; j<4; j++) {
+            vec3 ddj = rot_xz(w)*d4[j]*sc;
+            dist_to_vtx=length(z-ddj); 
+            if (dist_to_vtx<min_dist) {min_vtx=ddj; min_dist=dist_to_vtx;}
+            
+        }
+        
+        z = min_vtx + ifs_scale*(z-min_vtx);    
+        n++;
+    }
+
+    float dz = pow(ifs_scale, float(n) );    
+    float f = box(z, vec3(1.0))/dz;
+    float sz = 6.;
+    f = min(f, orig_z.y + sz);
+    f = min(f, min(orig_z.x + sz, -orig_z.x + sz));
+    f = min(f, min(orig_z.z + sz, -orig_z.z + sz));
+    
+    return f;
+}
+
+float trace(vec3 ro, vec3 rd, float mx) {
+    float t = 0.0;
+    for(int i = 0; i < 80; i++) {
+        float d = de(ro + rd*t);
+        if(d < 0.001 || t >= mx) break;
+        t += d;
+    }
+    
+    if(t < mx) return t;
+    return -1.0;
+}
+
+// Approvement thanks to Shane. vstrace= shadow trace in volumentric loop.
+// less detailed, dithering and breaks quicker.
+float vstrace(vec3 ro, vec3 rd, float mx) {
+    float t = 0.1*hash(dot(ro, rd));
+    for(int i = 0; i < 50; i++) {
+        float d = de(ro + rd*t);
+        if(d < 0.01 || t >= mx) break;
+        t += d;
+    }
+    
+    if(t < mx) return t;
+    return -1.0;
+}
+
+vec3 normal(vec3 p, out float e) {
+    vec2 h = vec2(0.001, 0.0);
+    
+    vec3 n1 = vec3(
+        de(p + h.xyy),
+        de(p + h.yxy),
+        de(p + h.yyx)
+	);
+    
+    vec3 n2 = vec3(
+        de(p - h.xyy),
+        de(p - h.yxy),
+        de(p - h.yyx)
+	);
+    
+    // edge detection.
+    float d = de(p);
+    
+    vec3 e3 = abs(d - 0.5*(n1 + n2));
+    e = min(1.0, pow(e3.x + e3.y + e3.z, 0.55)*10.0);
+    return normalize(n1 - n2);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+	vec2 uv = (-iResolution.xy + 2.0*fragCoord)/iResolution.y;
+    
+    float mTime = iTime*.1 + iMusic.x/11.;
+    vec3 ro = vec3(-2.9*sin(mTime), -1, 2.9*cos(mTime));
+    vec3 ww = normalize(vec3(0, -0.5, 0)-ro);
+    vec3 uu = normalize(cross(vec3(0, 1, 0), ww));
+    vec3 vv = normalize(cross(ww, uu));
+    vec3 rd = normalize(uv.x*uu + uv.y*vv + 1.97*ww);    
+    
+    vec3 col = vec3(0.2);  //increased to .2
+    
+    float t = trace(ro, rd, 30.0);  //increased to 30
+    if(t > 0.0) {
+        float edg;
+        vec3 pos = ro + rd*t;
+        vec3 nor = normal(pos, edg);
+        
+        // ambient occlusion.
+        float occ = 0.0, sca = 1.0, ste = 0.003;
+        for(int i = 0; i < 15; i++) {
+            float d = de(pos + nor*ste);
+            occ += (ste - d)*sca;
+            sca *= 1.0;
+            ste += ste/(float(i) + 1.0);
+        }
+        occ = 1.0 - clamp(occ, 0.0, 1.0);
+        
+        vec3 lig = normalize(-pos);
+        float dis = length(pos);
+        
+        // direct lighting with hard shadows.
+        col += 0.3*clamp(dot(lig, nor), 0.0, 1.0)
+            *step(0.0, -trace(pos + nor*0.001, lig, dis));
+        
+        // indirect lighting with ambient occlusion.
+        col += 0.1*clamp(dot(-lig, nor), 0.0, 1.0)*occ;
+        
+        // material.
+        col *= vec3(1.,.7,.2);
+        
+        // edge emission texture           // avoid pixel dancing by fading the effect while the veiwer is farther away.
+        col += mix(col, vec3(0, 0.1, 2.1), edg/(0.7*length(ro))) * exp(-t);
+    }
+    
+    // volumetric shadows
+    float s = hash(dot(uv, vec2(12.23, 39.343)))*0.05;
+    float vol = 0.0;
+    // need less light strength the closer you are to the light.
+    float e = 0.1*smoothstep(0.0, 4., length(ro))*(1.+iMusic.x/5.);
+    for(int i = 0; i < 90; i++) {
+        if(s > t) break;
+        vec3 pos = ro + rd*s;
+        
+        vec3 lig = normalize(- pos);
+        float dis = length( pos);
+        
+        // shadow trace at each position along the march.
+        float l = step(0.0, -vstrace(pos, lig, dis));
+        // light strength is proportional to distance from light.
+        l *= e/dis;
+        
+        vol += l;
+        s += 0.05;
+    }
+    
+    // blue light rays.
+    col += 0.6*vec3(0.2*vol*(1.+iMusic.y/11.), 0.2*vol, vol);
+    //col = pow(col, vec3(1.0/2.2));
+    
+    // vignetting
+    vec2 q = fragCoord/iResolution.xy;
+	col *= pow( 16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y), 0.25 );
+
+	fragColor = vec4(col, 1);
+}
+
+void main() {
+    mainImage(gl_FragColor, vUv*iResolution.xy);
+}
+
 `
     ]
     

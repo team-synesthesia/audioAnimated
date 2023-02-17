@@ -23,6 +23,7 @@ export const graphicsOptions = [
   { type: "shader", fn: 7, name: "\"Golden Blob\"", imgUrl: "g8.jpg" },
   { type: "shader", fn: 8, name: "\"Ode to Julia 2\"", imgUrl: "g9.jpg" },
   { type: "shader", fn: 9, name: "\"Color Companions 2\"", imgUrl: "g10.jpg" },
+  { type: "shader", fn: 10, name: "\"Sierpinski Lights\"", imgUrl: "g11.jpg" },
 ];
 
 let displayedLog = false;
