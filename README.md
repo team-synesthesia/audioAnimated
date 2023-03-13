@@ -1,5 +1,13 @@
 # audioAnimated
 
+An interactive web application to create music with beautiful animations that move to your music and share them with your friends.
+
+1. Watch our recorded demo to see what you can create: https://youtu.be/h_EGWJua-0w
+2. Create an account
+3. Record with our in-app recording software, or upload existing files into your project editor. Create music by layering and connecting tracks together.
+4. Choose a base graphic for your project, and watch the animation move and breathe with your song.
+5. Share with your friends by generating a sharable link.
+
 ### Development
 
 A `.env` file is required to run this app in development. 
