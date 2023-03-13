@@ -8,6 +8,8 @@ An interactive web application to create music with beautiful animations that mo
 4. Choose a base graphic for your project, and watch the animation move and breathe with your song.
 5. Share with your friends by generating a sharable link.
 
+[app-screenshot](app-screenshot.png) 
+
 ### Development
 
 A `.env` file is required to run this app in development. 
