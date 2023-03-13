@@ -1,6 +1,6 @@
 # audioAnimated
 
-An interactive web application to create music with beautiful animations that move to your music and share them with your friends.
+An interactive web application that allows users to create music with beautiful animations that move to your music and share their creations with their freinds.
 
 ![app-screenshot](app-screenshot.png)
 
