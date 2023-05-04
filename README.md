@@ -39,4 +39,6 @@ audio files that are uploaded or created in the app will be saved in this direct
 - You will need to have postgreSQL installed in your local dev env.
 - create the database `audioanimated`
 - Seed the database by running `$ npm run seed`
-- Run the app in dev by running : `$ npm run start`
+- Run the app in dev by running both :
+  - `$ npm run server`
+  - `$ npm run client`
