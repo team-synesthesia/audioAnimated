@@ -9,8 +9,11 @@ function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary">
       {"Copyright © "}
-      <Link color="inherit" href="https://playr.onrender.com/">
-        Playr
+      <Link
+        color="inherit"
+        href="https://github.com/team-synesthesia/audioAnimated"
+      >
+        AudioAnimated
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

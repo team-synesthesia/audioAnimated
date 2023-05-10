@@ -58,7 +58,7 @@ const SplashPage = (props) => {
             </Typography>
             <br />
             <Typography variant="h6">
-              Watch this demo to see what you can create with the Playr app!
+              Watch this demo to see what you can create with AudioAnimated!
             </Typography>
             <br />
             {!isLoggedIn && (
