@@ -20,10 +20,21 @@ An interactive web application that allows users to create music with beautiful 
 
 ## Setup
 
+#### Database: 
+
+* In Dev you will need to create a local postgresdb called `audioanimated`. Then run the script `script/seed.js`. This will create the schema and add the seed data for local dev. 
+* In Prod you will need to set this database up somewhere of your choice then provide the environment variable `DATABASE_URL`. E.g.: 
+
+  DATABASE_URL="postgresql://<username>:<password>@<host-address>:<port>/<dbname>"
+
+#### File storage: 
+  
 The music files are now stored in an s3 bucket in AWS for both develepment and production running of the application. You will need to create an AWS account, create and s3 bucket and allow access via `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 
 ### Environment variables
 
+You will need to provide these environment variables in dev and prod:
+  
 A `.env` file is required to run this app in development.
 
 1. Add a `.env` in the root dir of this repo
@@ -35,9 +46,12 @@ AWS_SECRET_ACCESS_KEY=xxx // as mentioned above
 S3_BUCKET_NAME=audioanimated // or whatever you call the bucket
 S3_REGION=us-east-2 // choose the same region that you web server uses
 S3_ENV_PREFIX=dev // this is just a prefix in the bucket to separate files between environments
+
+// prod only: 
+DATABASE_URL="postgresql://<username>:<password>@<host-address>:<port>/<dbname>" // only needed in prod
 ```
 
-audio files that are uploaded or created in the app will be saved in this directory.
+audio files that are uploaded or created in the app will be saved in the s3 bucket.
 
 ### Development
 
